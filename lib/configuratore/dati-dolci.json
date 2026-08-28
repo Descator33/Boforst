@@ -1,0 +1,720 @@
+{
+  "versione": "2026-08-01",
+  "linea": "dolci",
+  "fonte": "PRODOTTI SITO.xlsx / Foglio1 / righe 3-43",
+  "unita_quantita": "pedane",
+  "basi": [
+    {
+      "id": "nuvola",
+      "nome": "Nuvola",
+      "diametro_cm": 9.5,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": 6,
+        "pezzi_per_vassoio": 5,
+        "peso_cartone_kg": null,
+        "cartone_dichiarato_a_peso": false,
+        "pezzi_per_cartone": 30,
+        "cartoni_per_pedana": 112,
+        "cartoni_per_strato": 8,
+        "strati_per_pedana": 14,
+        "pezzi_per_pedana": 3360,
+        "testo_originale": "6 vassoi 5 pz./ 30 pz. per ct./ 112 ct. per pallet (8 ct. per fila)"
+      },
+      "immagine": "/img/configuratore/basi/nuvola.png"
+    },
+    {
+      "id": "stella",
+      "nome": "Stella",
+      "diametro_cm": 9.5,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": 6,
+        "pezzi_per_vassoio": 5,
+        "peso_cartone_kg": null,
+        "cartone_dichiarato_a_peso": false,
+        "pezzi_per_cartone": 30,
+        "cartoni_per_pedana": 112,
+        "cartoni_per_strato": 8,
+        "strati_per_pedana": 14,
+        "pezzi_per_pedana": 3360,
+        "testo_originale": "6 vassoi 5 pz./ 30 pz. per ct./ 112 ct. per pallet (8 ct. per fila)"
+      },
+      "immagine": "/img/configuratore/basi/stella.png"
+    },
+    {
+      "id": "cuore",
+      "nome": "Cuore",
+      "diametro_cm": 9.5,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": 6,
+        "pezzi_per_vassoio": 5,
+        "peso_cartone_kg": null,
+        "cartone_dichiarato_a_peso": false,
+        "pezzi_per_cartone": 30,
+        "cartoni_per_pedana": 112,
+        "cartoni_per_strato": 8,
+        "strati_per_pedana": 14,
+        "pezzi_per_pedana": 3360,
+        "testo_originale": "6 vassoi 5 pz./ 30 pz. per ct./ 112 ct. per pallet (8 ct. per fila)"
+      },
+      "immagine": "/img/configuratore/basi/cuore.png"
+    },
+    {
+      "id": "intriko",
+      "nome": "Intriko",
+      "diametro_cm": 16.5,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": 3,
+        "pezzi_per_vassoio": 10,
+        "peso_cartone_kg": null,
+        "cartone_dichiarato_a_peso": false,
+        "pezzi_per_cartone": 30,
+        "cartoni_per_pedana": 112,
+        "strati_per_pedana": 14,
+        "cartoni_per_strato": 8,
+        "pezzi_per_pedana": 3360,
+        "testo_originale": "3 vassoi 10 pz./ 30 pz. per ct./ 112 ct. per pallet (14 strati da 8 ct)"
+      },
+      "immagine": "/img/configuratore/basi/intriko.png"
+    },
+    {
+      "id": "bomba",
+      "nome": "Bomba",
+      "diametro_cm": 9.0,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": 3,
+        "pezzi_per_vassoio": 12,
+        "peso_cartone_kg": null,
+        "cartone_dichiarato_a_peso": false,
+        "pezzi_per_cartone": 36,
+        "cartoni_per_pedana": 88,
+        "strati_per_pedana": 11,
+        "cartoni_per_strato": 8,
+        "pezzi_per_pedana": 3168,
+        "testo_originale": "3 vassoi 12 pz/ 36 pz per ct./ 88 ct per pallet (11 strati da 8 ct)"
+      },
+      "immagine": "/img/configuratore/basi/bomba.png"
+    },
+    {
+      "id": "golosone",
+      "nome": "Golosone",
+      "diametro_cm": 9.5,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": 6,
+        "pezzi_per_vassoio": 6,
+        "peso_cartone_kg": null,
+        "cartone_dichiarato_a_peso": false,
+        "pezzi_per_cartone": 36,
+        "cartoni_per_pedana": 112,
+        "cartoni_per_strato": 8,
+        "strati_per_pedana": 14,
+        "pezzi_per_pedana": 4032,
+        "testo_originale": "6 vassoi 6 pz./ 36 pz. per ct./ 112 ct per pallet (8 ct per fila)"
+      },
+      "immagine": "/img/configuratore/basi/golosone.png"
+    },
+    {
+      "id": "frittelline",
+      "nome": "Frittelline",
+      "diametro_cm": 5.0,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": 6,
+        "pezzi_per_vassoio": 12,
+        "peso_cartone_kg": 2.5,
+        "cartone_dichiarato_a_peso": true,
+        "pezzi_per_cartone": 72,
+        "cartoni_per_pedana": 112,
+        "cartoni_per_strato": 8,
+        "strati_per_pedana": 14,
+        "pezzi_per_pedana": 8064,
+        "testo_originale": "6 vassi 12 pz./ 2.5 kg per ct./ 112 ct. per pallet (8 ct. per fila)"
+      },
+      "immagine": "/img/configuratore/basi/frittelline.png"
+    },
+    {
+      "id": "intriko-midi",
+      "nome": "Intriko Midi",
+      "diametro_cm": 16.0,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": null,
+        "pezzi_per_vassoio": null,
+        "peso_cartone_kg": null,
+        "cartone_dichiarato_a_peso": false,
+        "pezzi_per_cartone": 42,
+        "cartoni_per_pedana": 96,
+        "cartoni_per_strato": null,
+        "strati_per_pedana": null,
+        "pezzi_per_pedana": 4032,
+        "testo_originale": "42 pz per ct./ 96 ct per pallet"
+      },
+      "immagine": "/img/configuratore/basi/intriko-midi.png"
+    },
+    {
+      "id": "lussekatt",
+      "nome": "Lussekatt",
+      "diametro_cm": 12.5,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": null,
+        "pezzi_per_vassoio": null,
+        "peso_cartone_kg": null,
+        "cartone_dichiarato_a_peso": false,
+        "pezzi_per_cartone": 40,
+        "cartoni_per_pedana": 72,
+        "cartoni_per_strato": null,
+        "strati_per_pedana": null,
+        "pezzi_per_pedana": 2880,
+        "testo_originale": "40 pz. per ct./ 72 ct per pallet"
+      },
+      "immagine": "/img/configuratore/basi/lussekatt.png"
+    },
+    {
+      "id": "klejner",
+      "nome": "Klejner",
+      "diametro_cm": 12.5,
+      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
+      "packaging": {
+        "vassoi_per_cartone": null,
+        "pezzi_per_vassoio": null,
+        "peso_cartone_kg": null,
+        "cartone_dichiarato_a_peso": false,
+        "pezzi_per_cartone": 40,
+        "cartoni_per_pedana": 72,
+        "cartoni_per_strato": null,
+        "strati_per_pedana": null,
+        "pezzi_per_pedana": 2880,
+        "testo_originale": "40 pz. per ct./ 72 ct per pallet"
+      },
+      "immagine": "/img/configuratore/basi/klejner.png"
+    }
+  ],
+  "farciture": [
+    {
+      "id": "ciock-e-lampone",
+      "nome": "Ciock e lampone",
+      "senza_farcitura": false
+    },
+    {
+      "id": "crema-e-fragola",
+      "nome": "Crema e fragola",
+      "senza_farcitura": false
+    },
+    {
+      "id": "frutti-di-bosco-e-ribes",
+      "nome": "Frutti di bosco e ribes",
+      "senza_farcitura": false
+    },
+    {
+      "id": "pistacchio-e-lampone",
+      "nome": "Pistacchio e lampone",
+      "senza_farcitura": false
+    },
+    {
+      "id": "crema-e-lampone",
+      "nome": "Crema e lampone",
+      "senza_farcitura": false
+    },
+    {
+      "id": "marmellata-frutti-rossi-e-ribes",
+      "nome": "Marmellata frutti rossi e ribes",
+      "senza_farcitura": false
+    },
+    {
+      "id": "cioccolato",
+      "nome": "Cioccolato",
+      "senza_farcitura": false
+    },
+    {
+      "id": "pistacchio",
+      "nome": "Pistacchio",
+      "senza_farcitura": false
+    },
+    {
+      "id": "crema",
+      "nome": "Crema",
+      "senza_farcitura": false
+    },
+    {
+      "id": "tre-cioccolati",
+      "nome": "Tre cioccolati",
+      "senza_farcitura": false
+    },
+    {
+      "id": "frutti-rossi",
+      "nome": "Frutti rossi",
+      "senza_farcitura": false
+    },
+    {
+      "id": "senza-farcitura",
+      "nome": "Senza farcitura",
+      "senza_farcitura": true
+    },
+    {
+      "id": "caramello",
+      "nome": "Caramello",
+      "senza_farcitura": false
+    },
+    {
+      "id": "dulce-de-leche",
+      "nome": "Dulce de leche",
+      "senza_farcitura": false
+    },
+    {
+      "id": "cannella",
+      "nome": "Cannella",
+      "senza_farcitura": false
+    }
+  ],
+  "topping": [
+    {
+      "id": "zucchero-a-velo-idrorepellente",
+      "nome": "Zucchero a velo idrorepellente"
+    },
+    {
+      "id": "perle-di-zucchero-idrorepellenti-al-cacao",
+      "nome": "Perle di zucchero idrorepellenti al cacao"
+    },
+    {
+      "id": "perle-di-zucchero-idrorepellenti-bianche",
+      "nome": "Perle di zucchero idrorepellenti bianche"
+    },
+    {
+      "id": "scagliette-di-cioccolato-tutti-e-3-i-cioccolati",
+      "nome": "Scagliette di cioccolato (tutti e 3 i cioccolati)"
+    },
+    {
+      "id": "perle-di-zucchero-colorate-rosse",
+      "nome": "Perle di zucchero colorate rosse"
+    },
+    {
+      "id": "semolato",
+      "nome": "Semolato"
+    }
+  ],
+  "combinazioni": [
+    {
+      "sku": "nuvola--ciock-e-lampone",
+      "base": "nuvola",
+      "farcitura": "ciock-e-lampone",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 75,
+      "peso_cartone_kg": 2.25,
+      "peso_pedana_kg": 252.0,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/nuvola--ciock-e-lampone.png"
+    },
+    {
+      "sku": "nuvola--crema-e-fragola",
+      "base": "nuvola",
+      "farcitura": "crema-e-fragola",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 85,
+      "peso_cartone_kg": 2.55,
+      "peso_pedana_kg": 285.6,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/nuvola--crema-e-fragola.png"
+    },
+    {
+      "sku": "nuvola--frutti-di-bosco-e-ribes",
+      "base": "nuvola",
+      "farcitura": "frutti-di-bosco-e-ribes",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 73,
+      "peso_cartone_kg": 2.19,
+      "peso_pedana_kg": 245.3,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/nuvola--frutti-di-bosco-e-ribes.png"
+    },
+    {
+      "sku": "nuvola--pistacchio-e-lampone",
+      "base": "nuvola",
+      "farcitura": "pistacchio-e-lampone",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 75,
+      "peso_cartone_kg": 2.25,
+      "peso_pedana_kg": 252.0,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/nuvola--pistacchio-e-lampone.png"
+    },
+    {
+      "sku": "stella--ciock-e-lampone",
+      "base": "stella",
+      "farcitura": "ciock-e-lampone",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/stella--ciock-e-lampone.png"
+    },
+    {
+      "sku": "stella--crema-e-lampone",
+      "base": "stella",
+      "farcitura": "crema-e-lampone",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/stella--crema-e-lampone.png"
+    },
+    {
+      "sku": "stella--marmellata-frutti-rossi-e-ribes",
+      "base": "stella",
+      "farcitura": "marmellata-frutti-rossi-e-ribes",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/stella--marmellata-frutti-rossi-e-ribes.png"
+    },
+    {
+      "sku": "stella--pistacchio-e-lampone",
+      "base": "stella",
+      "farcitura": "pistacchio-e-lampone",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/stella--pistacchio-e-lampone.png"
+    },
+    {
+      "sku": "cuore--ciock-e-lampone",
+      "base": "cuore",
+      "farcitura": "ciock-e-lampone",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/cuore--ciock-e-lampone.png"
+    },
+    {
+      "sku": "cuore--crema-e-lampone",
+      "base": "cuore",
+      "farcitura": "crema-e-lampone",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/cuore--crema-e-lampone.png"
+    },
+    {
+      "sku": "cuore--marmellata-frutti-rossi-e-ribes",
+      "base": "cuore",
+      "farcitura": "marmellata-frutti-rossi-e-ribes",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/cuore--marmellata-frutti-rossi-e-ribes.png"
+    },
+    {
+      "sku": "cuore--pistacchio-e-lampone",
+      "base": "cuore",
+      "farcitura": "pistacchio-e-lampone",
+      "topping": "zucchero-a-velo-idrorepellente",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/cuore--pistacchio-e-lampone.png"
+    },
+    {
+      "sku": "intriko--cioccolato",
+      "base": "intriko",
+      "farcitura": "cioccolato",
+      "topping": "perle-di-zucchero-idrorepellenti-al-cacao",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/intriko--cioccolato.png"
+    },
+    {
+      "sku": "intriko--pistacchio",
+      "base": "intriko",
+      "farcitura": "pistacchio",
+      "topping": "perle-di-zucchero-idrorepellenti-bianche",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/intriko--pistacchio.png"
+    },
+    {
+      "sku": "intriko--crema",
+      "base": "intriko",
+      "farcitura": "crema",
+      "topping": "perle-di-zucchero-idrorepellenti-bianche",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/intriko--crema.png"
+    },
+    {
+      "sku": "intriko--tre-cioccolati",
+      "base": "intriko",
+      "farcitura": "tre-cioccolati",
+      "topping": "scagliette-di-cioccolato-tutti-e-3-i-cioccolati",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/intriko--tre-cioccolati.png"
+    },
+    {
+      "sku": "intriko--frutti-rossi",
+      "base": "intriko",
+      "farcitura": "frutti-rossi",
+      "topping": "perle-di-zucchero-colorate-rosse",
+      "grammatura_gr": 70,
+      "peso_cartone_kg": 2.1,
+      "peso_pedana_kg": 235.2,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 40320,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/intriko--frutti-rossi.png"
+    },
+    {
+      "sku": "bomba--senza-farcitura",
+      "base": "bomba",
+      "farcitura": "senza-farcitura",
+      "topping": "semolato",
+      "grammatura_gr": 55,
+      "peso_cartone_kg": 1.98,
+      "peso_pedana_kg": 174.2,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/bomba--senza-farcitura.png"
+    },
+    {
+      "sku": "bomba--crema",
+      "nome": "Bomba Super",
+      "base": "bomba",
+      "farcitura": "crema",
+      "topping": "semolato",
+      "grammatura_gr": 85,
+      "peso_cartone_kg": 3.06,
+      "peso_pedana_kg": 269.3,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/products/bomba-fritta-crema.webp"
+    },
+    {
+      "sku": "golosone--crema",
+      "base": "golosone",
+      "farcitura": "crema",
+      "topping": "perle-di-zucchero-idrorepellenti-bianche",
+      "grammatura_gr": 75,
+      "peso_cartone_kg": 2.7,
+      "peso_pedana_kg": 302.4,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/golosone--crema.png"
+    },
+    {
+      "sku": "golosone--cioccolato",
+      "base": "golosone",
+      "farcitura": "cioccolato",
+      "topping": "perle-di-zucchero-idrorepellenti-al-cacao",
+      "grammatura_gr": 75,
+      "peso_cartone_kg": 2.7,
+      "peso_pedana_kg": 302.4,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/golosone--cioccolato.png"
+    },
+    {
+      "sku": "frittelline--crema",
+      "base": "frittelline",
+      "farcitura": "crema",
+      "topping": "semolato",
+      "grammatura_gr": 35,
+      "peso_cartone_kg": 2.52,
+      "peso_pedana_kg": 282.2,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/frittelline--crema.png"
+    },
+    {
+      "sku": "frittelline--cioccolato",
+      "base": "frittelline",
+      "farcitura": "cioccolato",
+      "topping": "semolato",
+      "grammatura_gr": 35,
+      "peso_cartone_kg": 2.52,
+      "peso_pedana_kg": 282.2,
+      "ordine_minimo_pedane": null,
+      "ordine_minimo_pezzi": null,
+      "ordine_minimo_dichiarato_su_riga": false,
+      "immagine": "/img/configuratore/prodotti/frittelline--cioccolato.png"
+    },
+    {
+      "sku": "intriko-midi--caramello",
+      "base": "intriko-midi",
+      "farcitura": "caramello",
+      "topping": "semolato",
+      "grammatura_gr": 60,
+      "peso_cartone_kg": 2.52,
+      "peso_pedana_kg": 241.9,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 48384,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/intriko-midi--caramello.png"
+    },
+    {
+      "sku": "intriko-midi--cioccolato",
+      "base": "intriko-midi",
+      "farcitura": "cioccolato",
+      "topping": "semolato",
+      "grammatura_gr": 60,
+      "peso_cartone_kg": 2.52,
+      "peso_pedana_kg": 241.9,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 48384,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/intriko-midi--cioccolato.png"
+    },
+    {
+      "sku": "intriko-midi--crema",
+      "base": "intriko-midi",
+      "farcitura": "crema",
+      "topping": "semolato",
+      "grammatura_gr": 60,
+      "peso_cartone_kg": 2.52,
+      "peso_pedana_kg": 241.9,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 48384,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/intriko-midi--crema.png"
+    },
+    {
+      "sku": "intriko-midi--pistacchio",
+      "base": "intriko-midi",
+      "farcitura": "pistacchio",
+      "topping": "semolato",
+      "grammatura_gr": 60,
+      "peso_cartone_kg": 2.52,
+      "peso_pedana_kg": 241.9,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 48384,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/intriko-midi--pistacchio.png"
+    },
+    {
+      "sku": "intriko-midi--frutti-rossi",
+      "base": "intriko-midi",
+      "farcitura": "frutti-rossi",
+      "topping": "semolato",
+      "grammatura_gr": 60,
+      "peso_cartone_kg": 2.52,
+      "peso_pedana_kg": 241.9,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 48384,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/intriko-midi--frutti-rossi.png"
+    },
+    {
+      "sku": "intriko-midi--dulce-de-leche",
+      "base": "intriko-midi",
+      "farcitura": "dulce-de-leche",
+      "topping": "semolato",
+      "grammatura_gr": 60,
+      "peso_cartone_kg": 2.52,
+      "peso_pedana_kg": 241.9,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 48384,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/intriko-midi--dulce-de-leche.png"
+    },
+    {
+      "sku": "lussekatt--senza-farcitura",
+      "base": "lussekatt",
+      "farcitura": "senza-farcitura",
+      "topping": "perle-di-zucchero-idrorepellenti-bianche",
+      "grammatura_gr": 60,
+      "peso_cartone_kg": 2.4,
+      "peso_pedana_kg": 172.8,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 34560,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/lussekatt--senza-farcitura.png"
+    },
+    {
+      "sku": "klejner--senza-farcitura",
+      "base": "klejner",
+      "farcitura": "senza-farcitura",
+      "topping": "semolato",
+      "grammatura_gr": 55,
+      "peso_cartone_kg": 2.2,
+      "peso_pedana_kg": 158.4,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 34560,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/klejner--senza-farcitura.png"
+    },
+    {
+      "sku": "klejner--cannella",
+      "base": "klejner",
+      "farcitura": "cannella",
+      "topping": "semolato",
+      "grammatura_gr": 55,
+      "peso_cartone_kg": 2.2,
+      "peso_pedana_kg": 158.4,
+      "ordine_minimo_pedane": 12,
+      "ordine_minimo_pezzi": 34560,
+      "ordine_minimo_dichiarato_su_riga": true,
+      "immagine": "/img/configuratore/prodotti/klejner--cannella.png"
+    }
+  ]
+}

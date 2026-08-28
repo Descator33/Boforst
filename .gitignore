@@ -1,0 +1,84 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+# non ancorata alla root di proposito: un build lanciato dalla cwd sbagliata
+# semina .next/ anche dentro public/, e da lì finirebbe fra i file serviti.
+.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Snapshot di lavorazione delle foto configuratore: stati intermedi tenuti
+# a mano prima delle passate di normalizzazione. Restano in locale — sono
+# ~118 MB che nella storia del repo non tornerebbero mai utili.
+/backup-foto-configuratore/
+/backup-foto-configuratore-pre-scala/
+/backup-foto-configuratore-alfa-rotta/
+
+# Media sorgente della pipeline, non serviti dal sito: video.mp4 è il footage
+# da cui è campionata la palette pop (vedi app/globals.css) e la fonte di
+# scripts/extract-pop-frames.mjs, frames/ ne è l'output intermedio.
+# Chi li rigenera parte dal footage originale, non da git.
+/public/video.mp4
+/public/frames/
+
+# Intro non montata: nessun componente la referenzia.
+/public/intro-delsigel-1080.mp4
+/public/intro-delsigel-1080.webm
+/public/intro-delsigel-poster.jpg
+/public/Pastries_as_luxury_objects_montage_202607272157.mp4
+
+# Claude Code: i permessi locali non si versionano — sono legati a questa
+# macchina e ai suoi percorsi.
+.claude/settings.local.json
+
+# Sorgenti della hero: i PNG da cui derivano i webp serviti da
+# public/hero/. Nessun import li tocca (il sito serve solo i derivati) e
+# sono ~4,5 MB che nella storia del repo non tornerebbero mai utili —
+# stessa regola del footage in public/.
+/assets/hero/
+
+# Frame sorgente 4K della moviescroller: nessun import lo tocca, i webp
+# serviti stanno in public/hero/sequence/. Stessa regola di /assets/hero/.
+/public/hero/hero-intriko-video-start-4k.png
+
+# Footage e stati di lavorazione della hero (master Kling ecc.): si
+# rigenerano dal footage originale, non da git.
+/tmp/
+
+# Script usa-e-getta di diagnosi: vivono solo il tempo di un'indagine.
+/scripts/tmp-*.mjs

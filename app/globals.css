@@ -1,0 +1,1860 @@
+@import "tailwindcss";
+
+/* Palette pop campionata dai pixel di public/video.mp4 (spec 22/07, addendum):
+   il footage è la fonte di verità, la UI si adatta.
+   Ruoli (redesign 23/07): panna e inchiostro sono la base della pagina;
+   fucsia è l'accento primario, mandarino marca la linea salata,
+   acido vive nella fascia marquee e nel sigillo duotone. */
+:root {
+  --inchiostro: #160601;
+  --fucsia: #eb186b;
+  --mandarino: #f76f0b;
+  --acido: #fbc50a;
+  --panna: #fff4e6;
+  --panna-dim: #ffd9be;
+  /* promossi dai colori-gusto del catalogo (frutti di bosco, pomodoro):
+     stessa famiglia campionata, usati come campiture nelle sub-page */
+  --viola: #a05cd5;
+  --rosso: #e8442e;
+  /* rebrand 2026 "Vortice Corallo": corallo per il vortice del logo,
+     cacao per il wordmark su superfici chiare */
+  --corallo: #ff6b4a;
+  --cacao: #2b1d16;
+  /* ritorno al marchio storico (20/08/2026): il bruno campionato dal
+     sigillo originale di delsigel.it — è il colore del logo sulle
+     superfici chiare, NON un nuovo neutro per la UI */
+  --bruno: #56340f;
+  /* Palco del configuratore (redesign 2026-08-04): la scena chiara di
+     «crea il tuo dolce». I due accenti sono parenti stretti di quelli
+     del marchio ma non coincidono — il corallo di scena è più freddo
+     del --corallo del logo, l'oro più dorato dell'--acido: sul crema
+     del palco comandano questi, il logo resta il logo. */
+  /* Catalogo editoriale (redesign 2026-08-04): l'unica campitura che il
+     sistema non aveva già. Le card chiare della griglia bento devono
+     staccarsi dal fondo pagina restando calde — panna È il fondo, e
+     panna-dim vira all'arancio. Tutto il resto del catalogo riusa i
+     colori del marchio: mandarino, fucsia, acido, cacao. */
+  /* Catalogo stampato (rev 2026-08-05): l'unica sezione della home che
+     esce dal panna. Blush per la colonna del testo — più rosato e più
+     freddo del panna, così lo stacco dalla griglia dolci si vede — e
+     tortora per il set su cui sono appoggiate le fotografie: è l'unico
+     fondo che non litiga con nessuna delle campiture pop degli scatti
+     (giallo, arancio, rosso, blu, verde, fucsia). */
+  --blush: #f7eae1;
+  --tortora: #d8c8bc;
+  --sabbia: #f0e6d9;
+  --crema: #fffaf3;
+  --carta: #fffdf9;
+  --linea: #efd9bd;
+  --corallo-scena: #ff4d43;
+  --oro: #f6c542;
+  /* Hero (refactor 2026-08-12): i tre valori campionati dallo scatto e dal
+     mockup. Non coincidono con i colori del sistema e non devono — arancio
+     e nero sono quelli della fotografia, la panna è più calda di --panna
+     perché deve stare SOPRA l'arancio senza virare al rosa. Vivono nella
+     hero e nella navigazione che le sta sopra, non altrove. */
+  --hero-arancio: #ff4f0a;
+  --hero-nero: #171512;
+  --hero-panna: #fff8ed;
+  --raggio-palco: 42px;
+  --raggio-tessera: 22px;
+}
+
+/* CSS estratto da Delsigel_V3 @ b89eca7 — solo i blocchi del configuratore.
+   Esclusi: porta d ingresso/preloader, hero, home, catalogo, contatti,
+   chi-siamo. Vedi docs/handoff-configuratore-standalone.md. */
+
+@theme inline {
+  --color-inchiostro: var(--inchiostro);
+  --color-fucsia: var(--fucsia);
+  --color-mandarino: var(--mandarino);
+  --color-acido: var(--acido);
+  --color-panna: var(--panna);
+  --color-panna-dim: var(--panna-dim);
+  --color-viola: var(--viola);
+  --color-rosso: var(--rosso);
+  --color-corallo: var(--corallo);
+  --color-cacao: var(--cacao);
+  --color-bruno: var(--bruno);
+  --color-blush: var(--blush);
+  --color-tortora: var(--tortora);
+  --color-sabbia: var(--sabbia);
+  --color-crema: var(--crema);
+  --color-carta: var(--carta);
+  --color-linea: var(--linea);
+  --color-corallo-scena: var(--corallo-scena);
+  --color-oro: var(--oro);
+  --color-hero-arancio: var(--hero-arancio);
+  --color-hero-nero: var(--hero-nero);
+  --color-hero-panna: var(--hero-panna);
+  --radius-palco: var(--raggio-palco);
+  --radius-tessera: var(--raggio-tessera);
+  --font-display: var(--font-archivo);
+  --font-sans: var(--font-archivo);
+  --font-mono: var(--font-space-mono);
+  /* le tre voci della sola sezione catalogo (vedi app/fonts.ts) */
+  --font-insegna: var(--font-spartan);
+  --font-testo: var(--font-tight);
+  --font-tecnico: var(--font-plex);
+  /* le due voci della sola sezione salati */
+  --font-insegna-salati: var(--font-anton);
+  --font-testo-salati: var(--font-dm-sans);
+  /* le due voci della sola hero (vedi app/fonts.ts) */
+  --font-hero: var(--font-archivo-black);
+  --font-ui: var(--font-inter);
+  /* Le stesse due famiglie, sotto un nome che non parla di salati.
+     La sub-page Contatti (redesign 2026-08-05) è un manifesto pop e
+     chiede un grottesco condensato che Archivo — esteso per vocazione —
+     non dà: è lo stesso problema del titolo «I NOSTRI SALATI», quindi
+     la stessa risposta. Nessun file in più da scaricare: Anton e DM Sans
+     sono già nel bundle, cambia solo l'alias con cui li si chiama. */
+  --font-pop: var(--font-anton);
+  --font-pop-testo: var(--font-dm-sans);
+}
+
+/* Voce display: Archivo esteso, nero, maiuscolo — l'insegna industriale.
+   Raggi: interattivi a pillola piena, contenuti a spigolo vivo. */
+@utility type-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-stretch: 125%;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+}
+
+/* Annotazione a mano: solo per le note-collage, mai per i titoli */
+@utility type-scritta {
+  font-family: var(--font-scritta), cursive;
+  font-weight: 700;
+}
+
+
+
+/* Etichetta tecnica mono: usata con parsimonia (max una ogni tre sezioni) */
+@utility type-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+}
+
+/* ---------------------------------------------------------------- */
+/* Configuratore: il palco                                           */
+/* ---------------------------------------------------------------- */
+
+/* Candy Playground: il configuratore non siede più sul fondo neutro
+   del sito, ma attraversa tre piccoli mondi cromatici. I colori sono
+   tutti mescolati dai token Delsigel: nessuna seconda palette parallela,
+   solo ruoli più teatrali per fucsia, viola, oro, mandarino e panna. */
+.configuratore-playground {
+  --candy-fondo: color-mix(in srgb, var(--oro) 80%, var(--panna));
+  --candy-macchia: color-mix(in srgb, var(--mandarino) 72%, var(--panna));
+  --candy-seconda: color-mix(in srgb, var(--fucsia) 52%, var(--panna));
+  min-height: 100svh;
+  background-color: var(--candy-fondo);
+  background-image:
+    radial-gradient(55% 44% at 12% 10%, color-mix(in srgb, var(--panna) 44%, transparent), transparent 72%),
+    radial-gradient(48% 36% at 92% 22%, color-mix(in srgb, var(--candy-seconda) 78%, transparent), transparent 74%),
+    linear-gradient(135deg, var(--candy-fondo), color-mix(in srgb, var(--candy-fondo) 74%, var(--panna)));
+  transition: background-color 0.5s ease;
+}
+
+.configuratore-playground[data-livello="2"] {
+  --candy-fondo: color-mix(in srgb, var(--fucsia) 46%, var(--panna));
+  --candy-macchia: color-mix(in srgb, var(--rosso) 72%, var(--panna));
+  --candy-seconda: color-mix(in srgb, var(--oro) 76%, var(--panna));
+}
+
+.configuratore-playground[data-livello="3"] {
+  --candy-fondo: color-mix(in srgb, var(--viola) 54%, var(--panna));
+  --candy-macchia: color-mix(in srgb, var(--fucsia) 62%, var(--panna));
+  --candy-seconda: color-mix(in srgb, var(--acido) 72%, var(--panna));
+}
+
+/* La griglia di puntini dà materia da poster senza pesare sul DOM. */
+.configuratore-playground::before {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  content: "";
+  opacity: 0.11;
+  background-image: radial-gradient(circle, var(--inchiostro) 1.25px, transparent 1.5px);
+  background-size: 18px 18px;
+  mask-image: linear-gradient(115deg, #000, transparent 44%, #000);
+}
+
+.candy-blob,
+.candy-anello,
+.candy-sticker,
+.candy-zigzag {
+  position: absolute;
+  display: block;
+}
+
+.candy-blob {
+  background: var(--candy-macchia);
+  border: 3px solid var(--inchiostro);
+  box-shadow: 8px 9px 0 var(--inchiostro);
+}
+.candy-blob--uno {
+  top: 8%;
+  left: -11rem;
+  width: clamp(18rem, 30vw, 34rem);
+  aspect-ratio: 1.22;
+  border-radius: 42% 58% 66% 34% / 48% 38% 62% 52%;
+  transform: rotate(-12deg);
+}
+.candy-blob--due {
+  right: -9rem;
+  bottom: 4%;
+  width: clamp(15rem, 25vw, 28rem);
+  aspect-ratio: 1;
+  border-radius: 62% 38% 45% 55% / 44% 58% 42% 56%;
+  background: var(--candy-seconda);
+  transform: rotate(18deg);
+}
+
+.candy-anello {
+  width: clamp(8rem, 12vw, 13rem);
+  aspect-ratio: 1;
+  border: clamp(20px, 2.3vw, 36px) solid var(--viola);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px var(--inchiostro), 0 0 0 3px var(--inchiostro);
+}
+.candy-anello--uno {
+  top: 3%;
+  right: 12%;
+  transform: rotate(12deg);
+}
+.candy-anello--due {
+  bottom: 9%;
+  left: 26%;
+  width: clamp(5.5rem, 8vw, 9rem);
+  border-color: var(--fucsia);
+}
+
+.candy-sticker {
+  z-index: 1;
+  border: 2px solid var(--inchiostro);
+  background: var(--panna);
+  box-shadow: 5px 6px 0 var(--inchiostro);
+  color: var(--inchiostro);
+  font-family: var(--font-pop), sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.7rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.candy-sticker--play {
+  top: 25%;
+  right: 1.5%;
+  padding: 0.55em 0.7em 0.45em;
+  border-radius: 49% 51% 42% 58% / 56% 44% 56% 44%;
+  transform: rotate(9deg);
+}
+.candy-sticker--pop {
+  bottom: 19%;
+  left: 2%;
+  padding: 0.55em 0.65em 0.45em;
+  border-radius: 4px;
+  background: var(--acido);
+  transform: rotate(-8deg);
+}
+
+.candy-zigzag {
+  top: 52%;
+  left: -1.5rem;
+  width: 10rem;
+  height: 2.1rem;
+  background: repeating-linear-gradient(135deg, var(--inchiostro) 0 8px, transparent 8px 16px);
+  clip-path: polygon(0 45%, 12% 0, 24% 45%, 36% 0, 48% 45%, 60% 0, 72% 45%, 84% 0, 100% 45%, 100% 100%, 0 100%);
+  transform: rotate(-6deg);
+}
+
+.candy-kicker {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  border: 2px solid var(--inchiostro);
+  border-radius: 999px;
+  background: var(--panna);
+  padding: 0.42rem 0.75rem 0.34rem;
+  box-shadow: 3px 4px 0 var(--inchiostro);
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.candy-kicker--level {
+  background: var(--acido);
+}
+
+/* Tre livelli leggibili come percorso, non come breadcrumb di un form. */
+.candy-livelli {
+  position: relative;
+}
+.candy-livelli::before {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  left: 5%;
+  z-index: -1;
+  height: 3px;
+  background: var(--inchiostro);
+  content: "";
+}
+.candy-livello {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--inchiostro);
+  background: color-mix(in srgb, var(--panna) 92%, transparent);
+  box-shadow: 3px 4px 0 var(--inchiostro);
+  color: var(--inchiostro);
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+.candy-livello[data-stato="attivo"] {
+  background: var(--inchiostro);
+  color: var(--panna);
+  box-shadow: 4px 5px 0 var(--fucsia);
+}
+.candy-livello[data-stato="completato"] {
+  background: var(--acido);
+}
+.candy-livello[data-stato="futuro"] {
+  border-style: dashed;
+  opacity: 0.72;
+  box-shadow: none;
+}
+button.candy-livello:is(:hover, :focus-visible) {
+  transform: translateY(-3px) rotate(-1deg);
+  box-shadow: 5px 6px 0 var(--inchiostro);
+}
+.candy-livello__numero {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+}
+.candy-livello__eyebrow,
+.candy-livello__nome {
+  display: block;
+}
+.candy-livello__eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  opacity: 0.58;
+  text-transform: uppercase;
+}
+.candy-livello__nome {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 0.25rem;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+.candy-livello__cambia {
+  position: absolute;
+  right: 7px;
+  bottom: 4px;
+  font-family: var(--font-mono), monospace;
+  font-size: 6.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: underline;
+  text-transform: uppercase;
+  opacity: 0.58;
+}
+
+/* Il redesign del 2026-08-04 ribalta la scena: il quadro inchiostro
+   lascia il posto a un PALCO chiaro — crema, raggi larghi, profilo
+   nero e ombra pop gialla — su cui il dolce si compone (l'alzata
+   disegnata che lo reggeva è uscita di scena il 2026-08-20: resta
+   l'ombra a terra a fare da piano). Non è una card di dashboard: è
+   una vetrina, e la differenza la fanno la cornice tratteggiata, i
+   decori disegnati e il fatto che il bersaglio del rilascio sia
+   grande quanto la scena (il palco intero, non un cerchio disegnato
+   in mezzo).
+
+   Tutti gli stati vivono su due data-attribute del palco:
+   `data-sopra` (una tessera trascinata è sopra la scena) e
+   `data-fase` (vuota / base / comb). Una sola classe governa così
+   cornice e alone, senza propagare props fino alle foglie e senza far
+   ridisegnare la griglia durante il drag. */
+
+/* L'ombra pop: un rettangolo pieno spostato in basso a destra col suo
+   profilo nero, non una sfumatura. Il secondo box-shadow è lo stesso
+   rettangolo allargato di 2px in inchiostro: sta dietro al giallo e
+   ne disegna il bordo, seguendo da solo i raggi dell'elemento. */
+@utility ombra-pop {
+  box-shadow:
+    10px 12px 0 0 var(--oro),
+    10px 12px 0 2px var(--inchiostro);
+}
+
+/* Variante per pulsanti e tessere: giallo pieno, senza profilo — a
+   quella misura il doppio bordo si impasta. */
+@utility ombra-pop-piccola {
+  box-shadow: 5px 6px 0 0 var(--oro);
+}
+
+/* Tratto disegnato a mano: vale per tutte le decorazioni SVG della
+   scena (frecce, asterischi, scintille, ghirigori). */
+@utility mano-libera {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.palco {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--raggio-palco);
+  border: 3px solid var(--inchiostro);
+  /* Il tray viola è il tavolo da gioco: abbastanza scuro da isolare
+     prodotti e istruzioni, ma con due aloni che ne evitano l'effetto
+     pannello uniforme. */
+  background:
+    radial-gradient(
+      64% 50% at 50% 45%,
+      color-mix(in srgb, var(--viola) 78%, var(--panna)) 0%,
+      transparent 72%
+    ),
+    radial-gradient(42% 34% at 16% 16%, color-mix(in srgb, var(--fucsia) 58%, transparent), transparent 78%),
+    linear-gradient(145deg, color-mix(in srgb, var(--viola) 88%, var(--fucsia)), color-mix(in srgb, var(--viola) 64%, var(--inchiostro)));
+  box-shadow:
+    11px 13px 0 0 var(--fucsia),
+    11px 13px 0 3px var(--inchiostro);
+}
+
+/* la cornice interna tratteggiata: corallo, tenue a riposo, piena e
+   accesa quando una tessera sorvola la scena */
+.palco-cornice {
+  position: absolute;
+  inset: 14px;
+  border: 2px dashed color-mix(in srgb, var(--panna) 72%, transparent);
+  border-radius: calc(var(--raggio-palco) - 14px);
+  opacity: 0.45;
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease-out,
+    inset 0.28s ease-out;
+}
+.palco[data-sopra="true"] .palco-cornice {
+  opacity: 1;
+  inset: 10px;
+  border-color: var(--acido);
+}
+
+/* Il cerchio tratteggiato del rilascio (classi `bersaglio` e
+   `bersaglio-tratto`) è uscito di scena il 2026-08-19 insieme alla
+   scritta: sopra il piano resta la sola freccia, e a dire che la
+   tessera è arrivata bastano la cornice e l'ombra a terra. */
+
+/* L'ombra a terra del dolce: da quando l'alzata è uscita di scena
+   (2026-08-20) il piano lo dice questa macchia morbida, presente
+   anche a palco vuoto dove segna il punto d'atterraggio. Quando una
+   tessera sorvola cresce e si fa più tenue — l'ombra di qualcosa
+   che si solleva per fare posto. */
+.palco-ombra {
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgb(22 6 1 / 0.48) 0%,
+    rgb(22 6 1 / 0.18) 58%,
+    rgb(22 6 1 / 0) 100%
+  );
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.32s ease-out;
+}
+.palco[data-sopra="true"] .palco-ombra {
+  transform: scale(1.16);
+  opacity: 0.8;
+}
+
+/* L'invito sopra la freccia parla la lingua del dispositivo: dove c'è
+   un puntatore il gesto principale è il trascinamento, dove c'è un
+   dito è il tocco. Due copy scritte entrambe nel markup, una sola
+   visibile: la sceglie la media query e non il JS, perché al primo
+   render il server non sa chi sta leggendo — e un invito che cambia
+   dopo l'idratazione si vede. */
+.invito-touch {
+  display: none;
+}
+@media (hover: none) {
+  .invito-mouse {
+    display: none;
+  }
+  .invito-touch {
+    display: revert;
+  }
+}
+
+/* Le scintille che compaiono solo durante il sorvolo: a riposo non
+   esistono, e non c'è nulla che si muova da solo sulla scena. */
+.scintilla-drag {
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 0.24s ease-out,
+    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.palco[data-sopra="true"] .scintilla-drag {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.mascotte-candy {
+  filter: drop-shadow(4px 5px 0 var(--inchiostro));
+  transform-origin: 50% 70%;
+  transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.mascotte-candy[data-umore="curioso"] {
+  transform: rotate(7deg);
+}
+.mascotte-candy[data-umore="wow"] {
+  transform: rotate(-8deg) scale(1.13);
+}
+.mascotte-candy[data-umore="festa"] {
+  animation: mascotte-festa 1.4s ease-in-out 2;
+}
+@keyframes mascotte-festa {
+  0%,
+  100% {
+    transform: rotate(0) scale(1);
+  }
+  35% {
+    transform: rotate(-9deg) scale(1.1);
+  }
+  70% {
+    transform: rotate(7deg) scale(1.05);
+  }
+}
+
+.candy-drop-badge {
+  border: 2px solid var(--inchiostro);
+  border-radius: 999px;
+  background: var(--acido);
+  padding: 0.55rem 1rem 0.42rem;
+  box-shadow: 5px 6px 0 var(--inchiostro);
+  color: var(--inchiostro);
+  font-family: var(--font-pop), sans-serif;
+  font-size: clamp(1.1rem, 2vw, 1.7rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.candy-tray-task {
+  color: color-mix(in srgb, var(--panna) 78%, transparent);
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(8px, 1vw, 10px);
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+/* La tessera prodotto: fondo carta, filo beige, angoli larghi. Il
+   sollevamento e l'ombra gialla arrivano all'hover E al focus da
+   tastiera, alla pari. La selezione è dichiarata da aria-pressed e
+   segnata dal profilo corallo — mai dal solo colore: sotto il nome
+   compare anche il pallino pieno. */
+.tessera {
+  --tessera-tilt: 0deg;
+  border-radius: var(--raggio-tessera);
+  border: 2px solid var(--inchiostro);
+  background: var(--carta);
+  box-shadow: 4px 5px 0 var(--inchiostro);
+  transform: rotate(var(--tessera-tilt));
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.24s ease-out,
+    border-color 0.24s ease-out,
+    opacity 0.2s ease-out;
+}
+.tessera:is(:hover, :focus-visible) {
+  transform: translateY(-7px) rotate(0deg);
+  border-color: var(--inchiostro);
+  box-shadow: 7px 9px 0 var(--tessera-accento, var(--oro)), 7px 9px 0 2px var(--inchiostro);
+}
+.tessera[aria-pressed="true"] {
+  border-color: var(--corallo-scena);
+  box-shadow: 0 0 0 1px var(--corallo-scena);
+}
+.tessera[aria-pressed="true"]:is(:hover, :focus-visible) {
+  border-color: var(--inchiostro);
+  box-shadow: 7px 9px 0 var(--tessera-accento, var(--oro)), 7px 9px 0 2px var(--inchiostro);
+}
+
+.candy-inventory > li:nth-child(4n + 1) .tessera {
+  --tessera-tilt: -1.35deg;
+  --tessera-accento: var(--oro);
+}
+.candy-inventory > li:nth-child(4n + 2) .tessera {
+  --tessera-tilt: 1.15deg;
+  --tessera-accento: color-mix(in srgb, var(--fucsia) 62%, var(--panna));
+}
+.candy-inventory > li:nth-child(4n + 3) .tessera {
+  --tessera-tilt: -0.65deg;
+  --tessera-accento: color-mix(in srgb, var(--viola) 66%, var(--panna));
+}
+.candy-inventory > li:nth-child(4n) .tessera {
+  --tessera-tilt: 1.55deg;
+  --tessera-accento: color-mix(in srgb, var(--mandarino) 66%, var(--panna));
+}
+
+.tessera::before {
+  position: absolute;
+  top: 12%;
+  left: 10%;
+  width: 44%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--tessera-accento, var(--oro)) 42%, var(--panna));
+  content: "";
+}
+.tessera-invito {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  z-index: 3;
+  border: 1.5px solid var(--inchiostro);
+  border-radius: 999px;
+  background: var(--tessera-accento, var(--oro));
+  padding: 0.28rem 0.42rem 0.2rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 6.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  opacity: 0;
+  text-transform: uppercase;
+  transform: rotate(4deg) scale(0.8);
+  transition:
+    opacity 0.18s ease,
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.tessera:is(:hover, :focus-visible) .tessera-invito,
+.tessera[data-vola="true"] .tessera-invito {
+  opacity: 1;
+  transform: rotate(4deg) scale(1);
+}
+.tessera-nome {
+  position: relative;
+  z-index: 2;
+  min-height: 2.35rem;
+}
+/* Mentre il prodotto è in volo la tessera resta al suo posto e si
+   svuota: casella tratteggiata, nome sbiadito. L'opacità NON va sulla
+   tessera intera — spegnerebbe anche il prodotto che sta volando, che
+   è suo figlio e deve restare pieno. */
+.tessera[data-vola="true"] {
+  border-style: dashed;
+  border-color: var(--linea);
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+.tessera[data-vola="true"] .tessera-nome {
+  opacity: 0.3;
+}
+
+/* Niente hover da sostenere sul touch, e niente movimento per chi ha
+   chiesto di non averne: restano colore, profilo e pallino. */
+@media (hover: none) {
+  .tessera:hover {
+    transform: rotate(var(--tessera-tilt));
+    border-color: var(--inchiostro);
+    box-shadow: 4px 5px 0 var(--inchiostro);
+  }
+  .tessera-invito {
+    display: none;
+  }
+}
+
+@media (max-width: 63.99rem) {
+  .candy-sticker--play,
+  .candy-zigzag {
+    display: none;
+  }
+  .candy-blob--uno {
+    top: 3%;
+    left: -14rem;
+  }
+  .candy-anello--uno {
+    top: 11%;
+    right: -4rem;
+  }
+}
+
+@media (max-width: 39.99rem) {
+  .configuratore-playground::before {
+    opacity: 0.07;
+  }
+  .candy-sticker--pop,
+  .candy-anello--due {
+    display: none;
+  }
+  .candy-livello {
+    min-height: 4.7rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    padding-inline: 0.25rem;
+    text-align: center;
+  }
+  .candy-livello__numero {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  .candy-livello__eyebrow,
+  .candy-livello__nome {
+    text-align: center;
+  }
+  .candy-livello__nome {
+    max-width: 10ch;
+  }
+  .candy-livello__cambia {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palco-cornice,
+  .palco-ombra,
+  .mascotte-candy,
+  .scintilla-drag,
+  .tessera,
+  .tessera-invito,
+  .candy-livello {
+    transition-duration: 0.01ms;
+  }
+  .tessera:is(:hover, :focus-visible) {
+    transform: none;
+  }
+  .palco[data-sopra="true"] .palco-ombra {
+    transform: none;
+    opacity: 0.8;
+  }
+  .scintilla-drag {
+    transform: none;
+  }
+  .mascotte-candy[data-umore="festa"] {
+    animation: none;
+  }
+  button.candy-livello:is(:hover, :focus-visible) {
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Configuratore 2026-08-21 — direzione candy cream                  */
+/* ---------------------------------------------------------------- */
+
+/* Il configuratore è una tavola illustrata a viewport: il fondo resta
+   panna e sono gli oggetti ai bordi, non una campitura piena, a dare
+   colore. Le varianti di passo cambiano i contenuti ma non il set. */
+.configuratore-playground,
+.configuratore-playground[data-livello="2"],
+.configuratore-playground[data-livello="3"] {
+  --config-purple: #7134d1;
+  --config-purple-deep: #4d1ba7;
+  --config-pink: #f43f83;
+  --config-pink-deep: #db2468;
+  --config-cream: #fff2e2;
+  --config-card: rgb(255 253 248 / 0.94);
+  min-height: 100svh;
+  padding: 4.75rem 0 2rem;
+  background:
+    radial-gradient(circle at 48% 48%, rgb(255 255 255 / 0.72), transparent 46%),
+    linear-gradient(115deg, #fff0dc, #fff8ed 50%, #ffeddf);
+  color: #120d13;
+}
+
+.configuratore-playground::before {
+  z-index: -1;
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mask-image: none;
+}
+
+.configurator-frame {
+  width: min(100%, 100rem);
+  padding-inline: clamp(1.5rem, 2.6vw, 2.65rem);
+}
+
+/* L'ingresso Motion dell'header globale può essere interrotto dal cambio
+   di route client-side. In questa tavola la navigazione è parte della
+   composizione e deve essere presente dal primo frame. */
+.configuratore-page > header {
+  padding-top: 0.8rem;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.configurator-shell {
+  display: grid;
+  grid-template-columns: 18.75rem minmax(33.75rem, 40rem) minmax(26.25rem, 29.5rem);
+  grid-template-rows: 7rem auto 4.75rem;
+  column-gap: clamp(1.25rem, 1.75vw, 1.8rem);
+  row-gap: 1.25rem;
+  align-items: start;
+  justify-content: center;
+}
+
+.configurator-intro {
+  grid-column: 1;
+  grid-row: 1 / 4;
+}
+
+.configurator-progress {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  transform: translateX(3.25rem);
+}
+
+.configurator-stage {
+  grid-column: 2;
+  grid-row: 2;
+  max-width: 40rem;
+}
+
+.configurator-shell > .relative.min-w-0 {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  padding-top: 2.25rem;
+  margin-left: 1.2rem;
+}
+
+/* Marchio-sticker della reference. È costruito in vettoriale/CSS per
+   restare netto a qualunque densità senza aggiungere un raster. */
+.config-play-logo {
+  position: relative;
+  display: block;
+  width: 13.8rem;
+  height: 8.4rem;
+  margin-top: -2.1rem;
+  margin-left: -1.25rem;
+  transform: rotate(-3deg);
+}
+
+.config-play-logo svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 6px 4px rgb(82 38 18 / 0.16));
+}
+
+.config-play-logo__burst {
+  fill: white;
+  stroke: white;
+  stroke-width: 9px;
+  stroke-linejoin: round;
+}
+
+.config-play-logo__crown {
+  fill: #ffc928;
+  stroke: #0e0c0d;
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+
+.config-play-logo > span {
+  position: absolute;
+  top: 3.45rem;
+  left: 1.15rem;
+  z-index: 2;
+  border: 5px solid #0e0c0d;
+  border-radius: 0.7rem;
+  background: white;
+  padding: 0.18rem 0.62rem 0.05rem;
+  box-shadow: 0 4px 0 #0e0c0d;
+  font-family: var(--font-archivo-black), "Arial Black", sans-serif;
+  font-size: 1.65rem;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.config-play-logo > i {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 1.4rem;
+  z-index: 3;
+  width: 1.7rem;
+  height: 0.65rem;
+  border-bottom: 5px solid #0e0c0d;
+  border-radius: 50%;
+  transform: rotate(13deg);
+}
+
+.configurator-title {
+  position: relative;
+  margin-top: 4.75rem;
+  margin-left: 1.45rem;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: clamp(4.35rem, 4.9vw, 5.25rem);
+  font-weight: 800;
+  line-height: 0.87;
+  letter-spacing: -0.035em;
+}
+
+.configurator-title::before,
+.configurator-title::after {
+  position: absolute;
+  width: 1.4rem;
+  height: 1rem;
+  border-top: 4px solid var(--config-pink);
+  content: "";
+}
+
+.configurator-title::before {
+  top: 1.1rem;
+  left: 0;
+  transform: rotate(62deg);
+}
+
+.configurator-title::after {
+  top: 1.4rem;
+  right: -0.4rem;
+  transform: rotate(-58deg);
+}
+
+.configurator-title > span > span {
+  color: var(--config-pink-deep);
+}
+
+.configurator-intro-copy {
+  margin-top: 2.4rem;
+  margin-left: 1.45rem;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 520;
+  line-height: 1.55;
+}
+
+.configurator-play-burst {
+  display: grid;
+  width: 6.6rem;
+  height: 6.6rem;
+  margin-top: 2.1rem;
+  margin-left: 1.45rem;
+  place-content: center;
+  background: #0b0b12;
+  clip-path: polygon(50% 0, 59% 14%, 72% 5%, 77% 22%, 94% 18%, 88% 35%, 100% 43%, 84% 52%, 96% 65%, 77% 68%, 78% 87%, 61% 80%, 50% 100%, 40% 81%, 21% 91%, 23% 70%, 3% 66%, 17% 51%, 0 39%, 17% 32%, 10% 14%, 31% 20%);
+  color: white;
+  font-family: var(--font-archivo-black), "Arial Black", sans-serif;
+  font-size: 1rem;
+  line-height: 0.95;
+  text-align: center;
+  transform: rotate(-7deg);
+  filter: drop-shadow(0 6px 8px rgb(92 42 36 / 0.2));
+}
+
+.configurator-play-burst span,
+.configurator-play-burst strong {
+  display: block;
+}
+
+.configurator-play-burst strong {
+  margin-top: 0.2rem;
+  color: var(--config-pink);
+  font-size: 1.28rem;
+}
+
+.configurator-how-button {
+  min-height: 3.35rem;
+  margin-top: 2.35rem;
+  margin-left: 1.45rem;
+  gap: 1rem;
+  border: 2px solid #111014;
+  background: #ffd22e;
+  padding: 0.45rem 0.45rem 0.45rem 1.55rem;
+  box-shadow: 0 6px 0 #111014;
+  color: #111014;
+}
+
+.configurator-how-button > span {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.035em;
+}
+
+/* Fondale organico: masse morbide, luce interna e pochi confetti. */
+.candy-blob {
+  position: absolute;
+  display: block;
+  border: 0;
+  box-shadow:
+    inset 0 9px 20px rgb(255 255 255 / 0.46),
+    inset 0 -12px 18px rgb(103 19 87 / 0.08),
+    0 14px 26px rgb(142 51 76 / 0.12);
+}
+
+.candy-blob--giallo {
+  top: -14rem;
+  left: -8rem;
+  width: 20rem;
+  height: 27rem;
+  border-radius: 43% 57% 59% 41% / 54% 36% 64% 46%;
+  background: linear-gradient(135deg, #ffd631, #ffb513);
+  transform: rotate(7deg);
+}
+
+.candy-blob--rosa-alto {
+  top: -15rem;
+  right: -6rem;
+  width: 22rem;
+  height: 28rem;
+  border-radius: 52% 48% 42% 58% / 49% 42% 58% 51%;
+  background: linear-gradient(145deg, #ff4b8b, #f52f76);
+  transform: rotate(-13deg);
+}
+
+.candy-blob--arancio {
+  bottom: -11rem;
+  left: -5rem;
+  width: 29rem;
+  height: 18rem;
+  border-radius: 45% 55% 61% 39% / 48% 40% 60% 52%;
+  background: linear-gradient(140deg, #ffcb28, #ff9c18);
+  transform: rotate(8deg);
+}
+
+.candy-blob--rosa-basso {
+  bottom: -13rem;
+  left: 17rem;
+  width: 58rem;
+  height: 20rem;
+  border-radius: 56% 44% 41% 59% / 48% 38% 62% 52%;
+  background: linear-gradient(170deg, #ff8aaf, #ff5e97);
+  transform: rotate(-2deg);
+}
+
+.candy-blob--viola {
+  right: -7rem;
+  bottom: -12rem;
+  width: 28rem;
+  height: 25rem;
+  border-radius: 61% 39% 51% 49% / 42% 59% 41% 58%;
+  background: linear-gradient(145deg, #7b43ea, #4d22bc);
+  transform: rotate(19deg);
+}
+
+.candy-caramella {
+  position: absolute;
+  display: block;
+  width: 1.8rem;
+  height: 0.72rem;
+  border: 1px solid rgb(89 40 80 / 0.14);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgb(255 255 255 / 0.48), transparent 42%), var(--pezzo, #f43f83);
+  box-shadow: 0 4px 5px rgb(69 31 61 / 0.2);
+}
+
+.candy-caramella--1 { top: 5.5rem; left: 23%; --pezzo: #7741df; transform: rotate(38deg); }
+.candy-caramella--2 { top: 2.8rem; right: 27%; --pezzo: #f83b84; transform: rotate(-17deg); }
+.candy-caramella--3 { top: 18rem; left: 22%; --pezzo: #ffaf18; transform: rotate(38deg); }
+.candy-caramella--4 { top: 38rem; right: 12%; --pezzo: #ffbd19; transform: rotate(30deg); }
+.candy-caramella--5 { bottom: 5rem; left: 44%; --pezzo: #6430cf; transform: rotate(-46deg); }
+
+.candy-pallina {
+  position: absolute;
+  display: block;
+  width: 1.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 25%, #fff 0 7%, transparent 9%), var(--pallina, #ed3e65);
+  box-shadow: inset -4px -5px 5px rgb(70 8 43 / 0.18), 0 5px 7px rgb(73 23 44 / 0.2);
+}
+
+.candy-pallina--1 { top: 5.5rem; left: 22%; --pallina: #ef405d; }
+.candy-pallina--2 { top: 14.2rem; left: 23%; --pallina: #24aa75; width: 1.15rem; }
+.candy-pallina--3 { top: 4.6rem; right: 16%; --pallina: #ef3c4d; width: 1.35rem; }
+.candy-pallina--4 { bottom: 8rem; right: 19%; --pallina: #2bbf8a; width: 1.1rem; }
+
+/* Rail dei tre step: tre gettoni, collegati da un tratto puntinato. */
+.candy-livelli {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 30rem);
+  margin-inline: auto;
+  gap: 4rem;
+}
+
+.candy-livelli::before {
+  top: 50%;
+  right: 12%;
+  left: 12%;
+  z-index: -1;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--config-purple) 0 5px, transparent 5px 10px);
+}
+
+.candy-livelli > li {
+  display: grid;
+  place-items: center;
+}
+
+.candy-livello {
+  width: 5.25rem;
+  height: 5.25rem;
+  overflow: visible;
+  border: 2px solid #bd7b3d;
+  border-radius: 48% 52% 46% 54% / 52% 48% 55% 45%;
+  background: #fff5e7;
+  box-shadow: 0 4px 9px rgb(105 57 22 / 0.08);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.candy-livello::after {
+  position: absolute;
+  right: 17%;
+  bottom: -0.38rem;
+  left: 17%;
+  height: 0.55rem;
+  border-bottom: 3px solid currentColor;
+  border-radius: 50%;
+  content: "";
+  opacity: 0.55;
+}
+
+.candy-livello[data-stato="attivo"] {
+  border: 0;
+  background: linear-gradient(145deg, #8346dc, #5c25bd);
+  box-shadow: 0 0 0 4px #fff3e3, 0 0 0 6px #8a5ed0, 0 8px 16px rgb(92 36 180 / 0.22);
+  color: white;
+}
+
+.candy-livello[data-stato="completato"] {
+  border-color: var(--config-purple);
+  background: #fff5e7;
+  color: var(--config-purple-deep);
+}
+
+.candy-livello[data-stato="futuro"] {
+  border-style: solid;
+  opacity: 1;
+  box-shadow: 0 4px 9px rgb(105 57 22 / 0.08);
+}
+
+button.candy-livello:is(:hover, :focus-visible) {
+  transform: translateY(-3px) rotate(-2deg);
+  box-shadow: 0 8px 16px rgb(92 36 180 / 0.18);
+}
+
+.candy-livello__numero {
+  display: grid;
+  width: auto;
+  height: auto;
+  border: 0;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 1.45rem;
+  font-weight: 900;
+  line-height: 0.95;
+}
+
+.candy-livello__nome {
+  display: block;
+  max-width: 11ch;
+  overflow: visible;
+  min-height: 0;
+  margin-top: 0.25rem;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+}
+
+.candy-livello__cambia {
+  right: auto;
+  bottom: -1.35rem;
+  font-size: 0.48rem;
+  color: var(--config-pink-deep);
+  opacity: 0.8;
+}
+
+/* Vassoio 3D: guscio viola, piano crema e cucitura tratteggiata. */
+.palco {
+  aspect-ratio: 1.16;
+  min-height: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 4.25rem;
+  background:
+    radial-gradient(circle at 50% 2%, rgb(255 255 255 / 0.33), transparent 25%),
+    radial-gradient(circle at 85% 18%, #9349ef, transparent 28%),
+    linear-gradient(145deg, #8a4ce3, #6d31d0 58%, #5720b0);
+  box-shadow:
+    inset 0 4px 0 rgb(255 255 255 / 0.44),
+    inset 0 -10px 0 rgb(54 13 136 / 0.34),
+    0 13px 0 var(--config-purple-deep),
+    0 22px 30px rgb(103 32 134 / 0.24);
+}
+
+.palco::before {
+  position: absolute;
+  inset: 3rem 2.25rem 2.25rem;
+  z-index: 0;
+  border: 3px solid rgb(96 45 157 / 0.16);
+  border-radius: 3rem;
+  background:
+    radial-gradient(circle at 50% 37%, rgb(255 255 255 / 0.7), transparent 55%),
+    #fff1e3;
+  box-shadow:
+    inset 0 8px 18px rgb(96 42 164 / 0.1),
+    0 4px 7px rgb(50 11 106 / 0.18);
+  content: "";
+}
+
+.palco::after {
+  position: absolute;
+  top: 0.8rem;
+  right: 12%;
+  left: 12%;
+  height: 0.38rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.22);
+  content: "";
+}
+
+.palco-cornice {
+  inset: 4.25rem 3.25rem 3.45rem;
+  z-index: 1;
+  border: 3px dashed #9a63dc;
+  border-radius: 2.35rem;
+  opacity: 0.92;
+}
+
+.palco[data-sopra="true"] .palco-cornice {
+  inset: 4rem 3rem 3.2rem;
+  border-color: var(--config-pink);
+  opacity: 1;
+}
+
+.candy-ribbon {
+  position: absolute;
+  top: 0.55rem;
+  left: -1.2rem;
+  z-index: 8;
+  display: grid;
+  width: 11.5rem;
+  height: 3.2rem;
+  place-items: center;
+  background: linear-gradient(135deg, #ff5b99, #e8266d);
+  clip-path: polygon(0 0, 100% 0, 86% 50%, 100% 100%, 0 100%, 10% 50%);
+  color: white;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  transform: rotate(-14deg);
+  filter: drop-shadow(0 7px 5px rgb(99 14 64 / 0.22));
+}
+
+.mascotte-candy {
+  z-index: 9;
+  filter: drop-shadow(0 7px 7px rgb(87 22 75 / 0.22));
+}
+
+.palco-amico {
+  position: absolute;
+  bottom: -1.25rem;
+  left: -1.8rem;
+  z-index: 9;
+  width: 6.4rem;
+  height: 5.2rem;
+  border: 3px solid #4d24a5;
+  border-radius: 48% 52% 45% 55% / 56% 42% 58% 44%;
+  background: radial-gradient(circle at 35% 25%, #a981f2, #6e37d2 70%);
+  box-shadow: 0 7px 0 rgb(58 21 139 / 0.28);
+  transform: rotate(-5deg);
+}
+
+.palco-amico i {
+  position: absolute;
+  top: 1.65rem;
+  width: 0.58rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: white;
+}
+
+.palco-amico i:first-child { left: 2rem; }
+.palco-amico i:nth-child(2) { right: 2rem; }
+
+.palco-amico b {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  width: 1.55rem;
+  height: 0.8rem;
+  border-bottom: 4px solid #ff91bd;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.palco-lecca {
+  position: absolute;
+  right: 1.1rem;
+  bottom: -0.75rem;
+  z-index: 8;
+  width: 4.6rem;
+  aspect-ratio: 1;
+  border: 4px solid #e93e79;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle at center, #fff0db 0 0.42rem, #ff6f9f 0.45rem 0.85rem);
+  box-shadow: 0 6px 0 #a92663, 0 10px 15px rgb(100 27 78 / 0.18);
+  transform: rotate(-10deg);
+}
+
+.palco-invito,
+.palco-ombra,
+.palco > [style] {
+  z-index: 3;
+}
+
+.drop-copy {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+
+.drop-copy .invito-mouse,
+.drop-copy .invito-touch {
+  flex-direction: column;
+}
+
+.drop-copy strong {
+  display: block;
+  margin-top: 0.12rem;
+  font-size: 1.35em;
+  font-weight: 950;
+}
+
+.palco-ombra {
+  background: radial-gradient(50% 50% at 50% 50%, rgb(74 39 31 / 0.38), rgb(74 39 31 / 0.12) 60%, transparent 100%);
+}
+
+.candy-tray-task {
+  z-index: 3;
+  color: var(--config-purple);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+/* Titolo-fumetto e inventario fotografico. */
+.configurator-selector-title {
+  position: relative;
+  z-index: 3;
+  border: 3px solid #101014;
+  border-radius: 1rem;
+  background: rgb(255 252 245 / 0.93);
+  padding: 0.72rem 1.2rem 0.58rem;
+  box-shadow: 0 5px 0 #101014;
+  font-size: clamp(1.25rem, 1.75vw, 1.65rem);
+  transform: rotate(-1.6deg);
+}
+
+.configurator-selector-title::after {
+  position: absolute;
+  right: 22%;
+  bottom: -0.75rem;
+  width: 1.35rem;
+  height: 1rem;
+  border-right: 3px solid #101014;
+  border-bottom: 3px solid #101014;
+  background: #fffaf0;
+  content: "";
+  clip-path: polygon(0 0, 100% 0, 80% 100%);
+  transform: rotate(18deg);
+}
+
+.configurator-inventory {
+  margin-top: 2.15rem;
+}
+
+.candy-inventory {
+  gap: 0.68rem;
+}
+
+.tessera {
+  --tessera-tilt: 0deg;
+  height: 9.35rem;
+  overflow: visible;
+  border: 1px solid rgb(103 64 27 / 0.08);
+  border-radius: 1rem;
+  background: var(--config-card);
+  padding: 0.32rem 0.45rem 0.4rem;
+  box-shadow: 0 8px 18px rgb(119 73 41 / 0.14);
+  transform: none;
+}
+
+.tessera::before {
+  display: none;
+}
+
+.candy-inventory > li:nth-child(n) .tessera {
+  --tessera-tilt: 0deg;
+  --tessera-accento: var(--config-purple);
+}
+
+.tessera:is(:hover, :focus-visible) {
+  border-color: rgb(113 52 209 / 0.35);
+  box-shadow: 0 10px 21px rgb(92 36 180 / 0.22), 0 0 0 2px rgb(255 255 255 / 0.72);
+  transform: translateY(-4px) scale(1.015);
+}
+
+.tessera-quadro {
+  height: 6.9rem;
+}
+
+.tessera-quadro img {
+  padding: 0.18rem;
+  filter: drop-shadow(0 7px 6px rgb(80 39 20 / 0.18));
+}
+
+.tessera-nome {
+  min-height: 1.45rem;
+  margin-top: 0.18rem;
+}
+
+.tessera-nome > span:first-child {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 0.72rem;
+}
+
+.tessera-invito {
+  top: -1rem;
+  right: auto;
+  left: -0.45rem;
+  border: 2px solid #111014;
+  background: #ffd22e;
+  padding: 0.35rem 0.65rem 0.28rem;
+  box-shadow: 0 3px 0 #111014;
+  font-size: 0.52rem;
+  opacity: 0;
+  transform: rotate(-7deg) scale(0.86);
+}
+
+.candy-inventory > li:first-child .tessera-invito,
+.tessera:is(:hover, :focus-visible) .tessera-invito,
+.tessera[data-vola="true"] .tessera-invito {
+  opacity: 1;
+  transform: rotate(-7deg) scale(1);
+}
+
+/* Barra di salvataggio: elemento basso e orizzontale come nel mockup. */
+.configurator-savebar {
+  position: relative;
+  grid-column: 2 / 4;
+  grid-row: 3;
+  align-self: start;
+  display: grid;
+  width: min(100%, 45.75rem);
+  min-height: 4.75rem;
+  grid-template-columns: 1fr auto minmax(15rem, 17rem);
+  align-items: center;
+  gap: 1rem;
+  border: 2px solid rgb(244 63 131 / 0.52);
+  border-radius: 1.25rem;
+  background: rgb(255 246 237 / 0.94);
+  padding: 0.7rem 0.75rem 0.7rem 1.8rem;
+  box-shadow: 0 8px 22px rgb(132 53 93 / 0.12);
+  transform: translateY(0.5rem);
+}
+
+.configurator-savebar strong,
+.configurator-savebar > div > span {
+  display: block;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+.configurator-savebar strong {
+  color: var(--config-pink);
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.configurator-savebar > div > span {
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
+}
+
+.configurator-savebar__heart {
+  color: var(--config-pink);
+  font-size: 1.6rem;
+  transform: rotate(-8deg);
+}
+
+.configurator-savebar button {
+  display: flex;
+  min-height: 3.2rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  border: 2px solid #171019;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8349e7, #6526ca);
+  padding: 0.45rem 0.55rem 0.45rem 1.4rem;
+  box-shadow: 0 5px 0 #171019;
+  color: white;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.configurator-savebar button:hover,
+.configurator-savebar button:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 #171019;
+}
+
+.configurator-savebar button:focus-visible {
+  outline: 3px solid var(--config-pink);
+  outline-offset: 3px;
+}
+
+.configurator-savebar button > span {
+  display: grid;
+  width: 2.25rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: white;
+  color: var(--config-purple);
+  font-size: 1.15rem;
+}
+
+.configurator-savebar__smile {
+  position: absolute;
+  top: 50%;
+  right: -6.3rem;
+  display: block;
+  width: 4.7rem;
+  aspect-ratio: 1;
+  border: 3px solid #151016;
+  border-radius: 50%;
+  background: #ffd335;
+  box-shadow: 0 6px 0 rgb(21 16 22 / 0.18);
+  transform: translateY(-50%) rotate(5deg);
+}
+
+.configurator-savebar__smile i {
+  position: absolute;
+  top: 1.35rem;
+  width: 0.38rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: #151016;
+}
+
+.configurator-savebar__smile i:first-child { left: 1.35rem; }
+.configurator-savebar__smile i:nth-child(2) { right: 1.35rem; }
+
+.configurator-savebar__smile b {
+  position: absolute;
+  right: 1.2rem;
+  bottom: 1rem;
+  left: 1.2rem;
+  height: 1.05rem;
+  border-bottom: 4px solid #151016;
+  border-radius: 50%;
+}
+
+@media (max-width: 91rem) and (min-width: 80rem) {
+  .configurator-shell {
+    grid-template-columns: 17rem minmax(31rem, 37rem) minmax(24rem, 27rem);
+    column-gap: 1.25rem;
+  }
+
+  .configurator-title {
+    font-size: 4.2rem;
+  }
+
+  .candy-livelli {
+    gap: 3.5rem;
+  }
+
+  .tessera {
+    height: 8.75rem;
+  }
+
+  .tessera-quadro {
+    height: 6.3rem;
+  }
+}
+
+@media (max-width: 79.99rem) {
+  .configuratore-playground,
+  .configuratore-playground[data-livello="2"],
+  .configuratore-playground[data-livello="3"] {
+    min-height: auto;
+    padding-block: 7rem 5rem;
+  }
+
+  .configurator-frame {
+    padding-inline: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .configurator-shell {
+    grid-template-columns: minmax(0, 1.15fr) minmax(22.5rem, 0.85fr);
+    grid-template-rows: auto;
+    gap: 3.5rem 2rem;
+  }
+
+  .configurator-intro {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .configurator-intro__inner {
+    display: grid;
+    grid-template-areas:
+      "logo title copy"
+      "logo title button";
+    grid-template-columns: 11rem minmax(18rem, 1fr) minmax(15rem, 0.8fr);
+    align-items: center;
+    gap: 1rem 2rem;
+  }
+
+  .config-play-logo { grid-area: logo; margin: 0; width: 11rem; }
+  .configurator-title { grid-area: title; margin: 0; font-size: clamp(3.7rem, 7vw, 5rem); }
+  .configurator-intro-copy { grid-area: copy; margin: 0; }
+  .configurator-play-burst { display: none; }
+  .configurator-how-button { grid-area: button; width: fit-content; margin: 0; }
+
+  .configurator-progress {
+    grid-column: 1;
+    grid-row: 2;
+    transform: none;
+  }
+
+  .configurator-stage {
+    grid-column: 1;
+    grid-row: 3;
+    max-width: 40rem;
+  }
+
+  .configurator-shell > .relative.min-w-0 {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    padding-top: 0;
+    margin-left: 0;
+  }
+
+  .configurator-savebar {
+    grid-column: 1;
+    grid-row: 4;
+    width: 100%;
+    transform: none;
+  }
+}
+
+@media (max-width: 63.99rem) {
+  .configurator-intro__inner {
+    grid-template-areas:
+      "logo title"
+      "copy button";
+    grid-template-columns: minmax(10rem, 0.75fr) minmax(18rem, 1.25fr);
+  }
+
+  .configurator-intro-copy {
+    align-self: start;
+  }
+
+  .configurator-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .configurator-progress,
+  .configurator-stage,
+  .configurator-shell > .relative.min-w-0,
+  .configurator-savebar {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .configurator-stage,
+  .configurator-shell > .relative.min-w-0,
+  .configurator-savebar {
+    width: min(100%, 40rem);
+    margin-inline: auto;
+  }
+
+  .configurator-shell > .relative.min-w-0 {
+    width: min(100%, 36rem);
+  }
+}
+
+@media (max-width: 39.99rem) {
+  .configuratore-playground,
+  .configuratore-playground[data-livello="2"],
+  .configuratore-playground[data-livello="3"] {
+    padding-block: 6rem 4rem;
+  }
+
+  .configurator-frame {
+    padding-inline: 1rem;
+  }
+
+  .configurator-shell {
+    gap: 3.25rem;
+  }
+
+  .configurator-intro__inner {
+    display: block;
+  }
+
+  .config-play-logo {
+    width: 10.5rem;
+    height: 6.7rem;
+  }
+
+  .configurator-title {
+    margin-top: 2.2rem;
+    margin-left: 0;
+    font-size: clamp(3.65rem, 19vw, 4.7rem);
+  }
+
+  .configurator-intro-copy {
+    margin-top: 2rem;
+    margin-left: 0;
+  }
+
+  .configurator-play-burst {
+    display: grid;
+    margin-top: 2rem;
+    margin-left: 0;
+  }
+
+  .configurator-how-button {
+    margin-top: 2rem;
+    margin-left: 0;
+  }
+
+  .candy-livelli {
+    gap: 0.75rem;
+  }
+
+  .candy-livello {
+    width: 4.55rem;
+    height: 4.55rem;
+    min-height: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+  }
+
+  .candy-livello__numero {
+    width: auto;
+    height: auto;
+  }
+
+  .candy-livello__nome {
+    text-align: center;
+  }
+
+  .palco {
+    border-radius: 2.65rem;
+  }
+
+  .palco::before {
+    inset: 2.25rem 1.3rem 1.7rem;
+    border-radius: 2rem;
+  }
+
+  .palco-cornice {
+    inset: 3.15rem 2rem 2.45rem;
+    border-radius: 1.4rem;
+  }
+
+  .candy-ribbon {
+    top: 0.15rem;
+    left: -0.7rem;
+    width: 8.6rem;
+    height: 2.5rem;
+    font-size: 0.72rem;
+  }
+
+  .palco-amico {
+    left: -0.5rem;
+    width: 4.8rem;
+    height: 3.9rem;
+  }
+
+  .palco-lecca {
+    right: 0.3rem;
+    width: 3.55rem;
+  }
+
+  .configurator-selector-title {
+    font-size: 1.25rem;
+  }
+
+  .tessera {
+    height: 9.6rem;
+  }
+
+  .configurator-savebar {
+    grid-template-columns: 1fr auto;
+    padding: 1rem;
+  }
+
+  .configurator-savebar__heart {
+    display: none;
+  }
+
+  .configurator-savebar__smile {
+    display: none;
+  }
+
+  .configurator-savebar button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .candy-blob--rosa-basso {
+    left: 4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .configurator-savebar button,
+  .configurator-how-button {
+    transition-duration: 0.01ms;
+  }
+
+  .configurator-savebar button:hover,
+  .configurator-savebar button:focus-visible,
+  .configurator-how-button:hover {
+    transform: none;
+  }
+}
