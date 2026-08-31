@@ -3,10 +3,10 @@
 Una cartella per finitura, nome = `id` del vocabolario `finiture` in
 `lib/configuratore/dati-dolci.json` (`zucchero`, `zucchero-a-velo`,
 `zucchero-di-canna`, `cacao`). **La cartella è il contratto**, come per
-`../prodotti/`, `../farciture/` e `../credenza/`: il configuratore la
-scansiona da solo (`lib/configuratore/foto.ts`) e mostra la prima immagine
-in ordine alfabetico. Per pubblicare una foto basta metterla nella
-cartella giusta, il nome del file è libero. Cartella vuota = la tessera
+`../prodotti/`, `../farciture/` e `../credenza/`: il prebuild la scansiona,
+aggiorna `lib/configuratore/foto-manifest.json` e il configuratore mostra la
+prima immagine in ordine alfabetico. Per pubblicare una foto basta metterla
+nella cartella giusta, il nome del file è libero. Cartella vuota = la tessera
 ripiega sul placeholder tipografico.
 
 Qui sta la finitura **da sola** (la nevicata di zucchero a velo, lo

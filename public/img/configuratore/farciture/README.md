@@ -3,10 +3,10 @@
 Una cartella per farcitura, nome = `id` del vocabolario `farciture` in
 `lib/configuratore/dati-dolci.json` (dal refactor 2026-08-28: `crema`,
 `cioccolato`, `pistacchio`). **La cartella è il contratto**, come per
-`../prodotti/`, `../credenza/` e `../finiture/`: il configuratore la
-scansiona da solo (`lib/configuratore/foto.ts`) e mostra la prima immagine
-in ordine alfabetico. Per pubblicare una foto basta metterla nella
-cartella giusta, il nome del file è libero. Cartella vuota = la tessera
+`../prodotti/`, `../credenza/` e `../finiture/`: il prebuild la scansiona,
+aggiorna `lib/configuratore/foto-manifest.json` e il configuratore mostra la
+prima immagine in ordine alfabetico. Per pubblicare una foto basta metterla
+nella cartella giusta, il nome del file è libero. Cartella vuota = la tessera
 ripiega sul placeholder tipografico — mai sulla foto del semiprodotto.
 
 Qui sta la farcitura **da sola** (il ciuffo di crema, il cioccolato, il

@@ -311,10 +311,10 @@ export function statoDaPathname(pathname: string): {
 /*
  * Le foto del configuratore arrivano SOLO dalle cartelle di
  * public/img/configuratore/ (una per base, per farcitura, per voce di
- * credenza, per finitura, per ogni stato del prodotto). Le mappe chiave →
- * URL le costruisce il server con lib/configuratore/foto.ts e scendono ai
- * client component come prop: l'assenza della chiave significa "foto non
- * ancora arrivata" e la UI ripiega sullo stato precedente o sul
+ * credenza, per finitura, per ogni stato del prodotto). Il prebuild genera
+ * il manifest chiave → URL letto da lib/configuratore/foto.ts; le mappe
+ * scendono ai client component come prop. L'assenza della chiave significa
+ * "foto non ancora arrivata" e la UI ripiega sullo stato precedente o sul
  * placeholder tipografico — mai la foto di un'altra scelta.
  */
 

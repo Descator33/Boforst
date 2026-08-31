@@ -118,9 +118,9 @@ export default async function ConfiguratorePage({ params }: Props) {
     <div className="configuratore-page overflow-x-clip bg-panna text-inchiostro">
       <Header />
 
-      {/* le mappe delle foto si leggono dal filesystem qui, lato server:
-          le cartelle sono il contratto, l'isola client riceve solo gli
-          URL delle voci che una foto ce l'hanno */}
+      {/* Il prebuild ricava dalle cartelle un manifest di soli URL; l'isola
+          client riceve le voci che hanno una foto senza trascinare i file
+          statici nel bundle della funzione serverless. */}
       <Configuratore
         foto={fotoStati()}
         fotoFarciture={fotoFarciture()}

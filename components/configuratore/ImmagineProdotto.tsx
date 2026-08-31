@@ -4,8 +4,8 @@ import { useState } from "react";
 
 /**
  * Immagine con catena di ripiego. Le sorgenti arrivano SOLO dalle
- * cartelle di stato di public/img/configuratore/prodotti/ (scoperte dal
- * server, vedi lib/configuratore/foto.ts), già in ordine di preferenza:
+ * cartelle di stato di public/img/configuratore/prodotti/ (indicizzate nel
+ * manifest dal prebuild), già in ordine di preferenza:
  * stato corrente, poi gli stati precedenti del dolce, infine il
  * placeholder tipografico onesto del sito. Man mano che le foto
  * arrivano nelle cartelle, la catena si accorcia da sola senza toccare

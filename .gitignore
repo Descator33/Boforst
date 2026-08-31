@@ -22,6 +22,10 @@
 # production
 /build
 
+# Netlify CLI: output locale del build e lockfile dell'edge bundler.
+/.netlify/
+/deno.lock
+
 # misc
 .DS_Store
 *.pem

@@ -12,12 +12,19 @@
  * grandezze derivate devono chiudere.
  */
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const qui = dirname(fileURLToPath(import.meta.url));
 const percorso = join(qui, "..", "lib", "configuratore", "dati-dolci.json");
+const percorsoManifestoFoto = join(
+  qui,
+  "..",
+  "lib",
+  "configuratore",
+  "foto-manifest.json"
+);
 const dati = JSON.parse(readFileSync(percorso, "utf8"));
 
 const errori = [];
@@ -130,6 +137,15 @@ const radici = [
   { cartella: "finiture", validi: idFiniture, cosa: "finitura del vocabolario" },
 ];
 
+/* Il manifest porta nel runtime solo gli URL, non i file binari. Senza
+   questo passaggio la scansione con node:fs dentro alla pagina verrebbe
+   interpretata dall'output file tracing di Next come dipendenza runtime e
+   copierebbe tutte le foto anche nella funzione serverless. Gli asset restano
+   invece in public/ e vengono serviti dal CDN del provider. */
+const manifestoFoto = Object.fromEntries(
+  radici.map(({ cartella }) => [cartella, {}])
+);
+
 /* PNG: il tipo colore sta al byte 25 dell'IHDR — 6 (RGBA) e 4 (grigio+alfa)
    portano l'alfa; gli altri solo se c'è un chunk tRNS. */
 const pngConAlfa = (buf) =>
@@ -157,7 +173,8 @@ for (const { cartella, validi, cosa } of radici) {
         `foto: la cartella "${cartella}/${voce.name}" non corrisponde ` +
           `a nessuna ${cosa}`
       );
-    for (const file of readdirSync(join(percorsoRadice, voce.name))) {
+    const fotoValide = [];
+    for (const file of readdirSync(join(percorsoRadice, voce.name)).sort()) {
       if (file === ".DS_Store" || file === "README.md") continue;
       const dove = `${cartella}/${voce.name}/${file}`;
       const ext = file.slice(file.lastIndexOf(".")).toLowerCase();
@@ -178,8 +195,15 @@ for (const { cartella, validi, cosa } of radici) {
           `foto: ${dove} non ha il canale alfa: la regola del configuratore ` +
             `è sfondo trasparente, sempre`
         );
-      else fotoVerificate++;
+      else {
+        fotoVerificate++;
+        fotoValide.push(file);
+      }
     }
+    const primaFoto = fotoValide[0];
+    if (primaFoto)
+      manifestoFoto[cartella][voce.name] =
+        `/img/configuratore/${cartella}/${encodeURIComponent(voce.name)}/${encodeURIComponent(primaFoto)}`;
   }
 }
 
@@ -201,6 +225,11 @@ if (errori.length > 0) {
   );
   process.exit(1);
 } else {
+  writeFileSync(
+    percorsoManifestoFoto,
+    `${JSON.stringify(manifestoFoto, null, 2)}\n`,
+    "utf8"
+  );
   const totale =
     (dati.basi?.length ?? 0) *
     (dati.farciture?.length ?? 0) *
@@ -210,6 +239,7 @@ if (errori.length > 0) {
     `✓ Dataset configuratore valido — versione ${dati.versione}: ` +
       `${dati.basi.length} basi, ${dati.farciture.length} farciture, ` +
       `${dati.credenza.length} voci dalla credenza, ${dati.finiture.length} finiture ` +
-      `(${totale} combinazioni possibili), ${fotoVerificate} foto con alfa verificate.`
+      `(${totale} combinazioni possibili), ${fotoVerificate} foto con alfa verificate; ` +
+      `manifest foto aggiornato.`
   );
 }

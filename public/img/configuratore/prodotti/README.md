@@ -1,11 +1,12 @@
 # Foto per stato del configuratore
 
 Una cartella per ogni stato visibile del prodotto durante la configurazione.
-**La cartella è il contratto**: il configuratore la scansiona da solo
-(`lib/configuratore/foto.ts`) e mostra la prima immagine in ordine
-alfabetico. Per pubblicare una foto basta metterla nella cartella giusta —
-nessun codice o JSON da toccare, il nome del file è libero. Cartella
-vuota = la UI ripiega sullo stato precedente o sul placeholder tipografico.
+**La cartella è il contratto**: il prebuild la scansiona e genera
+`lib/configuratore/foto-manifest.json`; il configuratore mostra la prima
+immagine in ordine alfabetico. Per pubblicare una foto basta metterla nella
+cartella giusta — nessun codice o JSON da modificare a mano, il nome del file
+è libero. Cartella vuota = la UI ripiega sullo stato precedente o sul
+placeholder tipografico.
 
 **REGOLA ASSOLUTA: sfondo trasparente.** Solo PNG o WebP con canale alfa;
 JPEG e formati senza alfa non entrano — il prebuild
