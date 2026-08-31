@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { richiediQuotazione, type StatoInvio } from "@/app/configuratore/actions";
 import { useLingua } from "@/components/LinguaProvider";
-import { DATASET, type Combinazione } from "@/lib/configuratore";
+import { DATASET, type Prodotto } from "@/lib/configuratore";
 import { conta, interpola } from "@/lib/i18n/interpola";
 import { fmtKg } from "@/lib/i18n/lingue";
 
@@ -21,10 +21,10 @@ const CANALI = ["bar", "pasticceria", "catering", "GDO"] as const;
  * errori tipizzati senza stato scritto a mano.
  */
 export function ModuloQuotazione({
-  comb,
+  prodotto,
   pedane,
 }: {
-  comb: Combinazione;
+  prodotto: Prodotto;
   pedane: number | "";
 }) {
   const { lingua, testi: tuttiTesti } = useLingua();
@@ -67,8 +67,10 @@ export function ModuloQuotazione({
       </h3>
 
       {/* lo stato prodotto viaggia con il form e viene rivalidato server-side */}
-      <input type="hidden" name="base" value={comb.base} />
-      <input type="hidden" name="farcitura" value={comb.farcitura} />
+      <input type="hidden" name="base" value={prodotto.base} />
+      <input type="hidden" name="farcitura" value={prodotto.farcitura} />
+      <input type="hidden" name="credenza" value={prodotto.credenza} />
+      <input type="hidden" name="finitura" value={prodotto.finitura} />
       <input type="hidden" name="pedane" value={pedane} />
       <input type="hidden" name="versione_listino" value={DATASET.versione} />
       <input type="hidden" name="lingua" value={lingua} />

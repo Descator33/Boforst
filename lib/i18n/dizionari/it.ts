@@ -239,32 +239,23 @@ export const it: Testi = {
       media: "media",
     },
     farciture: {
-      "ciock-e-lampone": "Ciock e lampone",
-      "crema-e-fragola": "Crema e fragola",
-      "frutti-di-bosco-e-ribes": "Frutti di bosco e ribes",
-      "pistacchio-e-lampone": "Pistacchio e lampone",
-      "crema-e-lampone": "Crema e lampone",
-      "marmellata-frutti-rossi-e-ribes": "Marmellata frutti rossi e ribes",
       cioccolato: "Cioccolato",
       pistacchio: "Pistacchio",
       crema: "Crema",
-      "tre-cioccolati": "Tre cioccolati",
-      "frutti-rossi": "Frutti rossi",
-      "senza-farcitura": "Senza farcitura",
-      caramello: "Caramello",
-      "dulce-de-leche": "Dulce de leche",
-      cannella: "Cannella",
     },
-    topping: {
-      "zucchero-a-velo-idrorepellente": "Zucchero a velo idrorepellente",
-      "perle-di-zucchero-idrorepellenti-al-cacao":
-        "Perle di zucchero idrorepellenti al cacao",
-      "perle-di-zucchero-idrorepellenti-bianche":
-        "Perle di zucchero idrorepellenti bianche",
-      "scagliette-di-cioccolato-tutti-e-3-i-cioccolati":
-        "Scagliette di cioccolato (tutti e 3 i cioccolati)",
-      "perle-di-zucchero-colorate-rosse": "Perle di zucchero colorate rosse",
-      semolato: "Semolato",
+    credenza: {
+      "kinder-bueno": "Kinder Bueno",
+      "cioccolato-a-pezzi": "Cioccolato a pezzi",
+      "corn-flakes": "Corn flakes",
+      fragola: "Fragola",
+      banana: "Banana",
+      biscotti: "Biscotti",
+    },
+    finiture: {
+      zucchero: "Zucchero",
+      "zucchero-a-velo": "Zucchero a velo",
+      "zucchero-di-canna": "Zucchero di canna",
+      cacao: "Cacao",
     },
     modalitaUso: "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
     scattoProdotto: "scatto di prodotto",
@@ -281,18 +272,18 @@ export const it: Testi = {
         testo: "Scegli la crema o il ripieno che più ti ispira.",
       },
       {
-        titolo: "Completa con il topping",
-        testo: "Aggiungi croccantezze, frutta, golosità e decorazioni.",
+        titolo: "Pesca dalla credenza",
+        testo: "Kinder Bueno, corn flakes, frutta, biscotti: aggiungi la tua golosità.",
       },
       {
-        titolo: "Ottieni il tuo dolce",
-        testo: "Visualizza il risultato e completa la tua creazione.",
+        titolo: "Scegli la finitura",
+        testo: "Zucchero, zucchero a velo, zucchero di canna o cacao: il tocco finale.",
       },
     ],
     statiNastro: [
       "Nuvola vuota, la base senza farcitura",
-      "Nuvola farcita con crema e fragola",
-      "Nuvola alla crema e fragola con zucchero a velo",
+      "Nuvola farcita con crema",
+      "Nuvola alla crema con zucchero a velo",
     ],
     intro: {
       titolo: [
@@ -309,17 +300,21 @@ export const it: Testi = {
         {
           titolo: "Level 01 — scegli il player",
           testo:
-            "Dieci basi, tutte disponibili. Trascinala sul palco con il mouse, oppure toccala: il risultato è identico.",
+            "Tre basi, tutte disponibili. Trascinala sul palco con il mouse, oppure toccala: il risultato è identico.",
         },
         {
           titolo: "Level 02 — carica la farcitura",
-          testo:
-            "Compaiono solo le farciture che esistono davvero per quella base: niente scelte che poi non si possono fare.",
+          testo: "Crema, cioccolato o pistacchio: scegli il cuore del dolce.",
         },
         {
-          titolo: "Level 03 — chiudi la combo",
+          titolo: "Level 03 — pesca dalla credenza",
           testo:
-            "La finitura la decide la ricetta, ma la posi tu. Poi arrivano formato, ordine minimo e quantità in pedane, e la richiesta parte già completa.",
+            "Kinder Bueno, corn flakes, frutta o biscotti: aggiungi la tua golosità.",
+        },
+        {
+          titolo: "Level 04 — chiudi la combo",
+          testo:
+            "Scegli la finitura e la combo è pronta. Poi arrivano formato, ordine minimo e quantità in pedane, e la richiesta parte già completa.",
         },
       ],
       chiudi: "Chiudi",
@@ -328,15 +323,17 @@ export const it: Testi = {
     titoli: {
       passo1: "Scegli la tua base",
       passo2: "Ora riempiamolo",
-      passo3: "Il tocco finale",
+      passo3: "Pesca dalla credenza",
+      passo4: "Il tocco finale",
       completo: "Boom. È pronto!",
     },
-    passoDi: "Passo {n} di 3 — {titolo}",
-    avvisoFarcituraSparita:
-      "La farcitura del link che hai aperto non è più disponibile per questa base: scegline una tra quelle a listino.",
+    passoDi: "Passo {n} di 4 — {titolo}",
+    avvisoSceltaSparita:
+      "Il link che hai aperto conteneva una scelta non più disponibile: si riparte da qui.",
     riepilogo: {
       base: "Base",
       farcitura: "Farcitura",
+      credenza: "Dalla credenza",
       finitura: "Finitura",
       cambia: "cambia",
       tornaAlPasso: "Torna al passo {n}, {etichetta}: {valore}",
@@ -348,34 +345,34 @@ export const it: Testi = {
       ariaConDolce: "Palco del configuratore: {nome}{stato}",
       mancaPasso1: ". Manca la tua base",
       mancaPasso2: ". Manca la farcitura",
-      mancaPasso3: ". Manca la finitura",
+      mancaPasso3: ". Manca la voce dalla credenza",
+      mancaPasso4: ". Manca la finitura",
       completoAria: ". Il dolce è completo",
       mollaQui: "Sì! Molla qui!",
       trascinaVuoto: ["Trascina qui", "la tua base"],
       toccaVuoto: ["Tocca qui", "la tua base"],
       trascinaPasso2: "Trascina qui la farcitura",
-      trascinaPasso3: "Trascina qui la finitura",
+      trascinaPasso3: "Trascina qui la voce dalla credenza",
+      trascinaPasso4: "Trascina qui la finitura",
       toccaPasso2: "Tocca la farcitura per lanciarla",
-      toccaPasso3: "Tocca la finitura per lanciarla",
+      toccaPasso3: "Tocca la voce dalla credenza per lanciarla",
+      toccaPasso4: "Tocca la finitura per lanciarla",
       oppureLista: "oppure sceglila nella lista",
       fotoSenzaFinitura: "Foto senza finitura — descritta accanto",
       cambiaFarcitura: "Cambia farcitura",
-      cambiaBase: "Cambia base",
       ricomincia: "Ricomincia",
     },
     tessera: {
       prendimi: "Prendimi!",
       inVolo: "In volo!",
-      diventa: "diventa {nome}",
-      dallaRicetta: "dalla ricetta",
-      farciture: { uno: "1 farcitura a listino", molti: "{n} farciture a listino" },
     },
     finitura: {
-      bossLevel:
-        "Boss level: {nome} · {farcitura} vuole la sua finitura. Mettila tu e chiudi la combo.",
-      boom: "Boom! {nome} · {farcitura} è completo, con {topping}.",
+      boom: "Il tuo {nome} è pronto.",
       combo:
-        "Tre livelli, tre mosse: la combo è pronta. Ora scegli la quantità e mandala in quotazione.",
+        "Quattro livelli, quattro mosse: la combo è pronta. Ora scegli la quantità e mandala in quotazione.",
+      farcitura: "Farcitura",
+      credenza: "Dalla credenza",
+      finitura: "Finitura",
       grammatura: "Grammatura",
       diametro: "Diametro",
       modalitaUso: "Modalità d'uso",
@@ -449,7 +446,7 @@ export const it: Testi = {
         versioneObsoleta:
           "Il listino è stato aggiornato mentre la pagina era aperta. Ricarica la pagina e riconferma la configurazione.",
         combinazioneInesistente:
-          "Questa combinazione non è più a listino. Torna alla scelta della farcitura per vedere quelle disponibili.",
+          "Questa combinazione non è più a listino. Torna all'inizio della configurazione.",
         quantitaNonValida:
           "La quantità va espressa in pedane intere, almeno una: è l'unità con cui viaggia il prodotto.",
         sottoMinimo: "Questa referenza si ordina da {min} pedane{pezzi}.",
@@ -459,7 +456,8 @@ export const it: Testi = {
         oggetto: "Richiesta quotazione — {nome} · {farcitura} — {pedane}",
         intestazione: "Richiesta di quotazione dal configuratore Delsigel",
         prodotto: "Prodotto: {nome} · {farcitura}",
-        finitura: "Finitura: {topping}",
+        credenza: "Dalla credenza: {credenza}",
+        finitura: "Finitura: {finitura}",
         grammaturaDiametro: "Grammatura: {g} g · Diametro: {cm} cm",
         quantitaRichiesta: "Quantità richiesta: {pedane}",
         equivale: "= {cartoni} · {pezzi} · {peso}",
@@ -839,7 +837,7 @@ export const it: Testi = {
       baseDescrizione: "Scegli la farcitura per {base} e componi la tua richiesta.",
       combTitolo: "{nome} · {farcitura} · Configuratore Delsigel",
       combDescrizione:
-        "{nome} con {farcitura}, finitura {topping}, {g} g. Configura quantità e richiedi la quotazione.",
+        "{nome} con {farcitura}, {credenza}, finitura {finitura}, {g} g. Configura quantità e richiedi la quotazione.",
     },
   },
 };

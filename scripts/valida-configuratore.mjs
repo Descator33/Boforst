@@ -3,13 +3,13 @@
  * Validazione del dataset del configuratore dolci (lib/configuratore/dati-dolci.json).
  *
  * Gira come `prebuild`: se una verifica salta, il build fallisce e non pubblica.
- * È pensato per essere eseguibile anche da chi tiene il foglio Excel:
- * ogni errore dice quale prodotto (SKU), quale campo e quale conto non chiude.
  *
- * Le prime cinque verifiche sono le asserzioni della specifica
- * (public/configuratore-dolci-spec-tecnica.md, «Il contratto dati»);
- * le successive controllano le grandezze derivate, che nel foglio si
- * ricalcolano a mano ed è lì che si sbaglia.
+ * Dal refactor 2026-08-28 il configuratore compone 4 vocabolari
+ * indipendenti (basi, farciture, dalla credenza, finiture): ogni
+ * combinazione è un prodotto valido — non c'è più una lista di
+ * combinazioni dichiarate da verificare per integrità referenziale, ma
+ * grammatura/peso/ordine minimo vivono sulla base ed è lì che le
+ * grandezze derivate devono chiudere.
  */
 
 import { readFileSync, readdirSync } from "node:fs";
@@ -23,44 +23,24 @@ const dati = JSON.parse(readFileSync(percorso, "utf8"));
 const errori = [];
 const err = (msg) => errori.push(msg);
 
-const basi = new Map(dati.basi.map((b) => [b.id, b]));
-const farciture = new Set(dati.farciture.map((f) => f.id));
-const topping = new Set(dati.topping.map((t) => t.id));
+/* ── 1. Id unici in ciascun vocabolario ── */
+const controllaUnicita = (elenco, nomeVocabolario) => {
+  const visti = new Set();
+  for (const voce of elenco ?? []) {
+    if (visti.has(voce.id)) err(`${nomeVocabolario}: id duplicato "${voce.id}"`);
+    visti.add(voce.id);
+  }
+};
+controllaUnicita(dati.basi, "basi");
+controllaUnicita(dati.farciture, "farciture");
+controllaUnicita(dati.credenza, "credenza");
+controllaUnicita(dati.finiture, "finiture");
 
-/* ── 1. Integrità referenziale: ogni riferimento esiste nel vocabolario ── */
-for (const c of dati.combinazioni) {
-  if (!basi.has(c.base))
-    err(`${c.sku}: la base "${c.base}" non esiste nel vocabolario delle basi`);
-  if (!farciture.has(c.farcitura))
-    err(`${c.sku}: la farcitura "${c.farcitura}" non esiste nel vocabolario delle farciture`);
-  if (!topping.has(c.topping))
-    err(`${c.sku}: il topping "${c.topping}" non esiste nel vocabolario dei topping`);
-}
-
-/* ── 2. SKU unici e coerenti con il formato {base}--{farcitura} ── */
-const visti = new Set();
-for (const c of dati.combinazioni) {
-  if (visti.has(c.sku)) err(`SKU duplicato: ${c.sku}`);
-  visti.add(c.sku);
-  if (c.sku !== `${c.base}--${c.farcitura}`)
-    err(`${c.sku}: lo SKU non corrisponde a "${c.base}--${c.farcitura}"`);
-}
-
-/* ── 3. Dipendenza funzionale: (base, farcitura) → un solo topping ──
-   Formalmente implicata dalla 2 con il formato attuale dello SKU, ma resta
-   un'asserzione autonoma: protegge da un futuro cambio di formato della chiave. */
-const toppingPerCoppia = new Map();
-for (const c of dati.combinazioni) {
-  const coppia = `${c.base} + ${c.farcitura}`;
-  const gia = toppingPerCoppia.get(coppia);
-  if (gia && gia !== c.topping)
-    err(`${coppia}: compare con due topping diversi ("${gia}" e "${c.topping}")`);
-  toppingPerCoppia.set(coppia, c.topping);
-}
-
-/* ── 4–5. Coerenza del packaging: le moltiplicazioni della catena chiudono ── */
-for (const b of dati.basi) {
-  const p = b.packaging;
+/* ── 2. Coerenza del packaging e delle grandezze derivate, per base ──
+   Grammatura, peso e ordine minimo vivono sulla base: farcitura, voce
+   dalla credenza e finitura sono compositive e non le cambiano. */
+for (const b of dati.basi ?? []) {
+  const p = b.packaging ?? {};
   if (p.vassoi_per_cartone != null && p.pezzi_per_vassoio != null) {
     const attesi = p.vassoi_per_cartone * p.pezzi_per_vassoio;
     if (attesi !== p.pezzi_per_cartone)
@@ -83,41 +63,29 @@ for (const b of dati.basi) {
       `${b.nome}: ${p.pezzi_per_cartone} pz/ct × ${p.cartoni_per_pedana} ct/pedana = ${pezziPedana}, ` +
         `ma pezzi_per_pedana dice ${p.pezzi_per_pedana}`
     );
-}
 
-/* ── Derivate della combinazione: pesi e ordine minimo in pezzi ── */
-for (const c of dati.combinazioni) {
-  const b = basi.get(c.base);
-  if (!b) continue; // già segnalato al punto 1
-  const p = b.packaging;
-
-  const pesoCartone = (c.grammatura_gr * p.pezzi_per_cartone) / 1000;
-  if (Math.abs(pesoCartone - c.peso_cartone_kg) > 0.005)
+  const pesoCartone = (b.grammatura_gr * p.pezzi_per_cartone) / 1000;
+  if (Math.abs(pesoCartone - b.peso_cartone_kg) > 0.005)
     err(
-      `${c.sku}: peso_cartone_kg è ${c.peso_cartone_kg} ma ${c.grammatura_gr} g × ` +
+      `${b.nome}: peso_cartone_kg è ${b.peso_cartone_kg} ma ${b.grammatura_gr} g × ` +
         `${p.pezzi_per_cartone} pz fa ${pesoCartone.toFixed(2)} kg`
     );
 
   const pesoPedana = pesoCartone * p.cartoni_per_pedana;
-  if (Math.abs(pesoPedana - c.peso_pedana_kg) > 0.05)
+  if (Math.abs(pesoPedana - b.peso_pedana_kg) > 0.05)
     err(
-      `${c.sku}: peso_pedana_kg è ${c.peso_pedana_kg} ma ${pesoCartone.toFixed(2)} kg × ` +
+      `${b.nome}: peso_pedana_kg è ${b.peso_pedana_kg} ma ${pesoCartone.toFixed(2)} kg × ` +
         `${p.cartoni_per_pedana} ct fa ${pesoPedana.toFixed(1)} kg`
     );
 
-  if (c.ordine_minimo_pedane != null) {
-    const attesi = c.ordine_minimo_pedane * p.pezzi_per_pedana;
-    if (c.ordine_minimo_pezzi !== attesi)
+  if (b.ordine_minimo_pedane != null) {
+    const attesi = b.ordine_minimo_pedane * p.pezzi_per_pedana;
+    if (b.ordine_minimo_pezzi !== attesi)
       err(
-        `${c.sku}: ordine_minimo_pezzi è ${c.ordine_minimo_pezzi} ma ` +
-          `${c.ordine_minimo_pedane} pedane × ${p.pezzi_per_pedana} pz fa ${attesi}`
+        `${b.nome}: ordine_minimo_pezzi è ${b.ordine_minimo_pezzi} ma ` +
+          `${b.ordine_minimo_pedane} pedane × ${p.pezzi_per_pedana} pz fa ${attesi}`
       );
   }
-  if ((c.ordine_minimo_pedane != null) !== c.ordine_minimo_dichiarato_su_riga)
-    err(
-      `${c.sku}: ordine_minimo_dichiarato_su_riga (${c.ordine_minimo_dichiarato_su_riga}) ` +
-        `non è coerente con ordine_minimo_pedane (${c.ordine_minimo_pedane})`
-    );
 }
 
 /* ── Foto del configuratore: sfondo trasparente obbligatorio ──
@@ -127,31 +95,39 @@ for (const c of dati.combinazioni) {
    devono dichiararlo nell'intestazione. In più, ogni cartella deve
    corrispondere a una voce reale del vocabolario: una cartella con un
    refuso nel nome non verrebbe mai mostrata, meglio saperlo al build.
-   Tre radici, stesso contratto: prodotti/ (gli stati del prodotto),
-   farciture/ (l'ingrediente da solo, tessere del passo 2) e topping/
-   (la finitura da sola, tessera del passo 3). */
+   Quattro radici, stesso contratto: prodotti/ (gli stati del prodotto, ai
+   4 livelli del prodotto cartesiano), farciture/, credenza/ e finiture/
+   (l'ingrediente/la finitura da soli, tessere dei passi 2-4). */
 
 const radiceFoto = join(qui, "..", "public", "img", "configuratore");
+
+const idBasi = (dati.basi ?? []).map((b) => b.id);
+const idFarciture = new Set((dati.farciture ?? []).map((f) => f.id));
+const idCredenza = new Set((dati.credenza ?? []).map((c) => c.id));
+const idFiniture = new Set((dati.finiture ?? []).map((f) => f.id));
+
+/* gli stati validi di prodotti/ sono il prodotto cartesiano ai 4 livelli
+   di profondità: non una lista curata, ma tutto ciò che i 4 vocabolari
+   possono comporre — coerente con "ogni combinazione è possibile" */
+const statiProdotto = new Set();
+for (const b of idBasi) {
+  statiProdotto.add(b);
+  for (const f of idFarciture) {
+    statiProdotto.add(`${b}--${f}`);
+    for (const c of idCredenza) {
+      statiProdotto.add(`${b}--${f}--${c}`);
+      for (const fin of idFiniture) {
+        statiProdotto.add(`${b}--${f}--${c}--${fin}`);
+      }
+    }
+  }
+}
+
 const radici = [
-  {
-    cartella: "prodotti",
-    validi: new Set([
-      ...dati.basi.map((b) => b.id),
-      ...dati.combinazioni.map((c) => c.sku),
-      ...dati.combinazioni.map((c) => `${c.sku}--${c.topping}`),
-    ]),
-    cosa: "stato del prodotto (base, sku o sku--topping)",
-  },
-  {
-    cartella: "farciture",
-    validi: farciture,
-    cosa: "farcitura del vocabolario",
-  },
-  {
-    cartella: "topping",
-    validi: topping,
-    cosa: "topping del vocabolario",
-  },
+  { cartella: "prodotti", validi: statiProdotto, cosa: "stato del prodotto (base, base--farcitura, base--farcitura--credenza o sku completo)" },
+  { cartella: "farciture", validi: idFarciture, cosa: "farcitura del vocabolario" },
+  { cartella: "credenza", validi: idCredenza, cosa: "voce dalla credenza del vocabolario" },
+  { cartella: "finiture", validi: idFiniture, cosa: "finitura del vocabolario" },
 ];
 
 /* PNG: il tipo colore sta al byte 25 dell'IHDR — 6 (RGBA) e 4 (grigio+alfa)
@@ -211,23 +187,29 @@ for (const { cartella, validi, cosa } of radici) {
 if (!dati.versione) err("manca il campo di testata `versione` (versione del listino)");
 if (dati.unita_quantita !== "pedane")
   err(`unita_quantita è "${dati.unita_quantita}": il configuratore è scritto per "pedane"`);
-if (!Array.isArray(dati.combinazioni) || dati.combinazioni.length === 0)
-  err("il dataset non contiene combinazioni");
+if (!Array.isArray(dati.basi) || dati.basi.length === 0) err("il dataset non contiene basi");
+if (!Array.isArray(dati.farciture) || dati.farciture.length === 0) err("il dataset non contiene farciture");
+if (!Array.isArray(dati.credenza) || dati.credenza.length === 0) err("il dataset non contiene voci dalla credenza");
+if (!Array.isArray(dati.finiture) || dati.finiture.length === 0) err("il dataset non contiene finiture");
 
 /* ── Esito ── */
-const conMinimo = dati.combinazioni.filter((c) => c.ordine_minimo_pedane != null).length;
 if (errori.length > 0) {
   console.error(`\n✗ Dataset configuratore NON valido — ${errori.length} problemi:\n`);
   for (const e of errori) console.error(`  · ${e}`);
   console.error(
-    "\nIl build si ferma qui: correggere il foglio (o il JSON generato) e rilanciare.\n"
+    "\nIl build si ferma qui: correggere il dataset e rilanciare.\n"
   );
   process.exit(1);
 } else {
+  const totale =
+    (dati.basi?.length ?? 0) *
+    (dati.farciture?.length ?? 0) *
+    (dati.credenza?.length ?? 0) *
+    (dati.finiture?.length ?? 0);
   console.log(
     `✓ Dataset configuratore valido — versione ${dati.versione}: ` +
-      `${dati.combinazioni.length} combinazioni, ${dati.basi.length} basi, ` +
-      `${dati.farciture.length} farciture, ${dati.topping.length} topping, ` +
-      `${conMinimo} SKU con ordine minimo, ${fotoVerificate} foto con alfa verificate.`
+      `${dati.basi.length} basi, ${dati.farciture.length} farciture, ` +
+      `${dati.credenza.length} voci dalla credenza, ${dati.finiture.length} finiture ` +
+      `(${totale} combinazioni possibili), ${fotoVerificate} foto con alfa verificate.`
   );
 }

@@ -18,8 +18,7 @@
 import {
   DATASET,
   baseDi,
-  combinazione,
-  nomeCommerciale,
+  prodotto,
   validaStato,
   type Quantita,
 } from "@/lib/configuratore";
@@ -32,7 +31,7 @@ import {
   haLingua,
   localizza,
 } from "@/lib/i18n/lingue";
-import type { IdFarcitura, IdTopping } from "@/lib/i18n/tipi";
+import type { IdCredenza, IdFarcitura, IdFinitura } from "@/lib/i18n/tipi";
 
 const DESTINATARIO = "info@delsigel.it";
 
@@ -71,6 +70,8 @@ export async function richiediQuotazione(
 
   const base = testo("base");
   const farcitura = testo("farcitura");
+  const credenza = testo("credenza");
+  const finitura = testo("finitura");
   const pedane = Number(testo("pedane"));
   const versione = testo("versione_listino");
   const cliente = {
@@ -101,7 +102,7 @@ export async function richiediQuotazione(
     };
   }
 
-  const esito = validaStato({ base, farcitura, pedane });
+  const esito = validaStato({ base, farcitura, credenza, finitura, pedane });
 
   if (!esito.ok) {
     if (esito.errore === "COMBINAZIONE_INESISTENTE")
@@ -135,35 +136,35 @@ export async function richiediQuotazione(
     };
   }
 
-  const comb = combinazione(base, farcitura)!;
+  const p = prodotto(base, farcitura, credenza, finitura)!;
   const laBase = baseDi(base)!;
-  const laFarcitura =
-    testi.prodotti.farciture[farcitura as IdFarcitura] ?? farcitura;
-  const ilTopping =
-    testi.prodotti.topping[comb.topping as IdTopping] ?? comb.topping;
-  const nomeProdotto = nomeCommerciale(comb);
-  const p = laBase.packaging;
+  const laFarcitura = testi.prodotti.farciture[farcitura as IdFarcitura] ?? farcitura;
+  const laCredenza = testi.prodotti.credenza[credenza as IdCredenza] ?? credenza;
+  const laFinitura = testi.prodotti.finiture[finitura as IdFinitura] ?? finitura;
+  const nomeProdotto = laBase.nome;
+  const pack = laBase.packaging;
   const q = esito.quantita;
 
-  /* Il payload del contratto dati: il prodotto per intero (topping incluso
-     benché derivato), le quantità già convertite in tutte le unità — chi
-     riceve lavora con l'unità del suo gestionale, e ricalcolare a mano è
-     il punto in cui si sbaglia — e la versione di listino. */
+  /* Il payload del contratto dati: il prodotto per intero, le quantità
+     già convertite in tutte le unità — chi riceve lavora con l'unità del
+     suo gestionale, e ricalcolare a mano è il punto in cui si sbaglia —
+     e la versione di listino. */
   const payload = {
     linea: DATASET.linea,
-    sku: comb.sku,
-    base: comb.base,
-    farcitura: comb.farcitura,
-    topping: comb.topping,
-    grammatura_gr: comb.grammatura_gr,
+    sku: p.sku,
+    base: p.base,
+    farcitura: p.farcitura,
+    credenza: p.credenza,
+    finitura: p.finitura,
+    grammatura_gr: laBase.grammatura_gr,
     quantita: q,
     packaging: {
-      pezzi_per_cartone: p.pezzi_per_cartone,
-      cartoni_per_pedana: p.cartoni_per_pedana,
-      cartoni_per_strato: p.cartoni_per_strato,
-      strati_per_pedana: p.strati_per_pedana,
+      pezzi_per_cartone: pack.pezzi_per_cartone,
+      cartoni_per_pedana: pack.cartoni_per_pedana,
+      cartoni_per_strato: pack.cartoni_per_strato,
+      strati_per_pedana: pack.strati_per_pedana,
     },
-    ordine_minimo_pedane: comb.ordine_minimo_pedane,
+    ordine_minimo_pedane: laBase.ordine_minimo_pedane,
     ordine_minimo_rispettato: true,
     cliente,
     versione_listino: DATASET.versione,
@@ -191,18 +192,19 @@ export async function richiediQuotazione(
     mail.intestazione,
     "",
     interpola(mail.prodotto, { nome: nomeProdotto, farcitura: laFarcitura }),
-    interpola(mail.finitura, { topping: ilTopping }),
-    `SKU: ${comb.sku}`,
+    interpola(mail.credenza, { credenza: laCredenza }),
+    interpola(mail.finitura, { finitura: laFinitura }),
+    `SKU: ${p.sku}`,
     interpola(mail.grammaturaDiametro, {
-      g: fmtNumero(comb.grammatura_gr, lingua),
+      g: fmtNumero(laBase.grammatura_gr, lingua),
       cm: fmtNumero(laBase.diametro_cm, lingua),
     }),
     "",
     interpola(mail.quantitaRichiesta, { pedane: pedaneTesto }),
     interpola(mail.equivale, { cartoni, pezzi, peso }),
-    comb.ordine_minimo_pedane != null
+    laBase.ordine_minimo_pedane != null
       ? interpola(mail.minimoRispettato, {
-          min: fmtNumero(comb.ordine_minimo_pedane, lingua),
+          min: fmtNumero(laBase.ordine_minimo_pedane, lingua),
         })
       : mail.minimoNonPrevisto,
     "",
@@ -217,7 +219,7 @@ export async function richiediQuotazione(
     interpola(mail.riferimento, {
       url: localizza(
         lingua,
-        `/configuratore/${comb.base}/${comb.farcitura}`,
+        `/configuratore/${p.base}/${p.farcitura}/${p.credenza}/${p.finitura}`,
       ),
     }),
   ]
@@ -226,5 +228,5 @@ export async function richiediQuotazione(
 
   const mailto = `mailto:${DESTINATARIO}?subject=${encodeURIComponent(oggetto)}&body=${encodeURIComponent(corpo)}`;
 
-  return { ok: true, sku: comb.sku, quantita: q, mailto };
+  return { ok: true, sku: p.sku, quantita: q, mailto };
 }

@@ -1,50 +1,52 @@
 "use client";
 
-import { type Base, type Combinazione } from "@/lib/configuratore";
+import { type Base, type Credenza, type Farcitura, type Prodotto } from "@/lib/configuratore";
 import { IconaSpunta } from "./Decori";
 import { useTesti } from "@/components/LinguaProvider";
 import { interpola } from "@/lib/i18n/interpola";
-import type { IdFarcitura, IdTopping } from "@/lib/i18n/tipi";
+import type { IdCredenza, IdFarcitura, IdFinitura } from "@/lib/i18n/tipi";
 
 /**
- * Il rail dei tre passi, in testa alla colonna delle scelte: discreto
- * ma leggibile, perché è anche la via principale per tornare indietro.
- * I passi completati sono riapribili (tornare alla base azzera la
- * farcitura per costruzione dell'URL, senza tentativi di conservarla),
- * il corrente è marcato in pieno, il futuro è muto e tratteggiato.
+ * Il rail dei quattro passi, in testa alla colonna delle scelte:
+ * discreto ma leggibile, perché è anche la via principale per tornare
+ * indietro. I passi completati sono riapribili (tornare a un passo
+ * precedente azzera quelli successivi per costruzione dell'URL, senza
+ * tentativi di conservarli), il corrente è marcato in pieno, il futuro
+ * è muto e tratteggiato.
  *
- * Rilievo 2026-08-20: i chip a 10.5px col solo glifo ↺ non si
- * spiegavano — cresciuti di un punto e col verbo scritto, «cambia»,
- * in corallo. Il glifo era decorazione, la parola è un'istruzione.
- *
- * La finitura al terzo posto resta «in scelta» finché l'utente non la
- * applica col suo gesto (dal 2026-08-02 non arriva mai da sola): solo
- * allora mostra il nome del topping previsto dalla ricetta.
+ * Dal refactor 2026-08-28 tutti e 4 i componenti vivono nell'URL allo
+ * stesso modo (non c'è più un gesto separato di "applicazione" per la
+ * finitura): "completato" è semplicemente "il passo è alle spalle di
+ * quello corrente".
  */
 export function Riepilogo({
   base,
-  comb,
-  finituraApplicata,
+  farcitura,
+  credenza,
+  prodotto,
   apriPasso,
 }: {
   base: Base | null;
-  comb: Combinazione | null;
-  finituraApplicata: boolean;
-  apriPasso: (passo: 1 | 2) => void;
+  farcitura: Farcitura | null;
+  credenza: Credenza | null;
+  prodotto: Prodotto | null;
+  apriPasso: (passo: 1 | 2 | 3 | 4) => void;
 }) {
   const testi = useTesti();
   const nomi = testi.prodotti;
-  const farcitura = comb
-    ? (nomi.farciture[comb.farcitura as IdFarcitura] ?? comb.farcitura)
+  const farciturasNome = farcitura
+    ? (nomi.farciture[farcitura.id as IdFarcitura] ?? farcitura.nome)
     : null;
-  const topping =
-    comb && finituraApplicata
-      ? (nomi.topping[comb.topping as IdTopping] ?? comb.topping)
-      : null;
-  const corrente = comb ? 3 : base ? 2 : 1;
+  const credenzaNome = credenza
+    ? (nomi.credenza[credenza.id as IdCredenza] ?? credenza.nome)
+    : null;
+  const finituraNome = prodotto
+    ? (nomi.finiture[prodotto.finitura as IdFinitura] ?? prodotto.finitura)
+    : null;
+  const corrente = prodotto ? 5 : credenza ? 4 : farcitura ? 3 : base ? 2 : 1;
 
   const voci: {
-    n: 1 | 2 | 3;
+    n: 1 | 2 | 3 | 4;
     etichetta: string;
     valore: string | null;
     apribile: boolean;
@@ -58,13 +60,19 @@ export function Riepilogo({
     {
       n: 2,
       etichetta: testi.configuratore.riepilogo.farcitura,
-      valore: farcitura,
+      valore: farciturasNome,
       apribile: corrente > 2,
     },
     {
       n: 3,
+      etichetta: testi.configuratore.riepilogo.credenza,
+      valore: credenzaNome,
+      apribile: corrente > 3,
+    },
+    {
+      n: 4,
       etichetta: testi.configuratore.riepilogo.finitura,
-      valore: topping,
+      valore: finituraNome,
       apribile: false,
     },
   ];
@@ -72,11 +80,11 @@ export function Riepilogo({
   return (
     <ol
       aria-label={testi.configuratore.riepilogo.avanzamento}
-      className="candy-livelli grid list-none grid-cols-3 gap-2"
+      className="candy-livelli grid list-none grid-cols-4 gap-2"
     >
       {voci.map((v) => {
         const attivo = v.n === corrente;
-        const completato = v.n < corrente || (v.n === 3 && finituraApplicata);
+        const completato = v.n < corrente;
         const numero = String(v.n).padStart(2, "0");
         const testo = (
           <>
@@ -98,7 +106,7 @@ export function Riepilogo({
             <li key={v.n}>
               <button
                 type="button"
-                onClick={() => apriPasso(v.n as 1 | 2)}
+                onClick={() => apriPasso(v.n)}
                 aria-label={interpola(testi.configuratore.riepilogo.tornaAlPasso, {
                   n: v.n,
                   etichetta: v.etichetta,

@@ -13,13 +13,16 @@ import { interpola } from "@/lib/i18n/interpola";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   statoDaPathname,
+  type FotoCredenza,
   type FotoFarciture,
+  type FotoFinitura,
   type FotoStati,
-  type FotoTopping,
 } from "@/lib/configuratore";
 import { Banco, ZONA_DOLCE } from "./Banco";
 import { Intro } from "./Intro";
 import { PassoBase, type DragPasso } from "./PassoBase";
+import { PassoCompleto } from "./PassoCompleto";
+import { PassoCredenza } from "./PassoCredenza";
 import { PassoFarcitura } from "./PassoFarcitura";
 import { PassoFinitura } from "./PassoFinitura";
 import { Riepilogo } from "./Riepilogo";
@@ -28,54 +31,45 @@ import { SegnaPosto, type Punto, type VoloTessera } from "./TesseraScelta";
 
 /**
  * L'isola client del configuratore. Lo stato prodotto NON è uno state:
- * si deriva dal pathname, che è l'unica sorgente di verità — i passi
- * avanzano con history.pushState (integrato nel router di Next, si
+ * si deriva dal pathname, che è l'unica sorgente di verità — i 4 passi
+ * (base, farcitura, dalla credenza, finitura) avanzano tutti allo
+ * stesso modo con history.pushState (integrato nel router di Next, si
  * sincronizza con usePathname) e il Back/Forward del browser funziona
  * da solo. Restano client-only le cose di sessione: quantità in pedane,
- * apertura del modulo, avviso di farcitura non più disponibile.
+ * apertura del modulo, avviso di scelta non più disponibile.
  *
- * Il passo 2 si attraversa SEMPRE, anche per le basi a farcitura unica:
- * la scorciatoia del push diretto all'URL completo (prevista dalla spec)
- * è stata tolta il 2026-08-02 — comporre il dolce con lo stesso gesto,
- * un trascinamento per la base e uno per la farcitura, vale più del
- * passo risparmiato, e una scelta fatta al posto dell'utente peggiora
- * la UX anche quando l'opzione è una sola.
- *
- * Stessa decisione, stessa data, per la FINITURA: la ricetta decide
- * quale sia, ma non si applica mai da sola — al passo 3 il dolce resta
- * senza finitura finché l'utente non la trascina (o tocca) sul palco.
- * È l'unico pezzo di stato prodotto che NON vive nell'URL: lo SKU non
- * cambia, quindi è stato client (`finituraApplicata`) e si riazzera con
- * lo SKU — dopo un reload o su un link condiviso il gesto si rifà, ed è
- * il comportamento voluto.
+ * Dal refactor 2026-08-28 ogni combinazione dei 4 componenti è valida
+ * (prodotto cartesiano aperto): non c'è più bisogno di un gesto di
+ * "applicazione" separato per la finitura, come nel vecchio modello a
+ * matrice chiusa — scegliere la finitura È l'ultimo pushState, e il
+ * pannello dei numeri (PassoCompleto) compare da solo quando i 4
+ * segmenti sono tutti nell'URL.
  *
  * IMPAGINATO (redesign 2026-08-04) — tre aree, come la reference:
  * l'insegna a sinistra, il palco al centro e la colonna delle scelte a
  * destra. Sotto xl le tre colonne diventano due (insegna a tutta
  * larghezza, poi palco e scelte), e sotto lg una sola pila: insegna,
  * palco, prodotti. Le MISURE sono uniche per tutte le fasi
- * (2026-08-21): prima il palco dominava nei passi 1–3 e si stringeva
- * solo a dolce finito, così proprio mentre si componeva la cornice
- * usciva dal viewport. Ora tutta la scena tiene la misura della fase
- * finale — quella che sta in pagina senza scrollare — e su xl il palco
- * è sempre sticky: se la colonna delle tessere scorre, la scena (che è
- * anche il bersaglio del drag) resta davanti agli occhi.
+ * (2026-08-21): tutta la scena tiene la misura della fase finale —
+ * quella che sta in pagina senza scrollare — e su xl il palco è sempre
+ * sticky: se la colonna delle tessere scorre, la scena (che è anche il
+ * bersaglio del drag) resta davanti agli occhi.
  *
  * Con un puntatore fine le tessere si possono anche TRASCINARE sul
- * palco — il rilascio riuscito chiama le stesse scegliBase /
- * scegliFarcitura del click, quindi per l'URL (e per il Back) i due
- * gesti sono indistinguibili. Il hit-test confronta le coordinate di
- * pagina del puntatore (info.point di motion) con il rect del palco
- * riportato in coordinate di pagina.
+ * palco — il rilascio riuscito chiama la stessa funzione "scegli*" del
+ * click, quindi per l'URL (e per il Back) i due gesti sono
+ * indistinguibili. Il hit-test confronta le coordinate di pagina del
+ * puntatore (info.point di motion) con il rect del palco riportato in
+ * coordinate di pagina.
  *
  * IL VOLO (2026-08-20): anche il tap ha la sua scenografia. La scelta
  * col click/tocco fa volare il contenuto della tessera fino alla zona
  * del dolce sul palco — un clone fixed che parte dal rect del quadro e
- * atterra su ZONA_DOLCE — e la selezione vera (pushState o finitura)
- * parte SOLO all'atterraggio: così l'ingresso del prodotto sul palco è
- * il naturale secondo tempo del volo. Durante il volo la scena si
- * accende come al sorvolo del drag (stesso `sopraPalco`). Niente volo
- * con reduced-motion o quando la zona d'atterraggio non è tutta nel
+ * atterra su ZONA_DOLCE — e la selezione vera (il pushState) parte SOLO
+ * all'atterraggio: così l'ingresso del prodotto sul palco è il
+ * naturale secondo tempo del volo. Durante il volo la scena si accende
+ * come al sorvolo del drag (stesso `sopraPalco`). Niente volo con
+ * reduced-motion o quando la zona d'atterraggio non è tutta nel
  * viewport (lì al gesto risponde il CONTROCAMPO: sotto lg il palco sta
  * sopra la colonna delle scelte, e dopo ogni scelta col tap la pagina
  * scorre a centrarlo — il gesto parte dalla tessera, lo sguardo torna
@@ -84,7 +78,8 @@ import { SegnaPosto, type Punto, type VoloTessera } from "./TesseraScelta";
 export function Configuratore({
   foto,
   fotoFarciture,
-  fotoTopping,
+  fotoCredenza,
+  fotoFinitura,
 }: {
   /** stato → URL foto, scoperta dal server nelle cartelle di
    *  public/img/configuratore/prodotti/: chiave assente = niente foto */
@@ -92,38 +87,43 @@ export function Configuratore({
   /** farcitura → URL della foto dell'ingrediente da solo (cartelle di
    *  public/img/configuratore/farciture/), per le tessere del passo 2 */
   fotoFarciture: FotoFarciture;
-  /** topping → URL della foto della finitura da sola (cartelle di
-   *  public/img/configuratore/topping/), per la tessera del passo 3 */
-  fotoTopping: FotoTopping;
+  /** voce dalla credenza → URL della foto dell'ingrediente da solo
+   *  (cartelle di public/img/configuratore/credenza/), per le tessere
+   *  del passo 3 */
+  fotoCredenza: FotoCredenza;
+  /** finitura → URL della foto della finitura da sola (cartelle di
+   *  public/img/configuratore/finiture/), per le tessere del passo 4 */
+  fotoFinitura: FotoFinitura;
 }) {
   const pathname = usePathname();
   const { testi, percorso } = useLingua();
-  const { base, comb } = useMemo(() => statoDaPathname(pathname), [pathname]);
-  const passo = comb ? 3 : base ? 2 : 1;
+  const { base, farcitura, credenza, prodotto } = useMemo(
+    () => statoDaPathname(pathname),
+    [pathname]
+  );
+  const passo = prodotto ? 5 : credenza ? 4 : farcitura ? 3 : base ? 2 : 1;
   const riduci = useReducedMotion();
 
   /* quantità proposta: il minimo dove esiste, 1 altrove — lazy init così
      il primo render (anche server) è già giusto, senza flicker */
   const [pedane, setPedane] = useState<number | "">(() =>
-    comb ? (comb.ordine_minimo_pedane ?? 1) : ""
+    prodotto ? (base?.ordine_minimo_pedane ?? 1) : ""
   );
   const [moduloAperto, setModuloAperto] = useState(false);
-  const [finituraApplicata, setFinituraApplicata] = useState(false);
 
-  /* cambiare prodotto azzera quantità e modulo: minimo, pesi e catena
-     logistica sono della combinazione, un numero trascinato sembrerebbe
+  /* cambiare prodotto azzera quantità e modulo: minimo e catena
+     logistica sono della base, un numero trascinato sembrerebbe
      confermato e non lo è. Adeguamento durante il render, non in effect:
      niente frame intermedio con i dati del prodotto precedente. */
-  const sku = comb?.sku ?? null;
+  const sku = prodotto?.sku ?? null;
   const [skuPrecedente, setSkuPrecedente] = useState(sku);
   if (sku !== skuPrecedente) {
     setSkuPrecedente(sku);
-    setPedane(comb ? (comb.ordine_minimo_pedane ?? 1) : "");
+    setPedane(prodotto ? (base?.ordine_minimo_pedane ?? 1) : "");
     setModuloAperto(false);
-    setFinituraApplicata(false);
   }
 
-  /* avviso discreto per l'URL con farcitura non più disponibile: arriva
+  /* avviso discreto per l'URL con una scelta non più valida: arriva
      dal redirect server come ?nd=…, si legge una volta e si pulisce l'URL */
   const [avviso, setAvviso] = useState<string | null>(null);
   useEffect(() => {
@@ -132,7 +132,7 @@ export function Configuratore({
     const nd = new URLSearchParams(window.location.search).get("nd");
     if (nd) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setAvviso(testi.configuratore.avvisoFarcituraSparita);
+      setAvviso(testi.configuratore.avvisoSceltaSparita);
       window.history.replaceState(null, "", window.location.pathname);
     }
     /* il testo dell'avviso si legge una volta sola all'arrivo: cambiarlo
@@ -166,7 +166,14 @@ export function Configuratore({
     if (base) vaiA(`/configuratore/${base.id}/${id}`);
   };
 
-  const applicaFinitura = () => setFinituraApplicata(true);
+  const scegliCredenza = (id: string) => {
+    if (base && farcitura) vaiA(`/configuratore/${base.id}/${farcitura.id}/${id}`);
+  };
+
+  const scegliFinitura = (id: string) => {
+    if (base && farcitura && credenza)
+      vaiA(`/configuratore/${base.id}/${farcitura.id}/${credenza.id}/${id}`);
+  };
 
   /* sotto lg (impaginato a pila) il palco sta sopra la colonna delle
      scelte e la scelta col tap accadrebbe fuori schermo: il controcampo
@@ -243,18 +250,21 @@ export function Configuratore({
           if (!dentroPalco(p)) return false;
           if (passo === 1) scegliBase(id);
           else if (passo === 2) scegliFarcitura(id);
-          /* al passo 3 l'id è quello del topping ma non serve: la
-             finitura possibile è una sola, il gesto è la scelta */ else
-            applicaFinitura();
+          else if (passo === 3) scegliCredenza(id);
+          else if (passo === 4) scegliFinitura(id);
           return true;
         },
       }
     : null;
 
-  const apriPasso = (n: 1 | 2) => {
+  const apriPasso = (n: 1 | 2 | 3 | 4) => {
     setAvviso(null);
     if (n === 1) vaiA("/configuratore");
-    else if (base) vaiA(`/configuratore/${base.id}`);
+    else if (n === 2 && base) vaiA(`/configuratore/${base.id}`);
+    else if (n === 3 && base && farcitura)
+      vaiA(`/configuratore/${base.id}/${farcitura.id}`);
+    else if (n === 4 && base && farcitura && credenza)
+      vaiA(`/configuratore/${base.id}/${farcitura.id}/${credenza.id}`);
   };
 
   const ricomincia = () => {
@@ -262,11 +272,12 @@ export function Configuratore({
     vaiA("/configuratore");
   };
 
-  /* la fase «numeri» è l'unica in cui la colonna delle scelte non è una
-     griglia di tessere ma un modulo. Cambia il contenuto, non più
-     l'impaginato (2026-08-21): la griglia ha una misura sola per tutte
-     le fasi, e la scena non salta quando il dolce si completa */
-  const numeri = passo === 3 && finituraApplicata;
+  /* la fase "completo" è l'unica in cui la colonna delle scelte non è
+     una griglia di tessere ma il pannello dei numeri. Cambia il
+     contenuto, non più l'impaginato (2026-08-21): la griglia ha una
+     misura sola per tutte le fasi, e la scena non salta quando il
+     dolce si completa */
+  const completo = passo === 5;
 
   /* quando la fase cambia il focus raggiunge il titolo del passo:
      chi naviga da tastiera o con lo screen reader atterra
@@ -275,7 +286,7 @@ export function Configuratore({
      Il confronto col ref salta il primo render: al caricamento il
      focus non si ruba. */
   const titoloRef = useRef<HTMLHeadingElement | null>(null);
-  const fase = numeri ? "numeri" : `passo-${passo}`;
+  const fase = `passo-${passo}`;
   const fasePrecedente = useRef(fase);
   useEffect(() => {
     if (fasePrecedente.current === fase) return;
@@ -288,14 +299,16 @@ export function Configuratore({
       ? testi.configuratore.titoli.passo1
       : passo === 2
         ? testi.configuratore.titoli.passo2
-        : numeri
-          ? testi.configuratore.titoli.completo
-          : testi.configuratore.titoli.passo3;
+        : passo === 3
+          ? testi.configuratore.titoli.passo3
+          : passo === 4
+            ? testi.configuratore.titoli.passo4
+            : testi.configuratore.titoli.completo;
 
   return (
     <section
       data-livello={passo}
-      data-completo={numeri ? "true" : "false"}
+      data-completo={completo ? "true" : "false"}
       className="configuratore-playground relative isolate overflow-hidden"
     >
       <ScenografiaCandy />
@@ -319,13 +332,7 @@ export function Configuratore({
           </p>
         )}
 
-      {/* grid-cols-1 esplicito e min-w-0 sulle colonne: il palco ha
-          aspect-ratio E min-height, quindi la sua larghezza intrinseca
-          vale 465px — con una traccia `auto` la griglia ci si allarga
-          sopra e sul telefono la colonna dei prodotti finisce tagliata
-          dall'overflow-x-clip della pagina. minmax(0,1fr) toglie il
-          minimo automatico e il palco torna a seguire la colonna. */}
-        <div className="configurator-shell">
+      <div className="configurator-shell">
           <div className="configurator-intro min-w-0">
             <Intro />
           </div>
@@ -333,22 +340,21 @@ export function Configuratore({
           <div className="configurator-progress min-w-0">
             <Riepilogo
               base={base}
-              comb={comb}
-              finituraApplicata={finituraApplicata}
+              farcitura={farcitura}
+              credenza={credenza}
+              prodotto={prodotto}
               apriPasso={apriPasso}
             />
           </div>
 
-        {/* impilato (sotto lg) il palco si tiene una misura da vetrina e
-            resta centrato: a tutta larghezza su un tablet diventerebbe
-            un quadrato di 900px, dominante fino a essere ingombrante */}
           <div className="configurator-stage mx-auto w-full min-w-0">
             <Banco
               ref={palcoRef}
               base={base}
-              comb={comb}
+              farcitura={farcitura}
+              credenza={credenza}
+              prodotto={prodotto}
               foto={foto}
-              finituraApplicata={finituraApplicata}
               sopra={sopraPalco}
               passo={passo}
               apriPasso={apriPasso}
@@ -369,9 +375,8 @@ export function Configuratore({
             />
           )}
 
-          {passo === 2 && base && (
+          {passo === 2 && (
             <PassoFarcitura
-              base={base}
               fotoFarciture={fotoFarciture}
               selezionata={null}
               onScegli={(id, v) => lanciaVerso(() => scegliFarcitura(id), v)}
@@ -379,14 +384,28 @@ export function Configuratore({
             />
           )}
 
-          {passo === 3 && base && comb && (
-            <PassoFinitura
-              base={base}
-              comb={comb}
-              fotoTopping={fotoTopping}
-              finituraApplicata={finituraApplicata}
-              onApplicaFinitura={(v) => lanciaVerso(applicaFinitura, v)}
+          {passo === 3 && (
+            <PassoCredenza
+              fotoCredenza={fotoCredenza}
+              selezionata={null}
+              onScegli={(id, v) => lanciaVerso(() => scegliCredenza(id), v)}
               drag={dragTessere}
+            />
+          )}
+
+          {passo === 4 && (
+            <PassoFinitura
+              fotoFinitura={fotoFinitura}
+              selezionata={null}
+              onScegli={(id, v) => lanciaVerso(() => scegliFinitura(id), v)}
+              drag={dragTessere}
+            />
+          )}
+
+          {passo === 5 && prodotto && base && (
+            <PassoCompleto
+              prodotto={prodotto}
+              base={base}
               pedane={pedane}
               onCambiaPedane={setPedane}
               moduloAperto={moduloAperto}
@@ -396,7 +415,7 @@ export function Configuratore({
           </Selettore>
 
           <BarraSalvataggio
-            completo={numeri}
+            completo={completo}
             onCompleta={() => titoloRef.current?.focus({ preventScroll: true })}
           />
         </div>

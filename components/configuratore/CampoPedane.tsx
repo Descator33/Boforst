@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  quantita,
-  type Base,
-  type Combinazione,
-} from "@/lib/configuratore";
+import { quantita, type Base } from "@/lib/configuratore";
 import { useLingua } from "@/components/LinguaProvider";
 import { conta, interpola } from "@/lib/i18n/interpola";
 import { fmtKg, fmtNumero } from "@/lib/i18n/lingue";
@@ -13,11 +9,13 @@ const INPUT_CLS =
   "w-24 rounded-2xl border border-linea bg-carta px-4 py-3 text-center font-mono text-lg font-bold text-inchiostro outline-none transition-colors focus:border-corallo-scena focus:ring-2 focus:ring-corallo-scena/25";
 
 /**
- * L'unica decisione del passo 3: quante pedane. Il minimo si dichiara
- * PRIMA, in quantità e non in divieto, legato al campo con
- * aria-describedby; la traduzione in cartoni, pezzi e chilogrammi si
- * aggiorna in tempo reale in una regione live cortese — è il modo in cui
- * un buyer verifica l'ordine di grandezza prima di premere invio.
+ * L'unica decisione dell'ultimo passo: quante pedane. Grammatura, peso e
+ * ordine minimo vivono sulla base (farcitura/credenza/finitura sono
+ * compositive). Il minimo si dichiara PRIMA, in quantità e non in
+ * divieto, legato al campo con aria-describedby; la traduzione in
+ * cartoni, pezzi e chilogrammi si aggiorna in tempo reale in una regione
+ * live cortese — è il modo in cui un buyer verifica l'ordine di
+ * grandezza prima di premere invio.
  *
  * Sotto il minimo il messaggio propone la correzione invece di negare, e
  * resta non bloccante fino all'invio: la validazione che conta sta in
@@ -25,20 +23,18 @@ const INPUT_CLS =
  */
 export function CampoPedane({
   base,
-  comb,
   pedane,
   onCambia,
 }: {
   base: Base;
-  comb: Combinazione;
   pedane: number | "";
   onCambia: (v: number | "") => void;
 }) {
   const { lingua, testi: tuttiTesti } = useLingua();
   const testi = tuttiTesti.configuratore;
-  const minimo = comb.ordine_minimo_pedane;
+  const minimo = base.ordine_minimo_pedane;
   const valida = typeof pedane === "number" && Number.isInteger(pedane) && pedane >= 1;
-  const q = valida ? quantita(comb.base, comb.farcitura, pedane) : null;
+  const q = valida ? quantita(base.id, pedane) : null;
   const sottoMinimo = valida && minimo != null && pedane < minimo;
 
   return (
@@ -84,9 +80,9 @@ export function CampoPedane({
               min: fmtNumero(minimo, lingua),
             })}
           </strong>
-          {comb.ordine_minimo_pezzi != null &&
+          {base.ordine_minimo_pezzi != null &&
             interpola(testi.quantita.minimoPezzi, {
-              pezzi: fmtNumero(comb.ordine_minimo_pezzi, lingua),
+              pezzi: fmtNumero(base.ordine_minimo_pezzi, lingua),
             })}
           .
         </p>
@@ -118,7 +114,7 @@ export function CampoPedane({
               )}&body=${encodeURIComponent(
                 interpola(testi.quantita.mailCorpo, {
                   base: base.nome,
-                  sku: comb.sku,
+                  sku: base.id,
                   min: fmtNumero(minimo, lingua),
                 })
               )}`}

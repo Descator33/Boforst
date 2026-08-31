@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { FrecciaCerchio, IconaChiudi } from "./Decori";
 import { useTesti } from "@/components/LinguaProvider";
 
-const NUMERI = ["01", "02", "03"];
+const NUMERI = ["01", "02", "03", "04"];
 
 /**
  * Il pulsante «come funziona» della colonna introduttiva e il dialogo

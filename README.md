@@ -13,13 +13,21 @@ npm run dev      # sviluppo
 npm run build    # passa dal prebuild che valida il dataset SKU
 ```
 
-## Deploy (Vercel)
+## Deploy (Netlify)
 
-- Next 16 riconosciuto in automatico; `npm run build` esegue il lifecycle
-  `prebuild` → un dataset rotto ferma il deploy.
-- Node fissato a 22 via `engines` nel package.json.
-- Env: `NEXT_PUBLIC_SITE_URL` col dominio definitivo (vedi `.env.example`);
-  senza, canonical e hreflang puntano a www.delsigel.it.
+- Il repository contiene `netlify.toml`: build `npm run build`, publish `.next`.
+  Il lifecycle esegue anche `prebuild`, quindi un dataset o una foto non validi
+  fermano il deploy.
+- Node è fissato a 22 sia in `.nvmrc` sia in `engines` nel `package.json`.
+- L'adapter OpenNext di Netlify viene applicato automaticamente: non installare
+  o fissare manualmente `@netlify/plugin-nextjs`.
+- In Netlify, impostare `NEXT_PUBLIC_SITE_URL` al dominio HTTPS definitivo
+  (vedi `.env.example`); senza, canonical e hreflang puntano a
+  `https://www.delsigel.it`.
+- `NETLIFY_NEXT_SKEW_PROTECTION=true` è già dichiarato in `netlify.toml`
+  per mantenere coerenti navigazione e Server Actions durante un nuovo deploy.
+- Collegare il repository con production branch `main`; prima del cambio DNS,
+  verificare almeno una Deploy Preview e il flusso quotazione in tutte le lingue.
 
 ## Da leggere prima di metterci mano
 

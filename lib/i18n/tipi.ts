@@ -80,30 +80,26 @@ export type ValoreAsse =
   | "piccola"
   | "media";
 
-export type IdFarcitura =
-  | "ciock-e-lampone"
-  | "crema-e-fragola"
-  | "frutti-di-bosco-e-ribes"
-  | "pistacchio-e-lampone"
-  | "crema-e-lampone"
-  | "marmellata-frutti-rossi-e-ribes"
-  | "cioccolato"
-  | "pistacchio"
-  | "crema"
-  | "tre-cioccolati"
-  | "frutti-rossi"
-  | "senza-farcitura"
-  | "caramello"
-  | "dulce-de-leche"
-  | "cannella";
+/* Dal refactor 2026-08-28 il configuratore ha 4 componenti liberamente
+   combinabili (non più una matrice sparsa e chiusa di SKU): farcitura,
+   dalla credenza e finitura sono ciascuna un vocabolario chiuso, sempre
+   tutto disponibile per ogni base. */
 
-export type IdTopping =
-  | "zucchero-a-velo-idrorepellente"
-  | "perle-di-zucchero-idrorepellenti-al-cacao"
-  | "perle-di-zucchero-idrorepellenti-bianche"
-  | "scagliette-di-cioccolato-tutti-e-3-i-cioccolati"
-  | "perle-di-zucchero-colorate-rosse"
-  | "semolato";
+export type IdFarcitura = "crema" | "cioccolato" | "pistacchio";
+
+export type IdCredenza =
+  | "kinder-bueno"
+  | "cioccolato-a-pezzi"
+  | "corn-flakes"
+  | "fragola"
+  | "banana"
+  | "biscotti";
+
+export type IdFinitura =
+  | "zucchero"
+  | "zucchero-a-velo"
+  | "zucchero-di-canna"
+  | "cacao";
 
 export type IdTappaStoria =
   | "origini"
@@ -293,7 +289,8 @@ export interface Testi {
     assi: { gusto: string; farcitura: string; finitura: string; formato: string };
     valori: Record<ValoreAsse, string>;
     farciture: Record<IdFarcitura, string>;
-    topping: Record<IdTopping, string>;
+    credenza: Record<IdCredenza, string>;
+    finiture: Record<IdFinitura, string>;
     /** oggi identica per tutte le basi; l'italiano resta nel dataset */
     modalitaUso: string;
     scattoProdotto: string; // ripiego dell'alt quando manca la nota
@@ -314,12 +311,19 @@ export interface Testi {
       chiudi: string;
       ok: string;
     };
-    titoli: { passo1: string; passo2: string; passo3: string; completo: string };
-    passoDi: string; // sr: «Passo {n} di 3 — {titolo}»
-    avvisoFarcituraSparita: string;
+    titoli: {
+      passo1: string;
+      passo2: string;
+      passo3: string;
+      passo4: string;
+      completo: string;
+    };
+    passoDi: string; // sr: «Passo {n} di 4 — {titolo}»
+    avvisoSceltaSparita: string; // link salvato con una scelta non più valida
     riepilogo: {
       base: string;
       farcitura: string;
+      credenza: string;
       finitura: string;
       cambia: string;
       tornaAlPasso: string; // «Torna al passo {n}, {etichetta}: {valore}»
@@ -331,31 +335,32 @@ export interface Testi {
       mancaPasso1: string;
       mancaPasso2: string;
       mancaPasso3: string;
+      mancaPasso4: string;
       completoAria: string;
       mollaQui: string;
       trascinaVuoto: [string, string]; // le due righe sopra la freccia
       toccaVuoto: [string, string];
       trascinaPasso2: string;
       trascinaPasso3: string;
+      trascinaPasso4: string;
       toccaPasso2: string;
       toccaPasso3: string;
+      toccaPasso4: string;
       oppureLista: string;
       fotoSenzaFinitura: string;
       cambiaFarcitura: string;
-      cambiaBase: string;
       ricomincia: string;
     };
     tessera: {
       prendimi: string;
       inVolo: string;
-      diventa: string; // «diventa {nome}»
-      dallaRicetta: string;
-      farciture: Conteggio; // «{n} farciture a listino» per l'aria-label
     };
     finitura: {
-      bossLevel: string; // «Boss level: {nome} · {farcitura} vuole…»
-      boom: string; // «Boom! {nome} · {farcitura} è completo, con {topping}.»
+      boom: string; // «Il tuo {nome} è pronto.»
       combo: string;
+      farcitura: string; // etichetta del recap
+      credenza: string; // etichetta del recap
+      finitura: string; // etichetta del recap
       grammatura: string;
       diametro: string;
       modalitaUso: string;
@@ -426,6 +431,7 @@ export interface Testi {
         oggetto: string; // «Richiesta quotazione — {nome} · {farcitura} — {pedane} pedane»
         intestazione: string;
         prodotto: string;
+        credenza: string; // «Dalla credenza: {credenza}»
         finitura: string;
         grammaturaDiametro: string; // «Grammatura: {g} g · Diametro: {cm} cm»
         quantitaRichiesta: string;
@@ -611,7 +617,7 @@ export interface Testi {
       baseTitolo: string; // «{base} · Configuratore Delsigel»
       baseDescrizione: string; // «Scegli la farcitura per {base}…»
       combTitolo: string; // «{nome} · {farcitura} · Configuratore Delsigel»
-      combDescrizione: string; // «{nome} con {farcitura}, finitura {topping}, {g} g…»
+      combDescrizione: string; // «{nome} con {farcitura}, {credenza}, finitura {finitura}, {g} g…»
     };
   };
 }

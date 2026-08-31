@@ -390,15 +390,14 @@ button.candy-livello:is(:hover, :focus-visible) {
    nero e ombra pop gialla — su cui il dolce si compone (l'alzata
    disegnata che lo reggeva è uscita di scena il 2026-08-20: resta
    l'ombra a terra a fare da piano). Non è una card di dashboard: è
-   una vetrina, e la differenza la fanno la cornice tratteggiata, i
-   decori disegnati e il fatto che il bersaglio del rilascio sia
-   grande quanto la scena (il palco intero, non un cerchio disegnato
-   in mezzo).
+   una vetrina, e la differenza la fanno i decori disegnati e il
+   fatto che il bersaglio del rilascio sia grande quanto la scena
+   (il palco intero, non un cerchio disegnato in mezzo).
 
    Tutti gli stati vivono su due data-attribute del palco:
    `data-sopra` (una tessera trascinata è sopra la scena) e
    `data-fase` (vuota / base / comb). Una sola classe governa così
-   cornice e alone, senza propagare props fino alle foglie e senza far
+   l'alone, senza propagare props fino alle foglie e senza far
    ridisegnare la griglia durante il drag. */
 
 /* L'ombra pop: un rettangolo pieno spostato in basso a destra col suo
@@ -443,25 +442,6 @@ button.candy-livello:is(:hover, :focus-visible) {
   box-shadow:
     11px 13px 0 0 var(--fucsia),
     11px 13px 0 3px var(--inchiostro);
-}
-
-/* la cornice interna tratteggiata: corallo, tenue a riposo, piena e
-   accesa quando una tessera sorvola la scena */
-.palco-cornice {
-  position: absolute;
-  inset: 14px;
-  border: 2px dashed color-mix(in srgb, var(--panna) 72%, transparent);
-  border-radius: calc(var(--raggio-palco) - 14px);
-  opacity: 0.45;
-  pointer-events: none;
-  transition:
-    opacity 0.28s ease-out,
-    inset 0.28s ease-out;
-}
-.palco[data-sopra="true"] .palco-cornice {
-  opacity: 1;
-  inset: 10px;
-  border-color: var(--acido);
 }
 
 /* Il cerchio tratteggiato del rilascio (classi `bersaglio` e
@@ -737,7 +717,6 @@ button.candy-livello:is(:hover, :focus-visible) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .palco-cornice,
   .palco-ombra,
   .mascotte-candy,
   .scintilla-drag,
@@ -1237,20 +1216,6 @@ button.candy-livello:is(:hover, :focus-visible) {
   border-radius: 999px;
   background: rgb(255 255 255 / 0.22);
   content: "";
-}
-
-.palco-cornice {
-  inset: 4.25rem 3.25rem 3.45rem;
-  z-index: 1;
-  border: 3px dashed #9a63dc;
-  border-radius: 2.35rem;
-  opacity: 0.92;
-}
-
-.palco[data-sopra="true"] .palco-cornice {
-  inset: 4rem 3rem 3.2rem;
-  border-color: var(--config-pink);
-  opacity: 1;
 }
 
 .candy-ribbon {
@@ -1789,11 +1754,6 @@ button.candy-livello:is(:hover, :focus-visible) {
   .palco::before {
     inset: 2.25rem 1.3rem 1.7rem;
     border-radius: 2rem;
-  }
-
-  .palco-cornice {
-    inset: 3.15rem 2rem 2.45rem;
-    border-radius: 1.4rem;
   }
 
   .candy-ribbon {

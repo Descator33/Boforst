@@ -1,20 +1,26 @@
 import { readdirSync } from "node:fs";
 import { extname, join } from "node:path";
-import type { FotoFarciture, FotoStati, FotoTopping } from "../configuratore";
+import type {
+  FotoCredenza,
+  FotoFarciture,
+  FotoFinitura,
+  FotoStati,
+} from "../configuratore";
 
 /**
- * Le foto del configuratore vivono in public/img/configuratore/, due
+ * Le foto del configuratore vivono in public/img/configuratore/, quattro
  * radici con lo stesso contratto (vedi i README lì):
  *
- *   prodotti/<stato>      gli stati visibili del prodotto:
- *     <base>                          la base semplice
- *     <base>--<farcitura>             farcito, senza finitura (= sku)
- *     <base>--<farcitura>--<topping>  il prodotto completo
- *   farciture/<farcitura> la farcitura DA SOLA, l'ingrediente che si
- *                         trascina al passo 2 (il farcito compare sul
- *                         banco solo dopo il rilascio, mai sulla tessera)
- *   topping/<topping>     la finitura DA SOLA, stessa regola un passo
- *                         più in là: è la tessera del passo 3
+ *   prodotti/<stato>                        gli stati visibili del prodotto:
+ *     <base>                                          la base semplice
+ *     <base>--<farcitura>                             farcito
+ *     <base>--<farcitura>--<credenza>                 + dalla credenza
+ *     <base>--<farcitura>--<credenza>--<finitura>      il prodotto completo (= sku)
+ *   farciture/<farcitura>  la farcitura DA SOLA, l'ingrediente che si
+ *                          trascina al passo 2
+ *   credenza/<credenza>    la voce dalla credenza DA SOLA, tessera del
+ *                          passo 3
+ *   finiture/<finitura>    la finitura DA SOLA, tessera del passo 4
  *
  * La cartella È il contratto: si scansiona a render (server), la prima
  * immagine in ordine alfabetico vince, una cartella vuota significa
@@ -63,5 +69,9 @@ export const fotoStati = (): FotoStati => scansiona("prodotti");
  *  passo 2). */
 export const fotoFarciture = (): FotoFarciture => scansiona("farciture");
 
-/** Topping → URL della foto della finitura da sola (tessera del passo 3). */
-export const fotoTopping = (): FotoTopping => scansiona("topping");
+/** Voce dalla credenza → URL della foto dell'ingrediente da solo (tessere
+ *  del passo 3). */
+export const fotoCredenza = (): FotoCredenza => scansiona("credenza");
+
+/** Finitura → URL della foto della finitura da sola (tessera del passo 4). */
+export const fotoFinitura = (): FotoFinitura => scansiona("finiture");

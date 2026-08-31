@@ -1,27 +1,21 @@
 "use client";
 
-import { type Base, type Combinazione } from "@/lib/configuratore";
+import { type Base } from "@/lib/configuratore";
 import { useLingua } from "@/components/LinguaProvider";
 import { conta, interpola } from "@/lib/i18n/interpola";
 import { fmtKg } from "@/lib/i18n/lingue";
 
 /**
  * La catena logistica tradotta in una scala leggibile, dal pezzo alla
- * pedana, con i pesi calcolati sulla grammatura di quella farcitura.
- * Nessuna grafica: 3 o 4 righe in monospaziato, il carattere che tutto il
- * sito usa per i dati tecnici. Dove il vassoio non esiste (Intriko Midi,
- * Lussekatt, Klejner) la scala ha tre righe e non si inventa nulla.
+ * pedana. Grammatura e pesi vivono sulla base (farcitura/credenza/
+ * finitura sono compositive, non cambiano la logistica). Nessuna
+ * grafica: 3 righe in monospaziato, il carattere che tutto il sito usa
+ * per i dati tecnici.
  *
  * Ogni quantità passa da `conta`: il plurale è un testo intero del
  * dizionario, mai un suffisso — il finlandese conta col partitivo.
  */
-export function ScalaFormato({
-  base,
-  comb,
-}: {
-  base: Base;
-  comb: Combinazione;
-}) {
+export function ScalaFormato({ base }: { base: Base }) {
   const { lingua, testi } = useLingua();
   const scala = testi.configuratore.scala;
   const p = base.packaging;
@@ -39,7 +33,7 @@ export function ScalaFormato({
         ? conta(scala.vassoi, p.vassoi_per_cartone, lingua)
         : null,
       conta(scala.pezzi, p.pezzi_per_cartone, lingua),
-      fmtKg(comb.peso_cartone_kg, lingua),
+      fmtKg(base.peso_cartone_kg, lingua),
     ]
       .filter(Boolean)
       .join(" · "),
@@ -56,7 +50,7 @@ export function ScalaFormato({
             })}`
           : ""),
       conta(scala.pezzi, p.pezzi_per_pedana, lingua),
-      fmtKg(comb.peso_pedana_kg, lingua),
+      fmtKg(base.peso_pedana_kg, lingua),
     ].join(" · "),
   ]);
 

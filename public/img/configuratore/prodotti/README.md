@@ -12,23 +12,33 @@ JPEG e formati senza alfa non entrano — il prebuild
 (`scripts/valida-configuratore.mjs`) blocca il build se trova una foto
 che non rispetta la regola.
 
-I nomi delle cartelle vengono da `lib/configuratore/dati-dolci.json`,
-componenti separate da `--`:
+I nomi delle cartelle vengono dai vocabolari di
+`lib/configuratore/dati-dolci.json`, componenti separate da `--`. Dal
+refactor 2026-08-28 il prodotto ha 4 componenti liberamente combinabili
+(non più una lista di SKU dichiarate a mano), quindi gli stati possibili
+sono 4 livelli di profondità:
 
-1. `<base>` — la base semplice, senza farcitura né topping
-   (es. `nuvola`) — 10 cartelle. Foto usata al passo 1 e sul banco.
-2. `<base>--<farcitura>` — farcito, senza topping; è il campo `sku`
-   (es. `nuvola--ciock-e-lampone`) — 32 cartelle. Foto usata SOLO sul
-   banco, dopo il rilascio della farcitura e prima del gesto della
-   finitura: le tessere del passo 2 mostrano l'ingrediente da solo
-   (vedi `../farciture/`), mai il semiprodotto.
-3. `<base>--<farcitura>--<topping>` — prodotto completo, `sku` + `--` +
-   campo `topping`
-   (es. `nuvola--ciock-e-lampone--zucchero-a-velo-idrorepellente`) —
-   32 cartelle. Foto del banco a finitura applicata.
+1. `<base>` — la base semplice, senza farcitura né altro
+   (es. `nuvola`) — 3 cartelle. Foto usata al passo 1 e sul banco.
+2. `<base>--<farcitura>` — farcita
+   (es. `nuvola--crema`) — fino a 9 cartelle. Foto del banco dopo la
+   scelta della farcitura, prima della credenza.
+3. `<base>--<farcitura>--<credenza>` — + la voce dalla credenza
+   (es. `nuvola--crema--kinder-bueno`) — fino a 54 cartelle. Foto del
+   banco dopo la scelta dalla credenza, prima della finitura.
+4. `<base>--<farcitura>--<credenza>--<finitura>` — prodotto completo, è
+   la SKU
+   (es. `nuvola--crema--kinder-bueno--zucchero-a-velo`) — fino a 216
+   cartelle. Foto del banco a configurazione completata.
+
+Ogni combinazione dei 4 componenti è un prodotto valido (3 basi × 3
+farciture × 6 voci di credenza × 4 finiture = 216): non c'è più una lista
+chiusa di combinazioni da rispettare, la cartella si crea quando la foto
+arriva, per qualunque combinazione.
 
 Stessa inquadratura e stessa scala tra gli stati dello stesso prodotto.
 
-Nota: i campi `immagine` rimasti in `dati-dolci.json` sono un residuo
-della trascrizione e non vengono letti; la vecchia cartella `../basi/`
-non esiste più (gli scontorni sono confluiti qui).
+Nota: le foto del vecchio modello (SKU a matrice chiusa, basi diverse da
+Nuvola/Stella/Cuore) sono state spostate in
+`_archivio/configuratore-vecchio-modello/` alla radice del repo — non sono
+più usate ma non sono state cancellate.
