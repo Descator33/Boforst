@@ -783,7 +783,7 @@ button.candy-livello:is(:hover, :focus-visible) {
 /* L'ingresso Motion dell'header globale può essere interrotto dal cambio
    di route client-side. In questa tavola la navigazione è parte della
    composizione e deve essere presente dal primo frame. */
-.configuratore-page > header {
+.configuratore-page header {
   padding-top: 0.8rem;
   opacity: 1 !important;
   transform: none !important;
@@ -1818,3 +1818,75 @@ button.candy-livello:is(:hover, :focus-visible) {
     transform: none;
   }
 }
+
+/* Audit 2026-10: feedback reali, azioni coerenti, anteprima mobile compatta. */
+.configurator-loader { position:fixed;inset:0;z-index:100;background:var(--panna,#fff5e9);display:grid;place-items:center;padding:1.25rem;overflow:auto; }
+.configurator-loader__card { width:min(100%,30rem);text-align:center;border:2px solid var(--inchiostro,#221718);border-radius:2rem;background:var(--carta,#fff);padding:2rem;box-shadow:8px 8px 0 var(--oro,#ffd644); }
+.configurator-loader__mark { display:grid;place-items:center;width:4rem;height:4rem;margin:0 auto 1.5rem;border-radius:50%;background:var(--viola,#763de4);color:white;font-size:2.5rem;font-weight:900; }
+.configurator-loader h2 { font-size:clamp(1.5rem,4vw,2rem);font-weight:900;line-height:1.1; }
+.configurator-loader p { margin:1rem 0;line-height:1.5; }
+.configurator-loader progress { width:100%;height:1rem;accent-color:var(--viola,#763de4); }
+.configurator-loader button,.configurator-action { min-height:44px;border-radius:2rem;background:var(--inchiostro,#221718);color:var(--panna,#fff5e9);padding:.8rem 1.3rem;font-weight:700;cursor:pointer; }
+.configurator-action:disabled { opacity:.55;cursor:wait; }
+.configurator-loader button:focus-visible,.configurator-action:focus-visible { outline:3px solid var(--viola,#763de4);outline-offset:4px; }
+.configurator-share-dialog { margin:auto;width:min(92vw,36rem);border:2px solid var(--inchiostro);border-radius:1.5rem;background:var(--panna); }
+.configurator-share-dialog::backdrop {background:#21172580;}
+.configurator-notice {margin-block:1rem;padding:1rem;border:1px solid var(--inchiostro);border-radius:1rem;background:var(--carta);font-size:.9rem;line-height:1.5;}
+.configurator-included { display:block;font-size:10px;text-transform:none;letter-spacing:.02em;margin-top:3px; }
+.configurator-stage { position:relative; }
+.configurator-stage-status {position:absolute;inset:40% 8% auto;text-align:center;background:var(--carta);border:1px solid var(--inchiostro);border-radius:1rem;padding:1rem;z-index:30;}
+.configurator-image-loading {position:absolute;inset:45% 0 auto;text-align:center;font-size:12px;padding:.5rem;}
+.configurator-product-info {padding:1rem;border:1px solid var(--linea);border-radius:1rem;font-size:.9rem;line-height:1.5;}
+.configurator-product-info summary {cursor:pointer;font-weight:700;min-height:32px;}
+.configurator-product-info p {margin-block:.75rem;}
+.configurator-product-info a {text-decoration:underline;}
+.configuratore-page header nav a {min-width:44px;min-height:44px;display:grid;place-items:center;}
+.configuratore-page header a:focus-visible {outline:2px solid var(--viola);outline-offset:3px;}
+.candy-livello__cambia {opacity:1;}
+@media (max-width:63.99rem) {
+ .configurator-stage {grid-row:3;grid-column:1;align-self:start;position:sticky;top:.5rem;z-index:25;max-width:15rem;padding:.25rem;border-radius:1.25rem;background:var(--panna);box-shadow:0 4px 18px #25152d1a;}
+ .configurator-stage .palco {aspect-ratio:1.45;min-height:0;}
+ .configurator-stage .candy-ribbon,.configurator-stage .mascotte-candy,.configurator-stage .palco-amico,.configurator-stage .palco-lecca,.configurator-stage .candy-tray-task,.configurator-stage .palco > .pointer-events-none,.configurator-stage .palco > .absolute.inset-x-0 {display:none;}
+ .configurator-stage .palco {overflow:hidden;}
+ .configurator-stage .palco-ombra {display:none;}
+ .configurator-stage .palco > .palco-prodotto {top:auto;bottom:10% !important;height:80% !important;left:15% !important;width:70% !important;}
+ .configurator-shell > .relative.min-w-0 {grid-row:3;grid-column:1;padding-top:13rem;}
+ .configurator-savebar {grid-row:4;}
+ .configurator-progress {scroll-margin-top:1rem;}
+ .configurator-selector-title {scroll-margin-top:13rem;}
+ .configurator-shell {row-gap:1.5rem;}
+ .configuratore-playground {overflow:clip;}
+ .configurator-inventory {scroll-margin-top:13rem;}
+}
+@media (max-width:39.99rem) {
+ .configuratore-page header {gap:.5rem;padding-inline:.75rem;flex-wrap:wrap;}
+ .configuratore-page header nav {max-width:100%;}
+ .configuratore-page header nav a {padding-inline:.4rem;}
+ .configurator-savebar button {white-space:normal;}
+}
+
+@media (max-width:63.99rem) {
+ .tessera, #ragione_sociale, #canale, #email, #telefono, #note, #pedane {scroll-margin-top:13rem;}
+}
+
+@media (min-width:80rem) and (max-width:91rem) {
+ .configurator-shell {grid-template-columns:minmax(12rem,.65fr) minmax(23rem,1.3fr) minmax(19rem,1fr);}
+ .configurator-progress {transform:none;}
+ .candy-livelli {gap:clamp(.5rem,1vw,1rem);}
+}
+@media (max-width:39.99rem) {
+ .configuratore-playground, .configuratore-playground[data-livello] {padding-block:2rem 2.5rem;}
+ .configurator-intro .config-play-logo,.configurator-play-burst {display:none;}
+ .configurator-title {font-size:clamp(2.8rem,12vw,3.8rem);margin-top:0;}
+ .configurator-intro-copy,.configurator-how-button {margin-top:1.25rem;}
+}
+
+/* Etichette piccole e controlli secondari leggibili e raggiungibili. */
+.configuratore-page [class~="text-inchiostro/35"],
+.configuratore-page [class~="text-inchiostro/45"],
+.configuratore-page [class~="text-inchiostro/55"] {color:color-mix(in srgb,var(--inchiostro) 75%,transparent);}
+.configuratore-page dialog button {min-width:44px;min-height:44px;}
+.candy-tray-task {color:var(--inchiostro);}
+
+.candy-tray-task {top:16% !important;font-size:12px;letter-spacing:.04em;}
+#come-funziona-titolo {padding-right:2.5rem;}

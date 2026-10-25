@@ -46,7 +46,7 @@ export default async function RootLayout({
   return (
     <html lang={lingua} className={`${variabiliSito} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-panna text-inchiostro">
-        <LinguaProvider lingua={lingua} testi={testi}>
+        <LinguaProvider lingua={lingua} testi={{configuratore:testi.configuratore, prodotti:testi.prodotti, comune:testi.comune}}>
           {children}
         </LinguaProvider>
       </body>

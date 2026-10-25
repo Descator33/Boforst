@@ -1,3 +1,4 @@
+import { ESPERIENZA } from "../esperienza";
 import type { Testi } from "../tipi";
 
 /**
@@ -49,6 +50,7 @@ export const it: Testi = {
         catalogo: "Catalogo 2026/27",
       },
       configuratore: {
+
         titolo: "Configuratore",
         crea: "Crea il tuo dolce",
         comeFunziona: "Come funziona",
@@ -240,46 +242,51 @@ export const it: Testi = {
     },
     farciture: {
       cioccolato: "Cioccolato",
-      pistacchio: "Pistacchio",
       crema: "Crema",
     },
     credenza: {
-      "kinder-bueno": "Kinder Bueno",
-      "cioccolato-a-pezzi": "Cioccolato a pezzi",
-      "corn-flakes": "Corn flakes",
+      "frutti-di-bosco": "Frutti di bosco",
       fragola: "Fragola",
+      kiwi: "Kiwi",
       banana: "Banana",
-      biscotti: "Biscotti",
+      "kit-kat": "Kit Kat",
+      "happy-hippo": "Happy Hippo",
+      smarties: "Smarties",
+      "kinder-bueno-dark": "Kinder Bueno Dark",
+      "kinder-bueno-white": "Kinder Bueno White",
+      kinder: "Kinder",
+      "quadretti-di-cioccolato": "Quadretti di cioccolato",
+      oreo: "Oreo",
+      cocco: "Cocco",
+      "mini-cookies": "Mini Cookies",
     },
     finiture: {
-      zucchero: "Zucchero",
       "zucchero-a-velo": "Zucchero a velo",
-      "zucchero-di-canna": "Zucchero di canna",
-      cacao: "Cacao",
     },
     modalitaUso: "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
     scattoProdotto: "scatto di prodotto",
   },
 
   configuratore: {
+    esperienza: ESPERIENZA.it,
     percorso: [
-      {
-        titolo: "Scegli la base",
-        testo: "Seleziona la base che preferisci e dai forma al tuo dolce.",
-      },
-      {
-        titolo: "Aggiungi la farcitura",
-        testo: "Scegli la crema o il ripieno che più ti ispira.",
-      },
-      {
-        titolo: "Pesca dalla credenza",
-        testo: "Kinder Bueno, corn flakes, frutta, biscotti: aggiungi la tua golosità.",
-      },
-      {
-        titolo: "Scegli la finitura",
-        testo: "Zucchero, zucchero a velo, zucchero di canna o cacao: il tocco finale.",
-      },
-    ],
+  {
+    "titolo": "Base Nuvola inclusa",
+    "testo": "La base Nuvola è già inclusa. Puoi concentrarti sugli ingredienti."
+  },
+  {
+    "titolo": "Scegli la farcitura",
+    "testo": "Crema o cioccolato: tocca la tessera oppure trascinala sul dolce con il mouse."
+  },
+  {
+    "titolo": "Aggiungi il tuo ingrediente",
+    "testo": "Scegli tra frutta, cioccolato e biscotti. Le opzioni mostrate sono quelle disponibili per la farcitura scelta."
+  },
+  {
+    "titolo": "Zucchero a velo incluso",
+    "testo": "La finitura è già inclusa. Puoi modificare la ricetta dal riepilogo, condividerla e richiedere una quotazione."
+  }
+],
     statiNastro: [
       "Nuvola vuota, la base senza farcitura",
       "Nuvola farcita con crema",
@@ -297,26 +304,23 @@ export const it: Testi = {
     comeFunziona: {
       titolo: "Come funziona",
       passi: [
-        {
-          titolo: "Level 01 — scegli il player",
-          testo:
-            "Tre basi, tutte disponibili. Trascinala sul palco con il mouse, oppure toccala: il risultato è identico.",
-        },
-        {
-          titolo: "Level 02 — carica la farcitura",
-          testo: "Crema, cioccolato o pistacchio: scegli il cuore del dolce.",
-        },
-        {
-          titolo: "Level 03 — pesca dalla credenza",
-          testo:
-            "Kinder Bueno, corn flakes, frutta o biscotti: aggiungi la tua golosità.",
-        },
-        {
-          titolo: "Level 04 — chiudi la combo",
-          testo:
-            "Scegli la finitura e la combo è pronta. Poi arrivano formato, ordine minimo e quantità in pedane, e la richiesta parte già completa.",
-        },
-      ],
+  {
+    "titolo": "Base Nuvola inclusa",
+    "testo": "La base Nuvola è già inclusa. Puoi concentrarti sugli ingredienti."
+  },
+  {
+    "titolo": "Scegli la farcitura",
+    "testo": "Crema o cioccolato: tocca la tessera oppure trascinala sul dolce con il mouse."
+  },
+  {
+    "titolo": "Aggiungi il tuo ingrediente",
+    "testo": "Scegli tra frutta, cioccolato e biscotti. Le opzioni mostrate sono quelle disponibili per la farcitura scelta."
+  },
+  {
+    "titolo": "Zucchero a velo incluso",
+    "testo": "La finitura è già inclusa. Puoi modificare la ricetta dal riepilogo, condividerla e richiedere una quotazione."
+  }
+],
       chiudi: "Chiudi",
       ok: "Ho capito, si comincia",
     },
@@ -367,9 +371,9 @@ export const it: Testi = {
       inVolo: "In volo!",
     },
     finitura: {
-      boom: "Il tuo {nome} è pronto.",
+      boom: "{nome}: il tuo dolce è pronto.",
       combo:
-        "Quattro livelli, quattro mosse: la combo è pronta. Ora scegli la quantità e mandala in quotazione.",
+        "La tua ricetta è pronta. Scegli la quantità, condividi il dolce o richiedi una quotazione.",
       farcitura: "Farcitura",
       credenza: "Dalla credenza",
       finitura: "Finitura",

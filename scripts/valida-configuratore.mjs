@@ -4,12 +4,9 @@
  *
  * Gira come `prebuild`: se una verifica salta, il build fallisce e non pubblica.
  *
- * Dal refactor 2026-08-28 il configuratore compone 4 vocabolari
- * indipendenti (basi, farciture, dalla credenza, finiture): ogni
- * combinazione è un prodotto valido — non c'è più una lista di
- * combinazioni dichiarate da verificare per integrità referenziale, ma
- * grammatura/peso/ordine minimo vivono sulla base ed è lì che le
- * grandezze derivate devono chiudere.
+ * La matrice 2026-10-22 dichiara esplicitamente ogni SKU consentita. Le
+ * ricette vengono validate contro i quattro vocabolari; grammatura/peso/
+ * ordine minimo vivono sulla base e devono chiudere lì.
  */
 
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -42,6 +39,24 @@ controllaUnicita(dati.basi, "basi");
 controllaUnicita(dati.farciture, "farciture");
 controllaUnicita(dati.credenza, "credenza");
 controllaUnicita(dati.finiture, "finiture");
+
+/* ── 1b. Integrità della matrice chiusa ── */
+const chiaviCombinazione = new Set();
+const vocabolari = {
+  base: new Set((dati.basi ?? []).map((v) => v.id)),
+  farcitura: new Set((dati.farciture ?? []).map((v) => v.id)),
+  credenza: new Set((dati.credenza ?? []).map((v) => v.id)),
+  finitura: new Set((dati.finiture ?? []).map((v) => v.id)),
+};
+for (const c of dati.combinazioni ?? []) {
+  for (const [campo, voci] of Object.entries(vocabolari))
+    if (!voci.has(c[campo])) err(`combinazione: ${campo} inesistente "${c[campo]}"`);
+  const chiave = `${c.base}--${c.farcitura}--${c.credenza}--${c.finitura}`;
+  if (chiaviCombinazione.has(chiave)) err(`combinazioni: SKU duplicata "${chiave}"`);
+  chiaviCombinazione.add(chiave);
+}
+if (!Array.isArray(dati.combinazioni) || dati.combinazioni.length === 0)
+  err("il dataset non contiene combinazioni");
 
 /* ── 2. Coerenza del packaging e delle grandezze derivate, per base ──
    Grammatura, peso e ordine minimo vivono sulla base: farcitura, voce
@@ -103,31 +118,22 @@ for (const b of dati.basi ?? []) {
    corrispondere a una voce reale del vocabolario: una cartella con un
    refuso nel nome non verrebbe mai mostrata, meglio saperlo al build.
    Quattro radici, stesso contratto: prodotti/ (gli stati del prodotto, ai
-   4 livelli del prodotto cartesiano), farciture/, credenza/ e finiture/
+   4 livelli della ricetta), farciture/, credenza/ e finiture/
    (l'ingrediente/la finitura da soli, tessere dei passi 2-4). */
 
 const radiceFoto = join(qui, "..", "public", "img", "configuratore");
 
-const idBasi = (dati.basi ?? []).map((b) => b.id);
 const idFarciture = new Set((dati.farciture ?? []).map((f) => f.id));
 const idCredenza = new Set((dati.credenza ?? []).map((c) => c.id));
 const idFiniture = new Set((dati.finiture ?? []).map((f) => f.id));
 
-/* gli stati validi di prodotti/ sono il prodotto cartesiano ai 4 livelli
-   di profondità: non una lista curata, ma tutto ciò che i 4 vocabolari
-   possono comporre — coerente con "ogni combinazione è possibile" */
+/* Gli stati validi sono solo quelli raggiungibili dalla matrice chiusa. */
 const statiProdotto = new Set();
-for (const b of idBasi) {
-  statiProdotto.add(b);
-  for (const f of idFarciture) {
-    statiProdotto.add(`${b}--${f}`);
-    for (const c of idCredenza) {
-      statiProdotto.add(`${b}--${f}--${c}`);
-      for (const fin of idFiniture) {
-        statiProdotto.add(`${b}--${f}--${c}--${fin}`);
-      }
-    }
-  }
+for (const c of dati.combinazioni ?? []) {
+  statiProdotto.add(c.base);
+  statiProdotto.add(`${c.base}--${c.farcitura}`);
+  statiProdotto.add(`${c.base}--${c.farcitura}--${c.credenza}`);
+  statiProdotto.add(`${c.base}--${c.farcitura}--${c.credenza}--${c.finitura}`);
 }
 
 const radici = [
@@ -164,15 +170,13 @@ const webpConAlfa = (buf) => {
 };
 
 let fotoVerificate = 0;
-for (const { cartella, validi, cosa } of radici) {
+for (const { cartella, validi } of radici) {
   const percorsoRadice = join(radiceFoto, cartella);
   for (const voce of readdirSync(percorsoRadice, { withFileTypes: true })) {
     if (!voce.isDirectory()) continue;
-    if (!validi.has(voce.name))
-      err(
-        `foto: la cartella "${cartella}/${voce.name}" non corrisponde ` +
-          `a nessuna ${cosa}`
-      );
+    /* Gli asset pre-matrice restano in public finché non arriveranno le
+       nuove foto; sono esclusi dal manifest e non possono apparire nella UI. */
+    if (!validi.has(voce.name)) continue;
     const fotoValide = [];
     for (const file of readdirSync(join(percorsoRadice, voce.name)).sort()) {
       if (file === ".DS_Store" || file === "README.md") continue;
@@ -207,6 +211,11 @@ for (const { cartella, validi, cosa } of radici) {
   }
 }
 
+// Una tessera o uno stato previsto senza foto è un errore di pubblicazione.
+for (const {cartella, validi} of radici)
+  for (const id of validi)
+    if (!manifestoFoto[cartella][id]) err(`foto mancante: ${cartella}/${id}`);
+
 /* ── Campi di testata ── */
 if (!dati.versione) err("manca il campo di testata `versione` (versione del listino)");
 if (dati.unita_quantita !== "pedane")
@@ -230,16 +239,12 @@ if (errori.length > 0) {
     `${JSON.stringify(manifestoFoto, null, 2)}\n`,
     "utf8"
   );
-  const totale =
-    (dati.basi?.length ?? 0) *
-    (dati.farciture?.length ?? 0) *
-    (dati.credenza?.length ?? 0) *
-    (dati.finiture?.length ?? 0);
+  const totale = dati.combinazioni?.length ?? 0;
   console.log(
     `✓ Dataset configuratore valido — versione ${dati.versione}: ` +
       `${dati.basi.length} basi, ${dati.farciture.length} farciture, ` +
       `${dati.credenza.length} voci dalla credenza, ${dati.finiture.length} finiture ` +
-      `(${totale} combinazioni possibili), ${fotoVerificate} foto con alfa verificate; ` +
+      `(${totale} combinazioni dichiarate), ${fotoVerificate} foto con alfa verificate; ` +
       `manifest foto aggiornato.`
   );
 }

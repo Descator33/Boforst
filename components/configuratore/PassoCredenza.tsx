@@ -1,6 +1,6 @@
 "use client";
 
-import { DATASET, type FotoCredenza } from "@/lib/configuratore";
+import { credenzePer, type FotoCredenza } from "@/lib/configuratore";
 import { ImmagineProdotto } from "./ImmagineProdotto";
 import { GrigliaTessere } from "./Selettore";
 import { SegnaPosto, TesseraScelta, type VoloTessera } from "./TesseraScelta";
@@ -9,8 +9,8 @@ import { useTesti } from "@/components/LinguaProvider";
 import type { IdCredenza } from "@/lib/i18n/tipi";
 
 /**
- * Passo 3 — dalla credenza. Le 6 voci valgono sempre, per qualunque
- * base e farcitura: stesso meccanismo di scelta di PassoFarcitura.
+ * Passo 3 — dalla credenza. Le opzioni dipendono da base e farcitura:
+ * la matrice del listino è chiusa e non mostra ricette non ordinabili.
  *
  * La tessera mostra l'ingrediente DA SOLO (cartelle di
  * public/img/configuratore/credenza/): è la cosa che si trascina. Il
@@ -18,11 +18,15 @@ import type { IdCredenza } from "@/lib/i18n/tipi";
  */
 export function PassoCredenza({
   fotoCredenza,
+  base,
+  farcitura,
   selezionata,
   onScegli,
   drag,
 }: {
   fotoCredenza: FotoCredenza;
+  base: string;
+  farcitura: string;
   selezionata: string | null;
   onScegli: (id: string, volo?: VoloTessera) => void;
   drag?: DragPasso;
@@ -31,7 +35,7 @@ export function PassoCredenza({
 
   return (
     <GrigliaTessere>
-      {DATASET.credenza.map((c) => {
+      {credenzePer(base, farcitura).map((c) => {
         const nome = testi.prodotti.credenza[c.id as IdCredenza] ?? c.nome;
         const fotoC = fotoCredenza[c.id];
         return (

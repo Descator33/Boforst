@@ -11,12 +11,7 @@ export type DragPasso = {
   onRilascia: (id: string, p: Punto) => boolean;
 } | null;
 
-/**
- * Passo 1 — la base. Tutte e 3, sempre tutte, sempre selezionabili: dal
- * refactor 2026-08-28 ogni base si combina con qualunque farcitura,
- * voce dalla credenza e finitura, quindi non c'è più nulla da filtrare
- * a monte.
- */
+/** Base: normalmente inclusa automaticamente quando il catalogo ne prevede una sola. */
 export function PassoBase({
   foto,
   selezionata,
@@ -43,7 +38,7 @@ export function PassoBase({
                     quadro,
                     foto: foto[b.id] ?? null,
                     iniziale: b.nome.charAt(0),
-                  }
+                  },
                 )
               }
               drag={

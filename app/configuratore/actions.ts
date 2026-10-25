@@ -1,20 +1,10 @@
 "use server";
 
-/**
- * Server Action del configuratore: la validazione lato server richiesta
- * dalla spec. Le actions viaggiano in POST e sono raggiungibili anche con
- * POST diretti, quindi qui si riesegue validaStato con lo stesso modulo e
- * lo stesso dataset del client: un URL forgiato, una quantità manomessa o
- * un client rimasto aperto attraverso un deploy non passano.
- *
- * Trasporto provvisorio: il sito non ha ancora un backend di posta (il
- * form contatti è un mailto:), e la scelta quotazione/ordine con il suo
- * destinatario è un punto aperto con il committente. La action valida e
- * compone la richiesta; la consegna passa dal client di posta dell'utente
- * con un mailto: precompilato. Quando arriverà il canale definitivo
- * (casella commerciale o gestionale), si sostituisce solo l'ultimo tratto.
- */
+/** Valida la richiesta e la consegna a Resend. Mailto come ripiego esplicito. */
 
+import { consegnaQuotazione } from "@/lib/quotazioni/consegna";
+import { BASE_SITO } from "@/lib/i18n/sito";
+import { headers } from "next/headers";
 import {
   DATASET,
   baseDi,
@@ -41,16 +31,21 @@ export type StatoInvio =
       ok: false;
       errore:
         | "CAMPI_MANCANTI"
+        | "CAMPI_NON_VALIDI"
+        | "INVIO_FALLITO"
         | "COMBINAZIONE_INESISTENTE"
         | "QUANTITA_NON_VALIDA"
         | "SOTTO_ORDINE_MINIMO"
         | "VERSIONE_OBSOLETA";
       messaggio: string;
+      mailto?: string;
       minimoPedane?: number;
       minimoPezzi?: number | null;
     }
   | {
       ok: true;
+      inviata: boolean;
+      id?: string;
       sku: string;
       quantita: Quantita;
       mailto: string;
@@ -58,7 +53,7 @@ export type StatoInvio =
 
 export async function richiediQuotazione(
   _prev: StatoInvio,
-  formData: FormData
+  formData: FormData,
 ): Promise<StatoInvio> {
   const testo = (campo: string) => String(formData.get(campo) ?? "").trim();
   const linguaRichiesta = testo("lingua");
@@ -87,6 +82,26 @@ export async function richiediQuotazione(
       ok: false,
       errore: "CAMPI_MANCANTI",
       messaggio: modulo.errori.campiMancanti,
+    };
+  }
+
+  const richiesta = testo("request_id");
+  if (
+    !/^[a-f0-9-]{36}$/i.test(richiesta) ||
+    testo("website") ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cliente.email) ||
+    cliente.email.length > 254 ||
+    !["bar", "pasticceria", "catering", "GDO"].includes(cliente.canale) ||
+    cliente.ragione_sociale.length > 160 ||
+    /[\r\n]/.test(cliente.ragione_sociale) ||
+    cliente.telefono.length > 40 ||
+    /[\r\n]/.test(cliente.telefono) ||
+    cliente.note.length > 2000
+  ) {
+    return {
+      ok: false,
+      errore: "CAMPI_NON_VALIDI",
+      messaggio: testi.configuratore.esperienza.campiInvalidi,
     };
   }
 
@@ -138,9 +153,12 @@ export async function richiediQuotazione(
 
   const p = prodotto(base, farcitura, credenza, finitura)!;
   const laBase = baseDi(base)!;
-  const laFarcitura = testi.prodotti.farciture[farcitura as IdFarcitura] ?? farcitura;
-  const laCredenza = testi.prodotti.credenza[credenza as IdCredenza] ?? credenza;
-  const laFinitura = testi.prodotti.finiture[finitura as IdFinitura] ?? finitura;
+  const laFarcitura =
+    testi.prodotti.farciture[farcitura as IdFarcitura] ?? farcitura;
+  const laCredenza =
+    testi.prodotti.credenza[credenza as IdCredenza] ?? credenza;
+  const laFinitura =
+    testi.prodotti.finiture[finitura as IdFinitura] ?? finitura;
   const nomeProdotto = laBase.nome;
   const pack = laBase.packaging;
   const q = esito.quantita;
@@ -165,7 +183,7 @@ export async function richiediQuotazione(
       strati_per_pedana: pack.strati_per_pedana,
     },
     ordine_minimo_pedane: laBase.ordine_minimo_pedane,
-    ordine_minimo_rispettato: true,
+    ordine_minimo_rispettato: laBase.ordine_minimo_pedane == null ? null : true,
     cliente,
     versione_listino: DATASET.versione,
   };
@@ -174,14 +192,26 @@ export async function richiediQuotazione(
     cliente.canale in modulo.canali
       ? modulo.canali[cliente.canale as keyof typeof modulo.canali]
       : cliente.canale;
-  const pedaneTesto = conta(
-    testi.configuratore.scala.pedane,
-    q.pedane,
-    lingua,
-  );
+  const pedaneTesto = conta(testi.configuratore.scala.pedane, q.pedane, lingua);
   const cartoni = conta(testi.configuratore.scala.cartoni, q.cartoni, lingua);
   const pezzi = conta(testi.configuratore.scala.pezzi, q.pezzi, lingua);
   const peso = fmtKg(q.peso_kg, lingua);
+  const h = await headers();
+  const origin = h.get("origin");
+  let sito = BASE_SITO;
+  if (!sito && origin) {
+    try {
+      const url = new URL(origin);
+      if (["https:", "http:"].includes(url.protocol)) sito = url;
+    } catch {}
+  }
+  const riferimento = new URL(
+    localizza(
+      lingua,
+      `/configuratore/${p.base}/${p.farcitura}/${p.credenza}/${p.finitura}`,
+    ),
+    sito ?? "http://localhost:3000",
+  ).href;
   const mail = modulo.mail;
   const oggetto = interpola(mail.oggetto, {
     nome: nomeProdotto,
@@ -206,7 +236,7 @@ export async function richiediQuotazione(
       ? interpola(mail.minimoRispettato, {
           min: fmtNumero(laBase.ordine_minimo_pedane, lingua),
         })
-      : mail.minimoNonPrevisto,
+      : testi.configuratore.esperienza.minimoConferma,
     "",
     interpola(mail.cliente, { nome: cliente.ragione_sociale, canale }),
     interpola(mail.email, { email: cliente.email }) +
@@ -217,10 +247,7 @@ export async function richiediQuotazione(
     "",
     interpola(mail.versione, { versione: payload.versione_listino }),
     interpola(mail.riferimento, {
-      url: localizza(
-        lingua,
-        `/configuratore/${p.base}/${p.farcitura}/${p.credenza}/${p.finitura}`,
-      ),
+      url: riferimento,
     }),
   ]
     .filter((r): r is string => r !== null)
@@ -228,5 +255,25 @@ export async function richiediQuotazione(
 
   const mailto = `mailto:${DESTINATARIO}?subject=${encodeURIComponent(oggetto)}&body=${encodeURIComponent(corpo)}`;
 
-  return { ok: true, sku: p.sku, quantita: q, mailto };
+  const consegna = await consegnaQuotazione({
+    oggetto,
+    corpo,
+    email: cliente.email,
+    richiesta,
+  });
+  if (consegna.stato === "errore")
+    return {
+      ok: false,
+      errore: "INVIO_FALLITO",
+      messaggio: testi.configuratore.esperienza.invioFallito,
+      mailto,
+    };
+  return {
+    ok: true,
+    inviata: consegna.stato === "inviata",
+    ...(consegna.stato === "inviata" ? { id: consegna.id } : {}),
+    sku: p.sku,
+    quantita: q,
+    mailto,
+  };
 }

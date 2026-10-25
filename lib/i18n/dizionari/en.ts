@@ -1,3 +1,4 @@
+import { ESPERIENZA } from "../esperienza";
 import type { Testi } from "../tipi";
 
 /** English — British spelling for the international B2B audience. */
@@ -16,7 +17,8 @@ export const en: Testi = {
     colonne: {
       delsigel: { titolo: "Delsigel", chiSiamo: "About us", storia: "Our story", contatti: "Contact" },
       prodotti: { titolo: "Products", dolci: "Our sweet range", salati: "Our savoury range", catalogo: "2026/27 catalogue" },
-      configuratore: { titolo: "Configurator", crea: "Create your pastry", comeFunziona: "How it works", quotazione: "Request a quote" },
+      configuratore: {
+ titolo: "Configurator", crea: "Create your pastry", comeFunziona: "How it works", quotazione: "Request a quote" },
       contatti: { titolo: "Contact" },
     },
     instagram: "Delsigel on Instagram", dove: "Where to find us",
@@ -84,21 +86,36 @@ export const en: Testi = {
       bianca: "white", bianco: "white", curcuma: "turmeric", funghi: "mushrooms", olive: "olives", verdure: "vegetables", wurstel: "frankfurter",
       peperoni: "peppers", pizzaiola: "pizzaiola", "4 formaggi": "four cheeses", "ricotta e spinaci": "ricotta and spinach", piccola: "small", media: "medium",
     },
-    farciture: { cioccolato: "Chocolate", pistacchio: "Pistachio", crema: "Custard" },
+    farciture: { cioccolato: "Chocolate", crema: "Custard" },
     credenza: {
-      "kinder-bueno": "Kinder Bueno", "cioccolato-a-pezzi": "Chocolate chunks", "corn-flakes": "Corn flakes",
-      fragola: "Strawberry", banana: "Banana", biscotti: "Biscuits",
+      "frutti-di-bosco": "Berries", fragola: "Strawberry", kiwi: "Kiwi", banana: "Banana",
+      "kit-kat": "Kit Kat", "happy-hippo": "Happy Hippo", smarties: "Smarties",
+      "kinder-bueno-dark": "Kinder Bueno Dark", "kinder-bueno-white": "Kinder Bueno White", kinder: "Kinder",
+      "quadretti-di-cioccolato": "Chocolate squares", oreo: "Oreo", cocco: "Coconut", "mini-cookies": "Mini Cookies",
     },
-    finiture: { zucchero: "Sugar", "zucchero-a-velo": "Icing sugar", "zucchero-di-canna": "Cane sugar", cacao: "Cocoa" },
+    finiture: { "zucchero-a-velo": "Icing sugar" },
     modalitaUso: "THAW AT ROOM TEMPERATURE FOR 3 h", scattoProdotto: "product photograph",
   },
   configuratore: {
+    esperienza: ESPERIENZA.en,
     percorso: [
-      { titolo: "Choose the base", testo: "Select your preferred base and give shape to your pastry." },
-      { titolo: "Add the filling", testo: "Choose the custard or filling that inspires you most." },
-      { titolo: "Pick from the cupboard", testo: "Kinder Bueno, corn flakes, fruit, biscuits: add your favourite treat." },
-      { titolo: "Choose the finish", testo: "Sugar, icing sugar, cane sugar or cocoa: the final touch." },
-    ],
+  {
+    "titolo": "Nuvola base included",
+    "testo": "The Nuvola base is already included, so you can focus on the ingredients."
+  },
+  {
+    "titolo": "Choose your filling",
+    "testo": "Custard or chocolate: tap a tile or drag it onto the pastry with your mouse."
+  },
+  {
+    "titolo": "Add your ingredient",
+    "testo": "Choose fruit, chocolate or biscuits. The options shown are available with your chosen filling."
+  },
+  {
+    "titolo": "Icing sugar included",
+    "testo": "The finish is already included. Edit your recipe from the summary, share it and request a quote."
+  }
+],
     statiNastro: ["Unfilled Nuvola, the base without filling", "Nuvola filled with custard", "Custard Nuvola with icing sugar"],
     intro: {
       titolo: [{ testo: "Create" }, { testo: "your" }, { testo: "pastry!", accento: true }],
@@ -107,11 +124,23 @@ export const en: Testi = {
     comeFunziona: {
       titolo: "How it works",
       passi: [
-        { titolo: "Level 01 — choose your player", testo: "Three bases, all available. Drag one onto the stage with your mouse or tap it: the result is the same." },
-        { titolo: "Level 02 — load the filling", testo: "Custard, chocolate or pistachio: choose the heart of the pastry." },
-        { titolo: "Level 03 — pick from the cupboard", testo: "Kinder Bueno, corn flakes, fruit or biscuits: add your favourite treat." },
-        { titolo: "Level 04 — complete the combo", testo: "Choose the finish and the combo is ready. Then come size, minimum order and pallet quantity, and the request leaves complete." },
-      ], chiudi: "Close", ok: "Got it, let's begin",
+  {
+    "titolo": "Nuvola base included",
+    "testo": "The Nuvola base is already included, so you can focus on the ingredients."
+  },
+  {
+    "titolo": "Choose your filling",
+    "testo": "Custard or chocolate: tap a tile or drag it onto the pastry with your mouse."
+  },
+  {
+    "titolo": "Add your ingredient",
+    "testo": "Choose fruit, chocolate or biscuits. The options shown are available with your chosen filling."
+  },
+  {
+    "titolo": "Icing sugar included",
+    "testo": "The finish is already included. Edit your recipe from the summary, share it and request a quote."
+  }
+], chiudi: "Close", ok: "Got it, let's begin",
     },
     titoli: { passo1: "Choose your base", passo2: "Now fill it", passo3: "Pick from the cupboard", passo4: "The final touch", completo: "Boom. It's ready!" },
     passoDi: "Step {n} of 4 — {titolo}",
@@ -128,7 +157,7 @@ export const en: Testi = {
     tessera: { prendimi: "Pick me!", inVolo: "Incoming!" },
     finitura: {
       boom: "Your {nome} is ready.",
-      combo: "Four levels, four moves: the combo is ready. Now choose the quantity and send it for quotation.",
+      combo: "Your recipe is ready. Choose the quantity, share your pastry or request a quote.",
       farcitura: "Filling", credenza: "From the cupboard", finitura: "Finish",
       grammatura: "Unit weight", diametro: "Diameter", modalitaUso: "Directions for use",
       copiaLink: "Copy your pastry link", linkCopiato: "Link copied!", linkCopiatoAria: "Link copied to clipboard", richiediQuotazione: "Request a quote →",

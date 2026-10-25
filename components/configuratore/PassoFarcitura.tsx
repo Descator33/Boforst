@@ -9,8 +9,8 @@ import { useTesti } from "@/components/LinguaProvider";
 import type { IdFarcitura } from "@/lib/i18n/tipi";
 
 /**
- * Passo 2 — la farcitura. Dal refactor 2026-08-28 tutte e 3 le farciture
- * valgono per qualunque base: niente più filtro sulla matrice sparsa.
+ * Passo 2 — la farcitura. Le opzioni presenti nel vocabolario sono già
+ * quelle della sola base Nuvola prevista dalla matrice.
  *
  * La tessera mostra la farcitura DA SOLA (cartelle di
  * public/img/configuratore/farciture/): è l'ingrediente che si

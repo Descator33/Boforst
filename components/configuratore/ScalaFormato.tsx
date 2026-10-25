@@ -23,7 +23,10 @@ export function ScalaFormato({ base }: { base: Base }) {
   const righe: [string, string][] = [];
 
   if (p.vassoi_per_cartone != null && p.pezzi_per_vassoio != null) {
-    righe.push([scala.vassoio, conta(scala.pezzi, p.pezzi_per_vassoio, lingua)]);
+    righe.push([
+      scala.vassoio,
+      conta(scala.pezzi, p.pezzi_per_vassoio, lingua),
+    ]);
   }
 
   righe.push([
@@ -75,9 +78,6 @@ export function ScalaFormato({ base }: { base: Base }) {
           })}
         </p>
       )}
-      <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-inchiostro/35">
-        {interpola(scala.dalListino, { testo: p.testo_originale })}
-      </p>
     </div>
   );
 }

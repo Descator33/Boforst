@@ -1,3 +1,4 @@
+import { ESPERIENZA } from "../esperienza";
 import type { Testi } from "../tipi";
 import { en } from "./en";
 
@@ -15,7 +16,8 @@ export const de: Testi = {
     colonne: {
       delsigel: { titolo: "Delsigel", chiSiamo: "Über uns", storia: "Unsere Geschichte", contatti: "Kontakt" },
       prodotti: { titolo: "Produkte", dolci: "Unsere süßen Produkte", salati: "Unsere herzhaften Produkte", catalogo: "Katalog 2026/27" },
-      configuratore: { titolo: "Konfigurator", crea: "Eigenes Gebäck kreieren", comeFunziona: "So funktioniert es", quotazione: "Angebot anfordern" },
+      configuratore: {
+ titolo: "Konfigurator", crea: "Eigenes Gebäck kreieren", comeFunziona: "So funktioniert es", quotazione: "Angebot anfordern" },
       contatti: { titolo: "Kontakt" },
     },
     instagram: "Delsigel auf Instagram", dove: "Unser Standort", mappaTitolo: "Karte: Delsigel, Via della Meccanica 1, Sermoneta",
@@ -66,29 +68,58 @@ export const de: Testi = {
       mozzarella: "Mozzarella", pomodoro: "Tomate", bianca: "weiß", bianco: "weiß", curcuma: "Kurkuma", funghi: "Pilze", olive: "Oliven", verdure: "Gemüse", wurstel: "Würstchen", peperoni: "Paprika", pizzaiola: "Pizzaiola",
       "4 formaggi": "vier Käsesorten", "ricotta e spinaci": "Ricotta und Spinat", piccola: "klein", media: "mittel",
     },
-    farciture: { cioccolato: "Schokolade", pistacchio: "Pistazie", crema: "Creme" },
+    farciture: { cioccolato: "Schokolade", crema: "Creme" },
     credenza: {
-      "kinder-bueno": "Kinder Bueno", "cioccolato-a-pezzi": "Schokoladenstückchen", "corn-flakes": "Cornflakes",
-      fragola: "Erdbeere", banana: "Banane", biscotti: "Kekse",
+      "frutti-di-bosco": "Waldfrüchte", fragola: "Erdbeere", kiwi: "Kiwi", banana: "Banane",
+      "kit-kat": "Kit Kat", "happy-hippo": "Happy Hippo", smarties: "Smarties",
+      "kinder-bueno-dark": "Kinder Bueno Dark", "kinder-bueno-white": "Kinder Bueno White", kinder: "Kinder",
+      "quadretti-di-cioccolato": "Schokoladenstückchen", oreo: "Oreo", cocco: "Kokos", "mini-cookies": "Mini Cookies",
     },
-    finiture: { zucchero: "Zucker", "zucchero-a-velo": "Puderzucker", "zucchero-di-canna": "Rohrzucker", cacao: "Kakao" },
+    finiture: { "zucchero-a-velo": "Puderzucker" },
     modalitaUso: "3 h BEI RAUMTEMPERATUR AUFTAUEN", scattoProdotto: "Produktaufnahme",
   },
   configuratore: {
     ...en.configuratore,
+    esperienza: ESPERIENZA.de,
     percorso: [
-      { titolo: "Basis wählen", testo: "Wählen Sie Ihre bevorzugte Basis und geben Sie Ihrem Gebäck Form." }, { titolo: "Füllung hinzufügen", testo: "Wählen Sie die Creme oder Füllung, die Sie am meisten anspricht." },
-      { titolo: "Aus der Vorratskammer wählen", testo: "Kinder Bueno, Cornflakes, Früchte, Kekse: fügen Sie Ihre Lieblingszutat hinzu." }, { titolo: "Finish wählen", testo: "Zucker, Puderzucker, Rohrzucker oder Kakao: der letzte Schliff." },
-    ],
+  {
+    "titolo": "Nuvola-Basis enthalten",
+    "testo": "Die Nuvola-Basis ist bereits enthalten. Konzentrieren Sie sich auf die Zutaten."
+  },
+  {
+    "titolo": "Füllung wählen",
+    "testo": "Creme oder Schokolade: Tippen Sie auf eine Kachel oder ziehen Sie sie mit der Maus auf das Gebäck."
+  },
+  {
+    "titolo": "Zutat hinzufügen",
+    "testo": "Wählen Sie Obst, Schokolade oder Kekse aus den verfügbaren Optionen für Ihre Füllung."
+  },
+  {
+    "titolo": "Puderzucker enthalten",
+    "testo": "Die Veredelung ist bereits enthalten. Ändern und teilen Sie Ihr Rezept über die Übersicht und fordern Sie ein Angebot an."
+  }
+],
     statiNastro: ["Ungefüllte Nuvola, die Basis ohne Füllung", "Nuvola mit Cremefüllung", "Nuvola mit Creme und Puderzucker"],
     intro: { titolo: [{ testo: "Kreieren" }, { testo: "Sie Ihr" }, { testo: "Gebäck!", accento: true }], copy: ["Spielen, kombinieren, personalisieren.", "Das Gebäck, das Sie sich vorstellen,", "kreieren Sie selbst!"], comeFunziona: "So funktioniert es" },
     comeFunziona: {
       titolo: "So funktioniert es", passi: [
-        { titolo: "Level 01 — Player wählen", testo: "Drei Basen, alle verfügbar. Ziehen Sie eine mit der Maus auf die Bühne oder tippen Sie sie an – das Ergebnis ist dasselbe." },
-        { titolo: "Level 02 — Füllung laden", testo: "Creme, Schokolade oder Pistazie: wählen Sie das Herz des Gebäcks." },
-        { titolo: "Level 03 — aus der Vorratskammer wählen", testo: "Kinder Bueno, Cornflakes, Früchte oder Kekse: fügen Sie Ihre Lieblingszutat hinzu." },
-        { titolo: "Level 04 — Kombination abschließen", testo: "Wählen Sie das Finish, und die Kombination ist bereit. Danach folgen Format, Mindestbestellmenge und Palettenanzahl; die Anfrage wird vollständig vorbereitet." },
-      ], chiudi: "Schließen", ok: "Verstanden, los geht's",
+  {
+    "titolo": "Nuvola-Basis enthalten",
+    "testo": "Die Nuvola-Basis ist bereits enthalten. Konzentrieren Sie sich auf die Zutaten."
+  },
+  {
+    "titolo": "Füllung wählen",
+    "testo": "Creme oder Schokolade: Tippen Sie auf eine Kachel oder ziehen Sie sie mit der Maus auf das Gebäck."
+  },
+  {
+    "titolo": "Zutat hinzufügen",
+    "testo": "Wählen Sie Obst, Schokolade oder Kekse aus den verfügbaren Optionen für Ihre Füllung."
+  },
+  {
+    "titolo": "Puderzucker enthalten",
+    "testo": "Die Veredelung ist bereits enthalten. Ändern und teilen Sie Ihr Rezept über die Übersicht und fordern Sie ein Angebot an."
+  }
+], chiudi: "Schließen", ok: "Verstanden, los geht's",
     },
     titoli: { passo1: "Wählen Sie Ihre Basis", passo2: "Jetzt wird gefüllt", passo3: "Aus der Vorratskammer wählen", passo4: "Der letzte Schliff", completo: "Boom. Fertig!" }, passoDi: "Schritt {n} von 4 — {titolo}",
     avvisoSceltaSparita: "Der geöffnete Link enthielt eine nicht mehr verfügbare Auswahl. Es geht von hier aus weiter.",
@@ -101,7 +132,7 @@ export const de: Testi = {
     tessera: { prendimi: "Nimm mich!", inVolo: "Im Anflug!" },
     finitura: {
       boom: "Ihr {nome} ist fertig.",
-      combo: "Vier Level, vier Schritte: Die Kombination ist bereit. Wählen Sie jetzt die Menge und senden Sie sie zur Angebotserstellung.",
+      combo: "Ihr Rezept ist fertig. Wählen Sie die Menge, teilen Sie Ihre Kreation oder fordern Sie ein Angebot an.",
       farcitura: "Füllung", credenza: "Aus der Vorratskammer", finitura: "Finish",
       grammatura: "Stückgewicht", diametro: "Durchmesser", modalitaUso: "Zubereitungshinweis",
       copiaLink: "Link zu Ihrem Gebäck kopieren", linkCopiato: "Link kopiert!", linkCopiatoAria: "Link in die Zwischenablage kopiert", richiediQuotazione: "Angebot anfordern →",

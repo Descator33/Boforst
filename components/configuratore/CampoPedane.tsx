@@ -25,7 +25,9 @@ export function CampoPedane({
   base,
   pedane,
   onCambia,
+  disabled = false,
 }: {
+  disabled?: boolean;
   base: Base;
   pedane: number | "";
   onCambia: (v: number | "") => void;
@@ -33,7 +35,8 @@ export function CampoPedane({
   const { lingua, testi: tuttiTesti } = useLingua();
   const testi = tuttiTesti.configuratore;
   const minimo = base.ordine_minimo_pedane;
-  const valida = typeof pedane === "number" && Number.isInteger(pedane) && pedane >= 1;
+  const valida =
+    typeof pedane === "number" && Number.isInteger(pedane) && pedane >= 1;
   const q = valida ? quantita(base.id, pedane) : null;
   const sottoMinimo = valida && minimo != null && pedane < minimo;
 
@@ -50,19 +53,25 @@ export function CampoPedane({
           name="pedane-visibile"
           type="number"
           min={1}
+          disabled={disabled}
+          aria-invalid={!valida}
+          max={10000}
           step={1}
           inputMode="numeric"
           value={pedane}
           onChange={(e) => {
             const v = e.target.value;
-            onCambia(v === "" ? "" : Math.floor(Number(v)));
+            onCambia(v === "" ? "" : Number(v));
           }}
           aria-describedby={minimo != null ? "vincolo-minimo" : undefined}
           className={INPUT_CLS}
         />
         {/* traduzione live lungo la catena logistica, dalla stessa
             funzione quantita() che comporrà il payload */}
-        <p aria-live="polite" className="font-mono text-[13px] text-inchiostro/75">
+        <p
+          aria-live="polite"
+          className="font-mono text-[13px] text-inchiostro/75"
+        >
           {q
             ? interpola(testi.quantita.equivale, {
                 cartoni: conta(testi.scala.cartoni, q.cartoni, lingua),
@@ -110,13 +119,13 @@ export function CampoPedane({
             {testi.quantita.oppureScrivi}{" "}
             <a
               href={`mailto:info@delsigel.it?subject=${encodeURIComponent(
-                interpola(testi.quantita.mailOggetto, { base: base.nome })
+                interpola(testi.quantita.mailOggetto, { base: base.nome }),
               )}&body=${encodeURIComponent(
                 interpola(testi.quantita.mailCorpo, {
                   base: base.nome,
                   sku: base.id,
                   min: fmtNumero(minimo, lingua),
-                })
+                }),
               )}`}
               className="font-semibold underline decoration-2 underline-offset-2 transition-colors hover:text-corallo-scena focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-corallo-scena"
             >

@@ -1,7 +1,7 @@
 {
-  "versione": "2026-08-28",
+  "versione": "2026-10-22",
   "linea": "dolci",
-  "fonte": "Refactor SKU 2026-08-28: 4 componenti liberamente combinabili (base, farcitura, dalla credenza, finitura). Grammatura/peso/ordine minimo per base sono segnaposto in attesa di conferma del cliente.",
+  "fonte": "FILE COMBINAZIONI DAVIDE.xlsx: una sola base (Nuvola), 26 combinazioni chiuse di farcitura e dalla credenza, finitura fissa zucchero a velo. Grammatura, diametro, packaging e pesi confermati dal cliente il 2026-10-25. Ordine minimo da confermare.",
   "unita_quantita": "pedane",
   "basi": [
     {
@@ -26,71 +26,57 @@
       "peso_pedana_kg": 235.2,
       "ordine_minimo_pedane": null,
       "ordine_minimo_pezzi": null
-    },
-    {
-      "id": "stella",
-      "nome": "Stella",
-      "diametro_cm": 9.5,
-      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
-      "packaging": {
-        "vassoi_per_cartone": 6,
-        "pezzi_per_vassoio": 5,
-        "peso_cartone_kg": null,
-        "cartone_dichiarato_a_peso": false,
-        "pezzi_per_cartone": 30,
-        "cartoni_per_pedana": 112,
-        "cartoni_per_strato": 8,
-        "strati_per_pedana": 14,
-        "pezzi_per_pedana": 3360,
-        "testo_originale": "6 vassoi 5 pz./ 30 pz. per ct./ 112 ct. per pallet (8 ct. per fila)"
-      },
-      "grammatura_gr": 70,
-      "peso_cartone_kg": 2.1,
-      "peso_pedana_kg": 235.2,
-      "ordine_minimo_pedane": null,
-      "ordine_minimo_pezzi": null
-    },
-    {
-      "id": "cuore",
-      "nome": "Cuore",
-      "diametro_cm": 9.5,
-      "modalita_uso": "DECONGELARE A TEMPERATURA AMBIENTE PER 3 h",
-      "packaging": {
-        "vassoi_per_cartone": 6,
-        "pezzi_per_vassoio": 5,
-        "peso_cartone_kg": null,
-        "cartone_dichiarato_a_peso": false,
-        "pezzi_per_cartone": 30,
-        "cartoni_per_pedana": 112,
-        "cartoni_per_strato": 8,
-        "strati_per_pedana": 14,
-        "pezzi_per_pedana": 3360,
-        "testo_originale": "6 vassoi 5 pz./ 30 pz. per ct./ 112 ct. per pallet (8 ct. per fila)"
-      },
-      "grammatura_gr": 70,
-      "peso_cartone_kg": 2.1,
-      "peso_pedana_kg": 235.2,
-      "ordine_minimo_pedane": null,
-      "ordine_minimo_pezzi": null
     }
   ],
   "farciture": [
     { "id": "crema", "nome": "Crema" },
-    { "id": "cioccolato", "nome": "Cioccolato" },
-    { "id": "pistacchio", "nome": "Pistacchio" }
+    { "id": "cioccolato", "nome": "Cioccolato" }
   ],
   "credenza": [
-    { "id": "kinder-bueno", "nome": "Kinder Bueno" },
-    { "id": "cioccolato-a-pezzi", "nome": "Cioccolato a pezzi" },
-    { "id": "corn-flakes", "nome": "Corn flakes" },
+    { "id": "frutti-di-bosco", "nome": "Frutti di bosco" },
     { "id": "fragola", "nome": "Fragola" },
+    { "id": "kiwi", "nome": "Kiwi" },
     { "id": "banana", "nome": "Banana" },
-    { "id": "biscotti", "nome": "Biscotti" }
+    { "id": "kit-kat", "nome": "Kit Kat" },
+    { "id": "happy-hippo", "nome": "Happy Hippo" },
+    { "id": "smarties", "nome": "Smarties" },
+    { "id": "kinder-bueno-dark", "nome": "Kinder Bueno Dark" },
+    { "id": "kinder-bueno-white", "nome": "Kinder Bueno White" },
+    { "id": "kinder", "nome": "Kinder" },
+    { "id": "quadretti-di-cioccolato", "nome": "Quadretti di cioccolato" },
+    { "id": "oreo", "nome": "Oreo" },
+    { "id": "cocco", "nome": "Cocco" },
+    { "id": "mini-cookies", "nome": "Mini Cookies" }
   ],
   "finiture": [
-    { "id": "zucchero", "nome": "Zucchero" },
-    { "id": "zucchero-a-velo", "nome": "Zucchero a velo" },
-    { "id": "zucchero-di-canna", "nome": "Zucchero di canna" },
-    { "id": "cacao", "nome": "Cacao" }
+    { "id": "zucchero-a-velo", "nome": "Zucchero a velo" }
+  ],
+  "combinazioni": [
+    { "base": "nuvola", "farcitura": "crema", "credenza": "frutti-di-bosco", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "frutti-di-bosco", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "fragola", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "fragola", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "kiwi", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "kiwi", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "banana", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "banana", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "kit-kat", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "kit-kat", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "happy-hippo", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "happy-hippo", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "smarties", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "smarties", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "kinder-bueno-dark", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "kinder-bueno-white", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "kinder", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "kinder", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "quadretti-di-cioccolato", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "quadretti-di-cioccolato", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "oreo", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "oreo", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "cocco", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "cocco", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "crema", "credenza": "mini-cookies", "finitura": "zucchero-a-velo" },
+    { "base": "nuvola", "farcitura": "cioccolato", "credenza": "mini-cookies", "finitura": "zucchero-a-velo" }
   ]
 }

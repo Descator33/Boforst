@@ -1,6 +1,12 @@
 "use client";
 
-import { type Base, type Credenza, type Farcitura, type Prodotto } from "@/lib/configuratore";
+import {
+  DATASET,
+  type Base,
+  type Credenza,
+  type Farcitura,
+  type Prodotto,
+} from "@/lib/configuratore";
 import { IconaSpunta } from "./Decori";
 import { useTesti } from "@/components/LinguaProvider";
 import { interpola } from "@/lib/i18n/interpola";
@@ -25,7 +31,9 @@ export function Riepilogo({
   credenza,
   prodotto,
   apriPasso,
+  corrente,
 }: {
+  corrente: 1 | 2 | 3 | 4 | 5;
   base: Base | null;
   farcitura: Farcitura | null;
   credenza: Credenza | null;
@@ -43,7 +51,6 @@ export function Riepilogo({
   const finituraNome = prodotto
     ? (nomi.finiture[prodotto.finitura as IdFinitura] ?? prodotto.finitura)
     : null;
-  const corrente = prodotto ? 5 : credenza ? 4 : farcitura ? 3 : base ? 2 : 1;
 
   const voci: {
     n: 1 | 2 | 3 | 4;
@@ -55,25 +62,25 @@ export function Riepilogo({
       n: 1,
       etichetta: testi.configuratore.riepilogo.base,
       valore: base?.nome ?? null,
-      apribile: corrente > 1,
+      apribile: DATASET.basi.length > 1 && !!base,
     },
     {
       n: 2,
       etichetta: testi.configuratore.riepilogo.farcitura,
       valore: farciturasNome,
-      apribile: corrente > 2,
+      apribile: !!farcitura,
     },
     {
       n: 3,
       etichetta: testi.configuratore.riepilogo.credenza,
       valore: credenzaNome,
-      apribile: corrente > 3,
+      apribile: !!credenza,
     },
     {
       n: 4,
       etichetta: testi.configuratore.riepilogo.finitura,
       valore: finituraNome,
-      apribile: false,
+      apribile: DATASET.finiture.length > 1 && !!prodotto,
     },
   ];
 
@@ -89,14 +96,18 @@ export function Riepilogo({
         const testo = (
           <>
             <span className="candy-livello__numero">
-              {completato ? (
-                <IconaSpunta className="h-4 w-4" />
-              ) : (
-                numero
-              )}
+              {completato ? <IconaSpunta className="h-4 w-4" /> : numero}
             </span>
             <span className="min-w-0 text-left">
-              <span className="candy-livello__nome">{v.valore ?? v.etichetta}</span>
+              <span className="candy-livello__nome">
+                {v.valore ?? v.etichetta}
+              </span>
+              {((v.n === 1 && DATASET.basi.length === 1) ||
+                (v.n === 4 && DATASET.finiture.length === 1)) && (
+                <span className="configurator-included">
+                  {testi.configuratore.esperienza.incluso}
+                </span>
+              )}
             </span>
           </>
         );
@@ -107,19 +118,20 @@ export function Riepilogo({
               <button
                 type="button"
                 onClick={() => apriPasso(v.n)}
-                aria-label={interpola(testi.configuratore.riepilogo.tornaAlPasso, {
-                  n: v.n,
-                  etichetta: v.etichetta,
-                  valore: v.valore ?? "",
-                })}
-                data-stato="completato"
+                aria-label={interpola(
+                  testi.configuratore.riepilogo.tornaAlPasso,
+                  {
+                    n: v.n,
+                    etichetta: v.etichetta,
+                    valore: v.valore ?? "",
+                  },
+                )}
+                aria-current={attivo ? "step" : undefined}
+                data-stato={attivo ? "attivo" : "completato"}
                 className="candy-livello group relative flex h-full w-full flex-col items-center justify-center text-inchiostro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inchiostro"
               >
                 {testo}
-                <span
-                  aria-hidden
-                  className="candy-livello__cambia"
-                >
+                <span aria-hidden className="candy-livello__cambia">
                   {testi.configuratore.riepilogo.cambia}
                 </span>
               </button>
@@ -131,7 +143,9 @@ export function Riepilogo({
           <li key={v.n}>
             <span
               aria-current={attivo ? "step" : undefined}
-              data-stato={completato ? "completato" : attivo ? "attivo" : "futuro"}
+              data-stato={
+                completato ? "completato" : attivo ? "attivo" : "futuro"
+              }
               className="candy-livello flex flex-col items-center justify-center"
             >
               {testo}

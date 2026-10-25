@@ -1,185 +1,233 @@
 "use client";
-
-import { useActionState } from "react";
-import { richiediQuotazione, type StatoInvio } from "@/app/configuratore/actions";
+import { useActionState, useEffect, useRef, useState } from "react";
+import {
+  richiediQuotazione,
+  type StatoInvio,
+} from "@/app/configuratore/actions";
 import { useLingua } from "@/components/LinguaProvider";
 import { DATASET, type Prodotto } from "@/lib/configuratore";
-import { conta, interpola } from "@/lib/i18n/interpola";
+import { conta } from "@/lib/i18n/interpola";
 import { fmtKg } from "@/lib/i18n/lingue";
-
-const INPUT_CLS =
-  "w-full rounded-2xl border border-linea bg-carta px-4 py-3 text-base text-inchiostro outline-none transition-colors placeholder:text-inchiostro/40 focus:border-corallo-scena focus:ring-2 focus:ring-corallo-scena/25";
-
-/** L'unico campo di profilazione che vale la pena chiedere: permette al
- *  commerciale di rispondere con il listino giusto. */
+const INPUT =
+  "w-full rounded-2xl border border-linea bg-carta px-4 py-3 text-base outline-none focus:border-corallo-scena focus:ring-2 focus:ring-corallo-scena/25";
 const CANALI = ["bar", "pasticceria", "catering", "GDO"] as const;
-
-/**
- * Il modulo di chiusura: dati del cliente + invio alla Server Action, che
- * riesegue la validazione con lo stesso dataset (validaStato + versione
- * di listino) e compone la richiesta. `useActionState` dà pending ed
- * errori tipizzati senza stato scritto a mano.
- */
+export type DatiCliente = {
+  ragione_sociale: string;
+  canale: string;
+  email: string;
+  telefono: string;
+  note: string;
+};
 export function ModuloQuotazione({
   prodotto,
   pedane,
+  onPendingChange,
+  invioAttivo,
+  cliente,
+  onClienteChange,
 }: {
   prodotto: Prodotto;
   pedane: number | "";
+  invioAttivo: boolean;
+  cliente: DatiCliente;
+  onClienteChange: (cliente: DatiCliente) => void;
+  onPendingChange?: (pending: boolean) => void;
 }) {
-  const { lingua, testi: tuttiTesti } = useLingua();
-  const testi = tuttiTesti.configuratore;
-  const modulo = testi.modulo;
-  const [stato, invia, pending] = useActionState<StatoInvio, FormData>(
-    richiediQuotazione,
-    null
-  );
-
-  if (stato?.ok) {
-    return (
-      <div className="rounded-[28px] border-2 border-inchiostro bg-crema p-7 md:p-9">
-        <h3 className="font-display text-[clamp(1.5rem,2.4vw,2rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
-          {modulo.prontaTitolo}<span className="text-corallo-scena">.</span>
-        </h3>
-        <p className="mt-4 max-w-lg text-base leading-relaxed text-inchiostro/70">
-          {interpola(modulo.prontaTesto, {
-            versione: DATASET.versione,
-            pedane: conta(testi.scala.pedane, stato.quantita.pedane, lingua),
-            cartoni: conta(testi.scala.cartoni, stato.quantita.cartoni, lingua),
-            pezzi: conta(testi.scala.pezzi, stato.quantita.pezzi, lingua),
-            peso: fmtKg(stato.quantita.peso_kg, lingua),
-          })}
-        </p>
-        <a
-          href={stato.mailto}
-          className="ombra-pop-piccola mt-8 inline-block rounded-full bg-inchiostro px-8 py-3.5 text-[11.5px] font-bold uppercase tracking-[0.12em] text-panna transition-colors hover:bg-corallo-scena focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-corallo-scena"
-        >
-          {modulo.inviaRichiesta}
-        </a>
-      </div>
-    );
+  const { lingua, testi } = useLingua();
+  const t = testi.configuratore.modulo,
+    ui = testi.configuratore.esperienza;
+  const firma = JSON.stringify({ sku: prodotto.sku, pedane, cliente });
+  const requestId = useRef("");
+  const form = useRef<HTMLFormElement>(null);
+  const [visibile, setVisibile] = useState(true);
+  const [stato, invia, pending] = useActionState<
+    { risultato: StatoInvio; firma: string } | null,
+    FormData
+  >(async (prev, data) => {
+    requestId.current ||= crypto.randomUUID();
+    data.set("request_id", requestId.current);
+    let esito: StatoInvio;
+    try {
+      esito = await richiediQuotazione(prev?.risultato ?? null, data);
+    } catch {
+      esito = {
+        ok: false,
+        errore: "INVIO_FALLITO",
+        messaggio: ui.invioFallito,
+      };
+    }
+    if (esito?.ok) setVisibile(false);
+    return { risultato: esito, firma };
+  }, null);
+  useEffect(() => {
+    onPendingChange?.(pending);
+    return () => onPendingChange?.(false);
+  }, [pending, onPendingChange]);
+  const attuale = stato?.firma === firma ? stato.risultato : null;
+  const riuscita = attuale?.ok;
+  function cambia(
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) {
+    onClienteChange({ ...cliente, [e.target.name]: e.target.value });
+    setVisibile(true);
   }
-
   return (
-    <form action={invia} className="rounded-[28px] border-2 border-inchiostro bg-crema p-7 md:p-9">
-      <h3 className="font-display text-[clamp(1.5rem,2.4vw,2rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
-        {modulo.titolo}<span className="text-corallo-scena">.</span>
-      </h3>
-
-      {/* lo stato prodotto viaggia con il form e viene rivalidato server-side */}
-      <input type="hidden" name="base" value={prodotto.base} />
-      <input type="hidden" name="farcitura" value={prodotto.farcitura} />
-      <input type="hidden" name="credenza" value={prodotto.credenza} />
-      <input type="hidden" name="finitura" value={prodotto.finitura} />
-      <input type="hidden" name="pedane" value={pedane} />
-      <input type="hidden" name="versione_listino" value={DATASET.versione} />
-      <input type="hidden" name="lingua" value={lingua} />
-
-      <div className="mt-8 grid gap-6 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <label htmlFor="ragione_sociale" className="text-sm font-semibold">
-            {modulo.ragioneSociale}
+    <div className="rounded-[28px] border-2 border-inchiostro bg-crema p-7 md:p-9">
+      <form ref={form} action={invia} hidden={!!riuscita && !visibile}>
+        <h3 className="text-2xl font-extrabold">{t.titolo}</h3>
+        {!invioAttivo && (
+          <p className="mt-4 text-sm leading-relaxed">{ui.invioAssente}</p>
+        )}
+        {(["base", "farcitura", "credenza", "finitura"] as const).map((k) => (
+          <input key={k} type="hidden" name={k} value={prodotto[k]} />
+        ))}
+        <input type="hidden" name="pedane" value={pedane} />
+        <input type="hidden" name="versione_listino" value={DATASET.versione} />
+        <input type="hidden" name="lingua" value={lingua} />
+        <div hidden aria-hidden>
+          <label>
+            Website
+            <input name="website" tabIndex={-1} autoComplete="off" />
           </label>
-          <input
-            id="ragione_sociale"
-            name="ragione_sociale"
-            type="text"
-            required
-            autoComplete="organization"
-            placeholder={modulo.ragioneSocialePh}
-            className={INPUT_CLS}
-          />
         </div>
-        <div className="grid gap-2">
-          <label htmlFor="canale" className="text-sm font-semibold">
-            {modulo.canale}
-          </label>
-          <select id="canale" name="canale" required defaultValue="" className={INPUT_CLS}>
-            <option value="" disabled>
-              {modulo.canalePh}
-            </option>
-            {CANALI.map((c) => (
-              <option key={c} value={c}>
-                {modulo.canali[c]}
+        <fieldset disabled={pending} className="mt-6 grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-2">
+            <label htmlFor="ragione_sociale">{t.ragioneSociale}</label>
+            <input
+              id="ragione_sociale"
+              name="ragione_sociale"
+              value={cliente.ragione_sociale}
+              onChange={cambia}
+              required
+              maxLength={160}
+              autoComplete="organization"
+              className={INPUT}
+            />
+          </div>
+          <div className="grid gap-2">
+            <label htmlFor="canale">{t.canale}</label>
+            <select
+              id="canale"
+              name="canale"
+              value={cliente.canale}
+              onChange={cambia}
+              required
+              className={INPUT}
+            >
+              <option value="" disabled>
+                {t.canalePh}
               </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="mt-6 grid gap-6 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <label htmlFor="email" className="text-sm font-semibold">
-            {modulo.email}
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-            placeholder={modulo.emailPh}
-            className={INPUT_CLS}
-          />
-        </div>
-        <div className="grid gap-2">
-          <label htmlFor="telefono" className="text-sm font-semibold">
-            {modulo.telefono}{" "}
-            <span className="font-normal text-inchiostro/45">{modulo.facoltativo}</span>
-          </label>
-          <input
-            id="telefono"
-            name="telefono"
-            type="tel"
-            autoComplete="tel"
-            placeholder={modulo.telefonoPh}
-            className={INPUT_CLS}
-          />
-        </div>
-      </div>
-
-      <div className="mt-6 grid gap-2">
-        <label htmlFor="note" className="text-sm font-semibold">
-          {modulo.note}{" "}
-          <span className="font-normal text-inchiostro/45">{modulo.facoltativo}</span>
-        </label>
-        <textarea
-          id="note"
-          name="note"
-          rows={3}
-          placeholder={modulo.notePh}
-          className={`${INPUT_CLS} resize-y`}
-        />
-      </div>
-
-      {stato && !stato.ok && (
-        <div
-          role="alert"
-          className="mt-6 rounded-[18px] border border-linea border-l-[4px] border-l-corallo-scena bg-carta px-5 py-4 text-[13px] leading-relaxed"
+              {CANALI.map((c) => (
+                <option key={c} value={c}>
+                  {t.canali[c]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="grid gap-2">
+            <label htmlFor="email">{t.email}</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={cliente.email}
+              onChange={cambia}
+              required
+              maxLength={254}
+              autoComplete="email"
+              className={INPUT}
+            />
+          </div>
+          <div className="grid gap-2">
+            <label htmlFor="telefono">
+              {t.telefono} {t.facoltativo}
+            </label>
+            <input
+              id="telefono"
+              name="telefono"
+              type="tel"
+              value={cliente.telefono}
+              onChange={cambia}
+              maxLength={40}
+              autoComplete="tel"
+              className={INPUT}
+            />
+          </div>
+          <div className="grid gap-2 sm:col-span-2">
+            <label htmlFor="note">
+              {t.note} {t.facoltativo}
+            </label>
+            <textarea
+              id="note"
+              name="note"
+              value={cliente.note}
+              onChange={cambia}
+              maxLength={2000}
+              rows={3}
+              className={INPUT}
+            />
+          </div>
+        </fieldset>
+        {attuale && !attuale.ok && (
+          <div role="alert" className="configurator-notice">
+            <p>{attuale.messaggio}</p>
+            {attuale.mailto && (
+              <a className="underline" href={attuale.mailto}>
+                {ui.emailApp}
+              </a>
+            )}
+          </div>
+        )}
+        <button
+          type="submit"
+          disabled={pending}
+          className="configurator-action mt-6"
         >
-          <p>{stato.messaggio}</p>
-          {stato.errore === "SOTTO_ORDINE_MINIMO" && (
-            <p className="mt-1">
-              {modulo.alzaOppure}{" "}
-              <a
-                href="mailto:info@delsigel.it?subject=Quantitativo%20sotto%20il%20minimo"
-                className="font-semibold underline decoration-2 underline-offset-2 hover:text-corallo-scena"
-              >
-                {modulo.scriviCommerciale}
-              </a>{" "}
-              {modulo.surMisura}
-            </p>
+          {pending ? ui.invioInCorso : invioAttivo ? ui.invia : t.verifica}
+        </button>
+      </form>
+      {riuscita && !visibile && (
+        <div role="status">
+          <h3 className="text-2xl font-extrabold">
+            {attuale.inviata ? ui.inviato : t.prontaTitolo}
+          </h3>
+          <p className="mt-4">
+            {attuale.inviata ? ui.inviatoTesto : ui.invioAssente}
+          </p>
+          <p className="mt-3 font-mono text-sm">
+            {conta(
+              testi.configuratore.scala.pedane,
+              attuale.quantita.pedane,
+              lingua,
+            )}{" "}
+            · {fmtKg(attuale.quantita.peso_kg, lingua)}
+          </p>
+          {!attuale.inviata && (
+            <a
+              className="configurator-action mt-6 inline-block"
+              href={attuale.mailto}
+            >
+              {ui.emailApp}
+            </a>
           )}
+          <button
+            type="button"
+            className="mt-5 block underline"
+            onClick={() => {
+              setVisibile(true);
+              requestAnimationFrame(() =>
+                form.current
+                  ?.querySelector<HTMLInputElement>("#ragione_sociale")
+                  ?.focus(),
+              );
+            }}
+          >
+            {ui.datiCliente}
+          </button>
         </div>
       )}
-
-      <button
-        type="submit"
-        disabled={pending}
-        className="ombra-pop-piccola mt-8 rounded-full bg-inchiostro px-8 py-3.5 text-[11.5px] font-bold uppercase tracking-[0.12em] text-panna transition-colors hover:bg-corallo-scena focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-corallo-scena disabled:opacity-50"
-      >
-        {pending ? modulo.verificaInCorso : modulo.verifica}
-      </button>
-    </form>
+    </div>
   );
 }

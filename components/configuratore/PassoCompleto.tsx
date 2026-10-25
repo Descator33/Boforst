@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { type Base, type Prodotto } from "@/lib/configuratore";
 import { useLingua } from "@/components/LinguaProvider";
+import { fmtNumero } from "@/lib/i18n/lingue";
 import { interpola } from "@/lib/i18n/interpola";
 import type { IdCredenza, IdFarcitura, IdFinitura } from "@/lib/i18n/tipi";
 import { CampoPedane } from "./CampoPedane";
-import { IconaLink, IconaSpunta } from "./Decori";
-import { ModuloQuotazione } from "./ModuloQuotazione";
+import { Condividi } from "./Condividi";
+import { ModuloQuotazione, type DatiCliente } from "./ModuloQuotazione";
 import { ScalaFormato } from "./ScalaFormato";
 
 /**
@@ -25,7 +26,13 @@ export function PassoCompleto({
   onCambiaPedane,
   moduloAperto,
   onApriModulo,
+  invioAttivo,
+  cliente,
+  onClienteChange,
 }: {
+  invioAttivo: boolean;
+  cliente: DatiCliente;
+  onClienteChange: (cliente: DatiCliente) => void;
   prodotto: Prodotto;
   base: Base;
   pedane: number | "";
@@ -33,11 +40,27 @@ export function PassoCompleto({
   moduloAperto: boolean;
   onApriModulo: () => void;
 }) {
-  const { testi } = useLingua();
+  const { testi, lingua } = useLingua();
+  const [invioInCorso, setInvioInCorso] = useState(false);
+  const moduloRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (moduloAperto) {
+      moduloRef.current
+        ?.querySelector<HTMLInputElement>("#ragione_sociale")
+        ?.focus({ preventScroll: true });
+      moduloRef.current?.scrollIntoView({ block: "nearest" });
+    }
+  }, [moduloAperto]);
   const fin = testi.configuratore.finitura;
-  const farcitura = testi.prodotti.farciture[prodotto.farcitura as IdFarcitura] ?? prodotto.farcitura;
-  const credenza = testi.prodotti.credenza[prodotto.credenza as IdCredenza] ?? prodotto.credenza;
-  const finitura = testi.prodotti.finiture[prodotto.finitura as IdFinitura] ?? prodotto.finitura;
+  const farcitura =
+    testi.prodotti.farciture[prodotto.farcitura as IdFarcitura] ??
+    prodotto.farcitura;
+  const credenza =
+    testi.prodotti.credenza[prodotto.credenza as IdCredenza] ??
+    prodotto.credenza;
+  const finitura =
+    testi.prodotti.finiture[prodotto.finitura as IdFinitura] ??
+    prodotto.finitura;
 
   return (
     <div className="flex flex-col gap-9">
@@ -50,38 +73,71 @@ export function PassoCompleto({
         </p>
         <dl className="mt-5 flex flex-wrap gap-x-7 gap-y-2 font-mono text-[13px]">
           <div>
-            <dt className="type-label inline text-inchiostro/45">{fin.farcitura} </dt>
+            <dt className="type-label inline text-inchiostro/45">
+              {fin.farcitura}{" "}
+            </dt>
             <dd className="inline font-bold">{farcitura}</dd>
           </div>
           <div>
-            <dt className="type-label inline text-inchiostro/45">{fin.credenza} </dt>
+            <dt className="type-label inline text-inchiostro/45">
+              {fin.credenza}{" "}
+            </dt>
             <dd className="inline font-bold">{credenza}</dd>
           </div>
           <div>
-            <dt className="type-label inline text-inchiostro/45">{fin.finitura} </dt>
+            <dt className="type-label inline text-inchiostro/45">
+              {fin.finitura}{" "}
+            </dt>
             <dd className="inline font-bold">{finitura}</dd>
           </div>
           <div>
-            <dt className="type-label inline text-inchiostro/45">{fin.grammatura} </dt>
+            <dt className="type-label inline text-inchiostro/45">
+              {fin.grammatura}{" "}
+            </dt>
             <dd className="inline font-bold">{base.grammatura_gr} g</dd>
           </div>
           <div>
-            <dt className="type-label inline text-inchiostro/45">{fin.diametro} </dt>
-            <dd className="inline font-bold">{base.diametro_cm} cm</dd>
+            <dt className="type-label inline text-inchiostro/45">
+              {fin.diametro}{" "}
+            </dt>
+            <dd className="inline font-bold">
+              {fmtNumero(base.diametro_cm, lingua)} cm
+            </dd>
           </div>
           <div className="basis-full">
-            <dt className="type-label inline text-inchiostro/45">{fin.modalitaUso} </dt>
+            <dt className="type-label inline text-inchiostro/45">
+              {fin.modalitaUso}{" "}
+            </dt>
             <dd className="inline">{testi.prodotti.modalitaUso}</dd>
           </div>
         </dl>
 
-        <CopiaLink />
+        <Condividi classe="mt-5 underline font-semibold" />
       </div>
 
       <ScalaFormato base={base} />
 
-      <CampoPedane base={base} pedane={pedane} onCambia={onCambiaPedane} />
+      <CampoPedane
+        base={base}
+        pedane={pedane}
+        onCambia={onCambiaPedane}
+        disabled={invioInCorso}
+      />
 
+      <p className="text-sm text-inchiostro/75">
+        {base.ordine_minimo_pedane == null
+          ? testi.configuratore.esperienza.minimoConferma
+          : ""}
+      </p>
+      <details className="configurator-product-info">
+        <summary>{testi.configuratore.esperienza.scheda}</summary>
+        <p>{testi.configuratore.esperienza.schedaTesto}</p>
+        <a
+          href={`mailto:info@delsigel.it?subject=${encodeURIComponent(testi.configuratore.esperienza.contatta)}&body=${encodeURIComponent(prodotto.sku)}`}
+        >
+          {testi.configuratore.esperienza.contatta}
+        </a>
+      </details>
       {!moduloAperto ? (
         <button
           type="button"
@@ -91,57 +147,17 @@ export function PassoCompleto({
           {fin.richiediQuotazione}
         </button>
       ) : (
-        <ModuloQuotazione prodotto={prodotto} pedane={pedane} />
+        <div ref={moduloRef}>
+          <ModuloQuotazione
+            prodotto={prodotto}
+            pedane={pedane}
+            onPendingChange={setInvioInCorso}
+            invioAttivo={invioAttivo}
+            cliente={cliente}
+            onClienteChange={onClienteChange}
+          />
+        </div>
       )}
     </div>
-  );
-}
-
-/**
- * «Copia il link del tuo dolce»: l'URL è già lo stato del prodotto (i 4
- * componenti), quindi condividere la scheda è copiare l'indirizzo.
- */
-function CopiaLink() {
-  const { testi } = useLingua();
-  const fin = testi.configuratore.finitura;
-  const [copiato, setCopiato] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  useEffect(() => () => clearTimeout(timer.current), []);
-
-  const copia = async () => {
-    const url = window.location.origin + window.location.pathname;
-    try {
-      await navigator.clipboard.writeText(url);
-    } catch {
-      const ta = document.createElement("textarea");
-      ta.value = url;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.append(ta);
-      ta.select();
-      document.execCommand("copy");
-      ta.remove();
-    }
-    setCopiato(true);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopiato(false), 2400);
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={copia}
-      className="mt-5 inline-flex w-fit items-center gap-2 rounded-full text-[12px] font-semibold text-inchiostro/60 underline decoration-inchiostro/25 underline-offset-2 transition-colors hover:text-corallo-scena focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-corallo-scena"
-    >
-      {copiato ? (
-        <IconaSpunta className="h-3.5 w-3.5 text-corallo-scena" />
-      ) : (
-        <IconaLink className="h-3.5 w-3.5" />
-      )}
-      {copiato ? fin.linkCopiato : fin.copiaLink}
-      <span aria-live="polite" className="sr-only">
-        {copiato ? fin.linkCopiatoAria : ""}
-      </span>
-    </button>
   );
 }

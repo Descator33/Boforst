@@ -1,9 +1,11 @@
+import { Suspense } from "react";
+import { Caricamento } from "@/components/configuratore/Caricamento";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Configuratore } from "@/components/configuratore/Configuratore";
-import { DATASET, parseScelta } from "@/lib/configuratore";
+import { DATASET, parseScelta, sceltaCompatibile } from "@/lib/configuratore";
 import {
   fotoCredenza,
   fotoFarciture,
@@ -40,22 +42,19 @@ import type { IdCredenza, IdFarcitura, IdFinitura } from "@/lib/i18n/tipi";
 
 type Props = PageProps<"/[lang]/configuratore/[[...scelta]]">;
 
-/** Le varianti prerenderizzabili PER LINGUA (le lingue le dà il layout):
- *  radice, le 3 basi, le 9 base×farcitura, le 54 base×farcitura×credenza
- *  e i 216 prodotti completi — il prodotto cartesiano aperto del
- *  refactor 2026-08-28, non più una lista curata di 32 SKU. */
+/** Le varianti prerenderizzabili: radice, passi intermedi e le sole 26
+ * ricette effettivamente presenti nella matrice. */
 export function generateStaticParams() {
   const scelte: string[][] = [[]];
-  for (const b of DATASET.basi) {
-    scelte.push([b.id]);
-    for (const f of DATASET.farciture) {
-      scelte.push([b.id, f.id]);
-      for (const c of DATASET.credenza) {
-        scelte.push([b.id, f.id, c.id]);
-        for (const fin of DATASET.finiture) {
-          scelte.push([b.id, f.id, c.id, fin.id]);
-        }
-      }
+  for (const b of DATASET.basi) scelte.push([b.id]);
+  for (const c of DATASET.combinazioni) {
+    const conBase = [c.base];
+    const conFarcitura = [...conBase, c.farcitura];
+    const conCredenza = [...conFarcitura, c.credenza];
+    const completa = [...conCredenza, c.finitura];
+    for (const scelta of [conFarcitura, conCredenza, completa]) {
+      if (!scelte.some((esistente) => esistente.join("/") === scelta.join("/")))
+        scelte.push(scelta);
     }
   }
   return scelte.map((scelta) => ({ scelta }));
@@ -73,9 +72,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (esito.tipo === "render" && esito.prodotto) {
     const nome = esito.base!.nome;
-    const farcitura = testi.prodotti.farciture[esito.prodotto.farcitura as IdFarcitura];
-    const credenza = testi.prodotti.credenza[esito.prodotto.credenza as IdCredenza];
-    const finitura = testi.prodotti.finiture[esito.prodotto.finitura as IdFinitura];
+    const farcitura =
+      testi.prodotti.farciture[esito.prodotto.farcitura as IdFarcitura];
+    const credenza =
+      testi.prodotti.credenza[esito.prodotto.credenza as IdCredenza];
+    const finitura =
+      testi.prodotti.finiture[esito.prodotto.finitura as IdFinitura];
     return {
       title: interpola(meta.combTitolo, { nome, farcitura }),
       description: interpola(meta.combDescrizione, {
@@ -109,6 +111,22 @@ export default async function ConfiguratorePage({ params }: Props) {
 
   if (esito.tipo === "redirect") redirect(localizza(lang, esito.destinazione));
 
+  const normalizzata = sceltaCompatibile(scelta ?? []);
+  if (normalizzata.join("/") !== (scelta ?? []).join("/"))
+    redirect(localizza(lang, "/configuratore/" + normalizzata.join("/")));
+  const foto = fotoStati(),
+    farciture = fotoFarciture(),
+    credenze = fotoCredenza(),
+    finiture = fotoFinitura();
+  const urls = [
+    ...new Set([
+      ...Object.values(foto),
+      ...Object.values(farciture),
+      ...Object.values(credenze),
+      ...Object.values(finiture),
+    ]),
+  ];
+
   /* overflow-x-clip (mai hidden: romperebbe lo sticky del palco): una
      tessera trascinata oltre il bordo non apre lo scroll orizzontale.
      L'insegna della pagina (l'h1 «Crea il tuo dolce.») non sta più
@@ -116,19 +134,26 @@ export default async function ConfiguratorePage({ params }: Props) {
      tre colonne, e deve stare nella stessa griglia del palco. */
   return (
     <div className="configuratore-page overflow-x-clip bg-panna text-inchiostro">
-      <Header />
+      <Caricamento urls={urls}>
+        <Header />
 
-      {/* Il prebuild ricava dalle cartelle un manifest di soli URL; l'isola
+        {/* Il prebuild ricava dalle cartelle un manifest di soli URL; l'isola
           client riceve le voci che hanno una foto senza trascinare i file
           statici nel bundle della funzione serverless. */}
-      <Configuratore
-        foto={fotoStati()}
-        fotoFarciture={fotoFarciture()}
-        fotoCredenza={fotoCredenza()}
-        fotoFinitura={fotoFinitura()}
-      />
+        <Suspense fallback={<div className="min-h-screen" />}>
+          <Configuratore
+            invioAttivo={Boolean(
+              process.env.RESEND_API_KEY && process.env.QUOTAZIONI_FROM,
+            )}
+            foto={foto}
+            fotoFarciture={farciture}
+            fotoCredenza={credenze}
+            fotoFinitura={finiture}
+          />
+        </Suspense>
 
-      <Footer />
+        <Footer />
+      </Caricamento>
     </div>
   );
 }

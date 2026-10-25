@@ -1,3 +1,4 @@
+import type { TestiEsperienza } from "./esperienza";
 /**
  * Il contratto dei dizionari: ogni lingua deve compilare TUTTO questo.
  *
@@ -80,26 +81,28 @@ export type ValoreAsse =
   | "piccola"
   | "media";
 
-/* Dal refactor 2026-08-28 il configuratore ha 4 componenti liberamente
-   combinabili (non più una matrice sparsa e chiusa di SKU): farcitura,
-   dalla credenza e finitura sono ciascuna un vocabolario chiuso, sempre
-   tutto disponibile per ogni base. */
+/* La matrice 2026-10-22 ha una sola base e ricette chiuse. Gli id restano
+   italiani perché sono segmenti URL e nomi delle cartelle foto. */
 
-export type IdFarcitura = "crema" | "cioccolato" | "pistacchio";
+export type IdFarcitura = "crema" | "cioccolato";
 
 export type IdCredenza =
-  | "kinder-bueno"
-  | "cioccolato-a-pezzi"
-  | "corn-flakes"
+  | "frutti-di-bosco"
   | "fragola"
+  | "kiwi"
   | "banana"
-  | "biscotti";
+  | "kit-kat"
+  | "happy-hippo"
+  | "smarties"
+  | "kinder-bueno-dark"
+  | "kinder-bueno-white"
+  | "kinder"
+  | "quadretti-di-cioccolato"
+  | "oreo"
+  | "cocco"
+  | "mini-cookies";
 
-export type IdFinitura =
-  | "zucchero"
-  | "zucchero-a-velo"
-  | "zucchero-di-canna"
-  | "cacao";
+export type IdFinitura = "zucchero-a-velo";
 
 export type IdTappaStoria =
   | "origini"
@@ -298,6 +301,7 @@ export interface Testi {
 
   /* --------------------------- configuratore --------------------------- */
   configuratore: {
+    esperienza: TestiEsperienza;
     percorso: { titolo: string; testo: string }[]; // le 4 tappe in home
     statiNastro: [string, string, string]; // alt dei tre stati della Nuvola
     intro: {

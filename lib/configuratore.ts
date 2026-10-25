@@ -1,21 +1,13 @@
 /**
  * Configuratore dolci — modello dati e logica pura.
  *
- * Refactor 2026-08-28: il configuratore non seleziona più da una matrice
- * sparsa e chiusa di SKU dichiarate a mano. Il prodotto è ora composto da
- * QUATTRO componenti indipendenti — base, farcitura, dalla credenza,
- * finitura — tutti a scelta singola e obbligatoria, e OGNI combinazione fra
- * loro è una SKU valida: 3 basi × 3 farciture × 6 voci di credenza ×
- * 4 finiture = 216 prodotti, un prodotto cartesiano aperto, non una lista
- * curata. Il dataset (lib/configuratore/dati-dolci.json) resta l'unica
- * fonte di verità sui VOCABOLARI (quali basi/farciture/credenza/finiture
- * esistono), ma non elenca più le combinazioni: costruirle è compito di
- * questo modulo.
+ * Matrice 2026-10-22: il configuratore espone una base (Nuvola) e una
+ * selezione chiusa di ricette. I quattro componenti restano nello stato e
+ * nell'URL, ma una SKU è valida soltanto se compare in `combinazioni`.
  *
  * Grammatura, peso e ordine minimo — prima proprietà della singola
- * combinazione — sono ora proprietà della BASE: con 216 combinazioni aperte
- * non sono più curabili SKU per SKU, e la scelta di farcitura/credenza/
- * finitura resta puramente compositiva (non cambia la logistica).
+ * combinazione — restano proprietà della BASE: la scelta della ricetta non
+ * cambia la logistica.
  *
  * Le funzioni pure (prodotto, quantita, validaStato) restano condivise alla
  * lettera tra client e Server Action: la traduzione mostrata accanto al
@@ -59,6 +51,12 @@ export type Base = {
 export type Farcitura = { id: string; nome: string };
 export type Credenza = { id: string; nome: string };
 export type Finitura = { id: string; nome: string };
+export type Combinazione = {
+  base: string;
+  farcitura: string;
+  credenza: string;
+  finitura: string;
+};
 
 export type Dataset = {
   versione: string;
@@ -69,11 +67,11 @@ export type Dataset = {
   farciture: Farcitura[];
   credenza: Credenza[];
   finiture: Finitura[];
+  combinazioni: Combinazione[];
 };
 
-/** Un prodotto configurato: i 4 componenti scelti, sempre validi se i 4 id
- *  esistono nei rispettivi vocabolari — non c'è più un lookup che possa
- *  fallire "per combinazione mancante". */
+/** Un prodotto configurato: i 4 componenti di una ricetta presente in
+ * `combinazioni`. */
 export type Prodotto = {
   sku: string;
   base: string;
@@ -98,6 +96,12 @@ const BASI = new Map(DATASET.basi.map((b) => [b.id, b]));
 const FARCITURE = new Map(DATASET.farciture.map((f) => [f.id, f]));
 const CREDENZA = new Map(DATASET.credenza.map((c) => [c.id, c]));
 const FINITURE = new Map(DATASET.finiture.map((f) => [f.id, f]));
+const COMBINAZIONI = new Map(
+  DATASET.combinazioni.map((c) => [
+    `${c.base}--${c.farcitura}--${c.credenza}--${c.finitura}`,
+    c,
+  ]),
+);
 
 export const baseDi = (id: string): Base | null => BASI.get(id) ?? null;
 export const farcituraVoce = (id: string): Farcitura | null =>
@@ -107,26 +111,43 @@ export const credenzaVoce = (id: string): Credenza | null =>
 export const finituraVoce = (id: string): Finitura | null =>
   FINITURE.get(id) ?? null;
 
+/** Opzioni disponibili al passo 3, filtrate dalla ricetta scelta. */
+export const credenzePer = (base: string, farcitura: string): Credenza[] =>
+  DATASET.combinazioni
+    .filter((c) => c.base === base && c.farcitura === farcitura)
+    .map((c) => CREDENZA.get(c.credenza))
+    .filter((c): c is Credenza => Boolean(c));
+
+/** Opzioni disponibili al passo 4. Oggi la matrice ha una sola finitura,
+ * ma resta una funzione: il flusso non dovrà cambiare se il listino la
+ * allargherà. */
+export const finiturePer = (
+  base: string,
+  farcitura: string,
+  credenza: string,
+): Finitura[] =>
+  DATASET.combinazioni
+    .filter(
+      (c) =>
+        c.base === base && c.farcitura === farcitura && c.credenza === credenza,
+    )
+    .map((c) => FINITURE.get(c.finitura))
+    .filter((f): f is Finitura => Boolean(f));
+
 /* --------------------------- le funzioni pure ---------------------------- */
 
-/** Costruisce il prodotto se i 4 id esistono nei vocabolari; altrimenti
- *  null. Nessuna combinazione è esclusa: è il prodotto cartesiano aperto
- *  richiesto dal 2026-08-28. */
+/** Costruisce il prodotto soltanto quando la quadrupla è prevista dalla
+ * matrice chiusa. */
 export const prodotto = (
   base: string,
   farcitura: string,
   credenza: string,
-  finitura: string
+  finitura: string,
 ): Prodotto | null => {
-  if (
-    !BASI.has(base) ||
-    !FARCITURE.has(farcitura) ||
-    !CREDENZA.has(credenza) ||
-    !FINITURE.has(finitura)
-  )
-    return null;
+  const sku = `${base}--${farcitura}--${credenza}--${finitura}`;
+  if (!COMBINAZIONI.has(sku)) return null;
   return {
-    sku: `${base}--${farcitura}--${credenza}--${finitura}`,
+    sku,
     base,
     farcitura,
     credenza,
@@ -144,7 +165,7 @@ export const quantita = (base: string, pedane: number): Quantita | null => {
     pedane,
     cartoni: pedane * p.cartoni_per_pedana,
     pezzi: pedane * p.pezzi_per_pedana,
-    peso_kg: Math.round(pedane * b.peso_pedana_kg),
+    peso_kg: Math.round(pedane * b.peso_pedana_kg * 100) / 100,
   };
 };
 
@@ -177,7 +198,7 @@ export type EsitoValidazione =
 export const validaStato = (s: StatoConfiguratore): EsitoValidazione => {
   const p = prodotto(s.base, s.farcitura, s.credenza, s.finitura);
   if (!p) return { ok: false, errore: "COMBINAZIONE_INESISTENTE" };
-  if (!Number.isInteger(s.pedane) || s.pedane < 1)
+  if (!Number.isSafeInteger(s.pedane) || s.pedane < 1 || s.pedane > 10000)
     return { ok: false, errore: "QUANTITA_NON_VALIDA" };
   const b = BASI.get(s.base)!;
   if (b.ordine_minimo_pedane != null && s.pedane < b.ordine_minimo_pedane)
@@ -211,26 +232,55 @@ export function parseScelta(scelta: string[] | undefined): EsitoParse {
   const [idBase, idFarcitura, idCredenza, idFinitura, ...resto] = scelta ?? [];
 
   if (!idBase)
-    return { tipo: "render", base: null, farcitura: null, credenza: null, prodotto: null };
+    return {
+      tipo: "render",
+      base: null,
+      farcitura: null,
+      credenza: null,
+      prodotto: null,
+    };
 
   const base = BASI.get(idBase);
   /* base inesistente: capita spesso con link salvati prima del 2026-08-28
      (bomba, golosone, intriko…, uscite dal configuratore) — si riparte dal
      passo 1 con l'avviso discreto, non un 404 */
-  if (!base) return { tipo: "redirect", destinazione: "/configuratore?nd=1" };
+  if (!base)
+    return {
+      tipo: "redirect",
+      destinazione: `/configuratore/${sceltaCompatibile([]).join("/")}?nd=1`,
+    };
 
   if (!idFarcitura)
-    return { tipo: "render", base, farcitura: null, credenza: null, prodotto: null };
+    return {
+      tipo: "render",
+      base,
+      farcitura: null,
+      credenza: null,
+      prodotto: null,
+    };
 
   const farcitura = FARCITURE.get(idFarcitura);
-  if (!farcitura)
+  if (
+    !farcitura ||
+    !DATASET.combinazioni.some(
+      (c) => c.base === base.id && c.farcitura === idFarcitura,
+    )
+  )
     return { tipo: "redirect", destinazione: `/configuratore/${base.id}?nd=1` };
 
   if (!idCredenza)
     return { tipo: "render", base, farcitura, credenza: null, prodotto: null };
 
   const credenza = CREDENZA.get(idCredenza);
-  if (!credenza)
+  if (
+    !credenza ||
+    !DATASET.combinazioni.some(
+      (c) =>
+        c.base === base.id &&
+        c.farcitura === farcitura.id &&
+        c.credenza === idCredenza,
+    )
+  )
     return {
       tipo: "redirect",
       destinazione: `/configuratore/${base.id}/${farcitura.id}?nd=1`,
@@ -240,10 +290,10 @@ export function parseScelta(scelta: string[] | undefined): EsitoParse {
     return { tipo: "render", base, farcitura, credenza, prodotto: null };
 
   const finitura = FINITURE.get(idFinitura);
-  if (!finitura)
+  if (!finitura || !prodotto(base.id, farcitura.id, credenza.id, finitura.id))
     return {
       tipo: "redirect",
-      destinazione: `/configuratore/${base.id}/${farcitura.id}/${credenza.id}?nd=1`,
+      destinazione: `/configuratore/${sceltaCompatibile([base.id, farcitura.id, credenza.id]).join("/")}?nd=1`,
     };
 
   /* segmenti in eccesso: si tengono i primi quattro e si normalizza */
@@ -258,13 +308,7 @@ export function parseScelta(scelta: string[] | undefined): EsitoParse {
     base,
     farcitura,
     credenza,
-    prodotto: {
-      sku: `${base.id}--${farcitura.id}--${credenza.id}--${finitura.id}`,
-      base: base.id,
-      farcitura: farcitura.id,
-      credenza: credenza.id,
-      finitura: finitura.id,
-    },
+    prodotto: prodotto(base.id, farcitura.id, credenza.id, finitura.id),
   };
 }
 
@@ -285,9 +329,24 @@ export function statoDaPathname(pathname: string): {
 
   const base = idBase ? (BASI.get(idBase) ?? null) : null;
   const farcitura =
-    base && idFarcitura ? (FARCITURE.get(idFarcitura) ?? null) : null;
+    base &&
+    idFarcitura &&
+    DATASET.combinazioni.some(
+      (c) => c.base === base.id && c.farcitura === idFarcitura,
+    )
+      ? (FARCITURE.get(idFarcitura) ?? null)
+      : null;
   const credenza =
-    farcitura && idCredenza ? (CREDENZA.get(idCredenza) ?? null) : null;
+    farcitura &&
+    idCredenza &&
+    DATASET.combinazioni.some(
+      (c) =>
+        c.base === base!.id &&
+        c.farcitura === farcitura.id &&
+        c.credenza === idCredenza,
+    )
+      ? (CREDENZA.get(idCredenza) ?? null)
+      : null;
   const finitura =
     credenza && idFinitura ? (FINITURE.get(idFinitura) ?? null) : null;
 
@@ -297,13 +356,7 @@ export function statoDaPathname(pathname: string): {
     credenza,
     prodotto:
       base && farcitura && credenza && finitura
-        ? {
-            sku: `${base.id}--${farcitura.id}--${credenza.id}--${finitura.id}`,
-            base: base.id,
-            farcitura: farcitura.id,
-            credenza: credenza.id,
-            finitura: finitura.id,
-          }
+        ? prodotto(base.id, farcitura.id, credenza.id, finitura.id)
         : null,
   };
 }
@@ -337,3 +390,27 @@ export type FotoFinitura = Record<string, string>;
 /* La formattazione dei numeri (3.360 / 3,360 / 3 360) è passata a
    lib/i18n/lingue.ts: cambia con la lingua della pagina, e questo
    modulo resta neutro. */
+
+/** Conserva solo suffissi compatibili; le opzioni uniche sono già incluse. */
+export function sceltaCompatibile(segmenti: string[]): string[] {
+  const risultato: string[] = [];
+  for (let i = 0; i < 4; i++) {
+    const compatibili = DATASET.combinazioni.filter((c) =>
+      [c.base, c.farcitura, c.credenza, c.finitura]
+        .slice(0, i)
+        .every((v, n) => v === risultato[n]),
+    );
+    const opzioni = [
+      ...new Set(
+        compatibili.map(
+          (c) => [c.base, c.farcitura, c.credenza, c.finitura][i],
+        ),
+      ),
+    ];
+    const proposta = segmenti[i];
+    if (proposta && opzioni.includes(proposta)) risultato.push(proposta);
+    else if (opzioni.length === 1) risultato.push(opzioni[0]);
+    else break;
+  }
+  return risultato;
+}

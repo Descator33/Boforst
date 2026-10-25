@@ -156,8 +156,9 @@ export function Banco({
               ? [fotoFarcito, fotoBase]
               : [fotoBase]
       }
-      alt={farcitura ? `${base.nome} · ${minuscola(farciturasNome!, lingua)}` : base.nome}
+      alt={[base.nome, farciturasNome, credenza ? testi.prodotti.credenza[credenza.id as keyof typeof testi.prodotti.credenza] : null, prodotto ? testi.prodotti.finiture[prodotto.finitura as keyof typeof testi.prodotti.finiture] : null].filter(Boolean).join(" · ")}
       iniziale={base.nome.charAt(0)}
+      prioritaria
       notaRipiego={completato ? banco.fotoSenzaFinitura : undefined}
       classe="absolute inset-0 h-full w-full object-contain object-bottom"
     />
@@ -280,11 +281,11 @@ export function Banco({
         )}
       </AnimatePresence>
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         {base && (
           <motion.div
             key={chiave}
-            className="absolute"
+            className="palco-prodotto absolute"
             style={stileZonaDolce}
             initial={riduci ? { opacity: 0 } : { y: -26, scale: 0.92, opacity: 0 }}
             animate={
@@ -343,13 +344,13 @@ export function Banco({
                 testo: banco.cambiaFarcitura,
                 ricomincia: false,
                 azione: () => apriPasso(2),
-                ritardo: 1.1,
+                ritardo: 0.1,
               },
               {
                 testo: banco.ricomincia,
                 ricomincia: true,
                 azione: onRicomincia,
-                ritardo: 1.25,
+                ritardo: 0.15,
               },
             ] as const
           ).map((cta) => (

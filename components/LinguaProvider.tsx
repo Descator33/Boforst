@@ -21,9 +21,11 @@ import type { Testi } from "@/lib/i18n/tipi";
  * lingua si aggiunge in un punto solo.
  */
 
+type TestiClient = Pick<Testi, "configuratore" | "prodotti" | "comune">;
+
 type Contesto = {
   lingua: Lingua;
-  testi: Testi;
+  testi: TestiClient;
   /** "/contatti" → "/fi/contatti", nella lingua corrente */
   percorso: (href: string) => string;
 };
@@ -36,7 +38,7 @@ export function LinguaProvider({
   children,
 }: {
   lingua: Lingua;
-  testi: Testi;
+  testi: TestiClient;
   children: ReactNode;
 }) {
   const valore = useMemo<Contesto>(
@@ -60,7 +62,7 @@ export function useLingua(): Contesto {
   return contesto;
 }
 
-export function useTesti(): Testi {
+export function useTesti(): TestiClient {
   return useLingua().testi;
 }
 

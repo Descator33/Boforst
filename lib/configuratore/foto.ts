@@ -7,7 +7,7 @@ import type {
 } from "../configuratore";
 
 /**
- * Le foto del configuratore vivono in public/img/configuratore/, quattro
+ * Gli originali vivono in assets/sorgenti/configuratore/, quattro
  * radici con lo stesso contratto (vedi i README lì):
  *
  *   prodotti/<stato>                        gli stati visibili del prodotto:
@@ -21,11 +21,10 @@ import type {
  *                          passo 3
  *   finiture/<finitura>    la finitura DA SOLA, tessera del passo 4
  *
- * La cartella È il contratto: il prebuild la scansiona, verifica le immagini
- * e genera foto-manifest.json. La prima immagine in ordine alfabetico vince;
- * una cartella vuota significa "foto non ancora arrivata" e la UI ripiega da
- * sola (stato precedente o placeholder tipografico). Per pubblicare una foto
- * si mette il file nella cartella giusta, senza toccare codice o JSON a mano.
+ * La cartella è il contratto: prepara-foto genera WebP con hash in public/,
+ * poi il validatore controlla la copertura e genera foto-manifest.json.
+ * La prima immagine sorgente in ordine alfabetico vince; una foto mancante
+ * o non trasparente blocca il build. I ripieghi UI servono agli errori di rete.
  *
  * Il runtime importa solo il piccolo manifest degli URL e non legge public/:
  * in questo modo le immagini restano asset statici e non vengono duplicate

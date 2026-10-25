@@ -1,3 +1,4 @@
+import { ESPERIENZA } from "../esperienza";
 import type { Testi } from "../tipi";
 import { en } from "./en";
 
@@ -17,7 +18,8 @@ export const fr: Testi = {
     colonne: {
       delsigel: { titolo: "Delsigel", chiSiamo: "Qui sommes-nous", storia: "Notre histoire", contatti: "Contact" },
       prodotti: { titolo: "Produits", dolci: "Nos douceurs", salati: "Nos produits salés", catalogo: "Catalogue 2026/27" },
-      configuratore: { titolo: "Configurateur", crea: "Créez votre douceur", comeFunziona: "Comment ça marche", quotazione: "Demander un devis" },
+      configuratore: {
+ titolo: "Configurateur", crea: "Créez votre douceur", comeFunziona: "Comment ça marche", quotazione: "Demander un devis" },
       contatti: { titolo: "Contact" },
     },
     instagram: "Delsigel sur Instagram", dove: "Où nous trouver", mappaTitolo: "Carte : siège Delsigel, 1 via della Meccanica, Sermoneta",
@@ -75,31 +77,58 @@ export const fr: Testi = {
       funghi: "champignons", olive: "olives", verdure: "légumes", wurstel: "saucisse", peperoni: "poivrons", pizzaiola: "pizzaiola", "4 formaggi": "quatre fromages",
       "ricotta e spinaci": "ricotta et épinards", piccola: "petite", media: "moyenne",
     },
-    farciture: { cioccolato: "Chocolat", pistacchio: "Pistache", crema: "Crème" },
+    farciture: { cioccolato: "Chocolat", crema: "Crème" },
     credenza: {
-      "kinder-bueno": "Kinder Bueno", "cioccolato-a-pezzi": "Éclats de chocolat", "corn-flakes": "Corn flakes",
-      fragola: "Fraise", banana: "Banane", biscotti: "Biscuits",
+      "frutti-di-bosco": "Fruits des bois", fragola: "Fraise", kiwi: "Kiwi", banana: "Banane",
+      "kit-kat": "Kit Kat", "happy-hippo": "Happy Hippo", smarties: "Smarties",
+      "kinder-bueno-dark": "Kinder Bueno Dark", "kinder-bueno-white": "Kinder Bueno White", kinder: "Kinder",
+      "quadretti-di-cioccolato": "Carrés de chocolat", oreo: "Oreo", cocco: "Noix de coco", "mini-cookies": "Mini Cookies",
     },
-    finiture: { zucchero: "Sucre", "zucchero-a-velo": "Sucre glace", "zucchero-di-canna": "Sucre de canne", cacao: "Cacao" },
+    finiture: { "zucchero-a-velo": "Sucre glace" },
     modalitaUso: "DÉCONGELER À TEMPÉRATURE AMBIANTE PENDANT 3 h", scattoProdotto: "photographie du produit",
   },
   configuratore: {
     ...en.configuratore,
+    esperienza: ESPERIENZA.fr,
     percorso: [
-      { titolo: "Choisissez la base", testo: "Sélectionnez votre base préférée et donnez forme à votre douceur." },
-      { titolo: "Ajoutez la garniture", testo: "Choisissez la crème ou la garniture qui vous inspire le plus." },
-      { titolo: "Piochez dans le placard", testo: "Kinder Bueno, corn flakes, fruits, biscuits : ajoutez votre gourmandise préférée." },
-      { titolo: "Choisissez la finition", testo: "Sucre, sucre glace, sucre de canne ou cacao : la touche finale." },
-    ],
+  {
+    "titolo": "Base Nuvola incluse",
+    "testo": "La base Nuvola est déjà incluse. Concentrez-vous sur les ingrédients."
+  },
+  {
+    "titolo": "Choisissez la garniture",
+    "testo": "Crème ou chocolat : touchez une vignette ou glissez-la sur la douceur avec la souris."
+  },
+  {
+    "titolo": "Ajoutez votre ingrédient",
+    "testo": "Choisissez fruits, chocolat ou biscuits parmi les options disponibles pour votre garniture."
+  },
+  {
+    "titolo": "Sucre glace inclus",
+    "testo": "La finition est déjà incluse. Modifiez la recette depuis le récapitulatif, partagez-la et demandez un devis."
+  }
+],
     statiNastro: ["Nuvola nature, la base sans garniture", "Nuvola garnie de crème", "Nuvola à la crème et au sucre glace"],
     intro: { titolo: [{ testo: "Créez" }, { testo: "votre" }, { testo: "douceur !", accento: true }], copy: ["Jouez, combinez, personnalisez.", "La douceur que vous imaginez,", "c'est vous qui la créez !"], comeFunziona: "Comment ça marche" },
     comeFunziona: {
       titolo: "Comment ça marche", passi: [
-        { titolo: "Niveau 01 — choisissez votre joueur", testo: "Trois bases, toutes disponibles. Faites-en glisser une sur la scène avec la souris ou touchez-la : le résultat est identique." },
-        { titolo: "Niveau 02 — chargez la garniture", testo: "Crème, chocolat ou pistache : choisissez le cœur de la douceur." },
-        { titolo: "Niveau 03 — piochez dans le placard", testo: "Kinder Bueno, corn flakes, fruits ou biscuits : ajoutez votre gourmandise préférée." },
-        { titolo: "Niveau 04 — terminez la combinaison", testo: "Choisissez la finition et la combinaison est prête. Viennent ensuite le format, la commande minimale et la quantité en palettes : la demande part complète." },
-      ], chiudi: "Fermer", ok: "J'ai compris, commençons",
+  {
+    "titolo": "Base Nuvola incluse",
+    "testo": "La base Nuvola est déjà incluse. Concentrez-vous sur les ingrédients."
+  },
+  {
+    "titolo": "Choisissez la garniture",
+    "testo": "Crème ou chocolat : touchez une vignette ou glissez-la sur la douceur avec la souris."
+  },
+  {
+    "titolo": "Ajoutez votre ingrédient",
+    "testo": "Choisissez fruits, chocolat ou biscuits parmi les options disponibles pour votre garniture."
+  },
+  {
+    "titolo": "Sucre glace inclus",
+    "testo": "La finition est déjà incluse. Modifiez la recette depuis le récapitulatif, partagez-la et demandez un devis."
+  }
+], chiudi: "Fermer", ok: "J'ai compris, commençons",
     },
     titoli: { passo1: "Choisissez votre base", passo2: "Garnissons-la", passo3: "Piochez dans le placard", passo4: "La touche finale", completo: "Boum. C'est prêt !" },
     passoDi: "Étape {n} sur 4 — {titolo}", avvisoSceltaSparita: "Le lien que vous avez ouvert contenait un choix qui n'est plus disponible : on repart d'ici.",
@@ -114,7 +143,7 @@ export const fr: Testi = {
     tessera: { prendimi: "Prenez-moi !", inVolo: "En vol !" },
     finitura: {
       boom: "Votre {nome} est prêt.",
-      combo: "Quatre niveaux, quatre gestes : la combinaison est prête. Choisissez maintenant la quantité et envoyez-la pour devis.",
+      combo: "Votre recette est prête. Choisissez la quantité, partagez votre douceur ou demandez un devis.",
       farcitura: "Garniture", credenza: "Depuis le placard", finitura: "Finition",
       grammatura: "Poids unitaire", diametro: "Diamètre", modalitaUso: "Mode d'emploi",
       copiaLink: "Copier le lien de votre douceur", linkCopiato: "Lien copié !", linkCopiatoAria: "Lien copié dans le presse-papiers", richiediQuotazione: "Demander un devis →",

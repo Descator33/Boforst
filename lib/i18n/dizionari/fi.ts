@@ -1,3 +1,4 @@
+import { ESPERIENZA } from "../esperienza";
 import type { Testi } from "../tipi";
 import { en } from "./en";
 
@@ -15,7 +16,8 @@ export const fi: Testi = {
     colonne: {
       delsigel: { titolo: "Delsigel", chiSiamo: "Meistä", storia: "Tarinamme", contatti: "Yhteystiedot" },
       prodotti: { titolo: "Tuotteet", dolci: "Makeat tuotteemme", salati: "Suolaiset tuotteemme", catalogo: "Kuvasto 2026/27" },
-      configuratore: { titolo: "Konfiguraattori", crea: "Luo oma leivonnaisesi", comeFunziona: "Näin se toimii", quotazione: "Pyydä tarjous" },
+      configuratore: {
+ titolo: "Konfiguraattori", crea: "Luo oma leivonnaisesi", comeFunziona: "Näin se toimii", quotazione: "Pyydä tarjous" },
       contatti: { titolo: "Yhteystiedot" },
     },
     instagram: "Delsigel Instagramissa", dove: "Sijaintimme", mappaTitolo: "Kartta: Delsigelin toimipaikka, Via della Meccanica 1, Sermoneta",
@@ -57,24 +59,59 @@ export const fi: Testi = {
     },
     assi: { gusto: "Maku", farcitura: "Täyte", finitura: "Viimeistely", formato: "Koko" },
     valori: { cioccolato: "suklaa", "tre cioccolati": "kolme suklaata", crema: "vaniljakreemi", pistacchio: "pistaasi", marmellata: "hillo", "frutti di bosco": "metsämarjat", semplice: "maustamaton", granella: "rouhe", vuoto: "täyttämätön", mozzarella: "mozzarella", pomodoro: "tomaatti", bianca: "valkoinen", bianco: "valkoinen", curcuma: "kurkuma", funghi: "sienet", olive: "oliivit", verdure: "vihannekset", wurstel: "nakki", peperoni: "paprika", pizzaiola: "pizzaiola", "4 formaggi": "neljä juustoa", "ricotta e spinaci": "ricotta ja pinaatti", piccola: "pieni", media: "keskikokoinen" },
-    farciture: { cioccolato: "Suklaa", pistacchio: "Pistaasi", crema: "Kreemi" },
-    credenza: { "kinder-bueno": "Kinder Bueno", "cioccolato-a-pezzi": "Suklaapalat", "corn-flakes": "Maissihiutaleet", fragola: "Mansikka", banana: "Banaani", biscotti: "Keksit" },
-    finiture: { zucchero: "Sokeri", "zucchero-a-velo": "Tomusokeri", "zucchero-di-canna": "Ruokosokeri", cacao: "Kaakao" },
+    farciture: { cioccolato: "Suklaa", crema: "Kreemi" },
+    credenza: { "frutti-di-bosco": "Metsämarjat", fragola: "Mansikka", kiwi: "Kiivi", banana: "Banaani", "kit-kat": "Kit Kat", "happy-hippo": "Happy Hippo", smarties: "Smarties", "kinder-bueno-dark": "Kinder Bueno Dark", "kinder-bueno-white": "Kinder Bueno White", kinder: "Kinder", "quadretti-di-cioccolato": "Suklaapalat", oreo: "Oreo", cocco: "Kookos", "mini-cookies": "Mini Cookies" },
+    finiture: { "zucchero-a-velo": "Tomusokeri" },
     modalitaUso: "SULATA HUONEENLÄMMÖSSÄ 3 h", scattoProdotto: "tuotekuva",
   },
   configuratore: {
     ...en.configuratore,
-    percorso: [{ titolo: "Valitse pohja", testo: "Valitse mieleisesi pohja ja anna leivonnaiselle muoto." }, { titolo: "Lisää täyte", testo: "Valitse sinua eniten inspiroiva kreemi tai täyte." }, { titolo: "Poimi kaapista", testo: "Kinder Bueno, maissihiutaleet, hedelmät, keksit: lisää oma herkkusi." }, { titolo: "Valitse viimeistely", testo: "Sokeri, tomusokeri, ruokosokeri tai kaakao: viimeinen silaus." }],
+    esperienza: ESPERIENZA.fi,
+    percorso: [
+  {
+    "titolo": "Nuvola-pohja sisältyy",
+    "testo": "Nuvola-pohja on jo mukana. Voit keskittyä ainesosiin."
+  },
+  {
+    "titolo": "Valitse täyte",
+    "testo": "Vaniljakreemi tai suklaa: napauta korttia tai vedä se leivonnaisen päälle hiirellä."
+  },
+  {
+    "titolo": "Lisää ainesosa",
+    "testo": "Valitse hedelmiä, suklaata tai keksejä täytteeseen sopivista vaihtoehdoista."
+  },
+  {
+    "titolo": "Tomusokeri sisältyy",
+    "testo": "Viimeistely on jo mukana. Muokkaa reseptiä yhteenvedosta, jaa se ja pyydä tarjous."
+  }
+],
     statiNastro: ["Täyttämätön Nuvola-pohja", "Kreemillä täytetty Nuvola", "Kreemi-Nuvola tomusokerilla"],
     intro: { titolo: [{ testo: "Luo" }, { testo: "oma" }, { testo: "leivonnaisesi!", accento: true }], copy: ["Leiki, yhdistele, räätälöi.", "Kuvittelemasi leivonnainen", "syntyy käsissäsi!"], comeFunziona: "Näin se toimii" },
-    comeFunziona: { titolo: "Näin se toimii", passi: [{ titolo: "Taso 01 — valitse pelaaja", testo: "Kolme pohjaa, kaikki saatavilla. Vedä pohja lavalle hiirellä tai napauta sitä – lopputulos on sama." }, { titolo: "Taso 02 — lataa täyte", testo: "Kreemi, suklaa vai pistaasi: valitse leivonnaisen sydän." }, { titolo: "Taso 03 — poimi kaapista", testo: "Kinder Bueno, maissihiutaleet, hedelmät tai keksit: lisää oma herkkusi." }, { titolo: "Taso 04 — viimeistele yhdistelmä", testo: "Valitse viimeistely ja yhdistelmä on valmis. Sen jälkeen valitaan koko, vähimmäistilaus ja lavamäärä, ja tarjouspyyntö on valmis." }], chiudi: "Sulje", ok: "Selvä, aloitetaan" },
+    comeFunziona: { titolo: "Näin se toimii", passi: [
+  {
+    "titolo": "Nuvola-pohja sisältyy",
+    "testo": "Nuvola-pohja on jo mukana. Voit keskittyä ainesosiin."
+  },
+  {
+    "titolo": "Valitse täyte",
+    "testo": "Vaniljakreemi tai suklaa: napauta korttia tai vedä se leivonnaisen päälle hiirellä."
+  },
+  {
+    "titolo": "Lisää ainesosa",
+    "testo": "Valitse hedelmiä, suklaata tai keksejä täytteeseen sopivista vaihtoehdoista."
+  },
+  {
+    "titolo": "Tomusokeri sisältyy",
+    "testo": "Viimeistely on jo mukana. Muokkaa reseptiä yhteenvedosta, jaa se ja pyydä tarjous."
+  }
+], chiudi: "Sulje", ok: "Selvä, aloitetaan" },
     titoli: { passo1: "Valitse pohjasi", passo2: "Lisätään täyte", passo3: "Poimi kaapista", passo4: "Viimeinen silaus", completo: "Valmis!" }, passoDi: "Vaihe {n}/4 — {titolo}", avvisoSceltaSparita: "Avaamasi linkki sisälsi valinnan, joka ei enää ole saatavilla. Jatketaan tästä.",
     riepilogo: { base: "Pohja", farcitura: "Täyte", credenza: "Kaapista", finitura: "Viimeistely", cambia: "muuta", tornaAlPasso: "Palaa vaiheeseen {n}, {etichetta}: {valore}", avanzamento: "Konfiguraattorin eteneminen" },
     banco: { ariaVuoto: "Tyhjä konfiguraattorin lava: vedä tai napauta pohjaa ja aseta se lavalle", ariaConDolce: "Konfiguraattorin lava: {nome}{stato}", mancaPasso1: ". Pohja puuttuu", mancaPasso2: ". Täyte puuttuu", mancaPasso3: ". Kaapista poimittava lisuke puuttuu", mancaPasso4: ". Viimeistely puuttuu", completoAria: ". Leivonnainen on valmis", mollaQui: "Kyllä! Pudota tähän!", trascinaVuoto: ["Vedä pohjasi", "tähän"], toccaVuoto: ["Napauta pohjaa", "tästä"], trascinaPasso2: "Vedä täyte tähän", trascinaPasso3: "Vedä lisuke tähän", trascinaPasso4: "Vedä viimeistely tähän", toccaPasso2: "Lähetä täyte napauttamalla", toccaPasso3: "Lähetä lisuke napauttamalla", toccaPasso4: "Lähetä viimeistely napauttamalla", oppureLista: "tai valitse se luettelosta", fotoSenzaFinitura: "Kuva ilman viimeistelyä – kuvaus vieressä", cambiaFarcitura: "Vaihda täyte", ricomincia: "Aloita alusta" },
     tessera: { prendimi: "Valitse minut!", inVolo: "Tulossa!" },
     finitura: {
       boom: "{nome} on valmis.",
-      combo: "Neljä tasoa, neljä liikettä: yhdistelmä on valmis. Valitse määrä ja lähetä tarjouspyyntö.",
+      combo: "Reseptisi on valmis. Valitse määrä, jaa luomuksesi tai pyydä tarjous.",
       farcitura: "Täyte", credenza: "Kaapista", finitura: "Viimeistely",
       grammatura: "Kappalepaino", diametro: "Halkaisija", modalitaUso: "Käyttöohje", copiaLink: "Kopioi leivonnaisesi linkki", linkCopiato: "Linkki kopioitu!", linkCopiatoAria: "Linkki kopioitu leikepöydälle", richiediQuotazione: "Pyydä tarjous →",
     },

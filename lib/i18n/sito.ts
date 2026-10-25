@@ -7,9 +7,8 @@ import {
 
 /** Base per canonical e hreflang. L'env vince; il fallback è il dominio
  *  aziendale (delsigel.it è già la casa di email e PEC). */
-export const BASE_SITO = new URL(
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.delsigel.it",
-);
+const dominio = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+export const BASE_SITO = dominio ? new URL(dominio) : undefined;
 
 /**
  * Gli alternates di una pagina: canonical nella lingua corrente e le
@@ -17,6 +16,7 @@ export const BASE_SITO = new URL(
  * capiscono così che /fi/contatti non è un duplicato di /it/contatti.
  */
 export function alternatesPer(lingua: Lingua, percorso: string) {
+  if(!BASE_SITO) return undefined;
   return {
     canonical: localizza(lingua, percorso),
     languages: {

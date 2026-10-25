@@ -18,7 +18,7 @@ import { ETICHETTE_LINGUE, LINGUE } from "@/lib/i18n/lingue";
  * come da convenzione del sito d'origine.
  */
 export function Header() {
-  const { lingua, percorso } = useLingua();
+  const { lingua, percorso, testi } = useLingua();
   const pathname = usePathname();
   /* "/it/configuratore/nuvola" → "/configuratore/nuvola" */
   const resto = "/" + pathname.split("/").slice(2).join("/");
@@ -34,7 +34,7 @@ export function Header() {
       </Link>
 
       <nav
-        aria-label="Lingua"
+        aria-label={testi.comune.lingua.selettore}
         className="flex items-center gap-0.5 rounded-full border border-linea bg-carta p-1 shadow-[0_2px_10px_rgba(107,60,30,0.06)]"
       >
         {LINGUE.map((altra) => {

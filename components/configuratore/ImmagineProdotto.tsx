@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLingua } from "@/components/LinguaProvider";
 
 /**
  * Immagine con catena di ripiego. Le sorgenti arrivano SOLO dalle
@@ -21,12 +22,14 @@ import { useState } from "react";
  */
 export function ImmagineProdotto({
   sorgenti,
+  prioritaria = false,
   alt,
   iniziale,
   notaRipiego,
   classe = "absolute inset-0 h-full w-full object-contain p-3",
 }: {
   /** in ordine di preferenza; le voci null/undefined si scartano */
+  prioritaria?: boolean;
   sorgenti: (string | null | undefined)[];
   alt: string;
   /** lettera del placeholder tipografico */
@@ -35,6 +38,8 @@ export function ImmagineProdotto({
   /** inquadratura dell'immagine; deve restare object-contain */
   classe?: string;
 }) {
+  const { testi } = useLingua();
+  const [caricata, setCaricata] = useState<string | null>(null);
   const valide = sorgenti.filter((s): s is string => Boolean(s));
 
   /* l'indice di ripiego è legato alla lista di sorgenti: se cambia il
@@ -46,7 +51,7 @@ export function ImmagineProdotto({
   const setIndice = (i: number) => setStato({ chiave, indice: i });
 
   const src = indice < valide.length ? valide[indice] : null;
-  const inRipiego = indice > 0 || !src;
+  const inRipiego = indice > 0 || !src || !sorgenti[0];
 
   return (
     <>
@@ -55,25 +60,39 @@ export function ImmagineProdotto({
           {notaRipiego}
         </span>
       )}
+      {src && caricata !== src && (
+        <span className="configurator-image-loading" aria-hidden>
+          {testi.configuratore.esperienza.immagineCaricamento}
+        </span>
+      )}
       {src ? (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={src}
           alt={alt}
-          loading="lazy"
+          loading={prioritaria ? "eager" : "lazy"}
+          decoding="async"
+          fetchPriority={prioritaria ? "high" : "auto"}
+          onLoad={() => setCaricata(src)}
           draggable={false}
           /* l'errore di rete può scattare PRIMA dell'idratazione, quando
              onError non è ancora attaccato: il ref callback recupera i
              404 già consumati (complete e larghezza zero) */
           ref={(el) => {
-            if (el && el.complete && el.naturalWidth === 0)
-              setIndice(indice + 1);
+            if (el && el.complete) {
+              if (el.naturalWidth === 0) setIndice(indice + 1);
+              else if (caricata !== src) setCaricata(src);
+            }
           }}
           onError={() => setIndice(indice + 1)}
           className={classe}
         />
       ) : (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center"
+          role="img"
+          aria-label={testi.configuratore.esperienza.immagineErrore}
+        >
           <span className="type-display text-[38cqw] leading-none text-inchiostro/12">
             {iniziale}
           </span>

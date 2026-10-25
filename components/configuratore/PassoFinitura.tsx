@@ -1,6 +1,6 @@
 "use client";
 
-import { DATASET, type FotoFinitura } from "@/lib/configuratore";
+import { finiturePer, type FotoFinitura } from "@/lib/configuratore";
 import { ImmagineProdotto } from "./ImmagineProdotto";
 import { GrigliaTessere } from "./Selettore";
 import { SegnaPosto, TesseraScelta, type VoloTessera } from "./TesseraScelta";
@@ -9,9 +9,8 @@ import { useTesti } from "@/components/LinguaProvider";
 import type { IdFinitura } from "@/lib/i18n/tipi";
 
 /**
- * Passo 4 — la finitura. Dal refactor 2026-08-28 non è più derivata
- * dalla ricetta: è una scelta reale fra le 4 finiture, con lo stesso
- * meccanismo di PassoFarcitura/PassoCredenza. Sceglierne una completa
+ * Passo 4 — la finitura. Le opzioni arrivano dalla ricetta selezionata
+ * (oggi una sola: zucchero a velo). Sceglierne una completa
  * il prodotto (4° segmento dell'URL) e fa comparire il pannello dei
  * numeri (PassoCompleto).
  *
@@ -22,11 +21,17 @@ import type { IdFinitura } from "@/lib/i18n/tipi";
  */
 export function PassoFinitura({
   fotoFinitura,
+  base,
+  farcitura,
+  credenza,
   selezionata,
   onScegli,
   drag,
 }: {
   fotoFinitura: FotoFinitura;
+  base: string;
+  farcitura: string;
+  credenza: string;
   selezionata: string | null;
   onScegli: (id: string, volo?: VoloTessera) => void;
   drag?: DragPasso;
@@ -35,7 +40,7 @@ export function PassoFinitura({
 
   return (
     <GrigliaTessere>
-      {DATASET.finiture.map((f) => {
+      {finiturePer(base, farcitura, credenza).map((f) => {
         const nome = testi.prodotti.finiture[f.id as IdFinitura] ?? f.nome;
         const fotoF = fotoFinitura[f.id];
         return (

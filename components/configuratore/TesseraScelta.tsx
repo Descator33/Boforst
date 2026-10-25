@@ -8,8 +8,7 @@ import { useTesti } from "@/components/LinguaProvider";
 export type Punto = { x: number; y: number };
 
 /**
- * Segnaposto per le voci senza foto (farciture e finiture: le cartelle
- * di public/img/configuratore/farciture/ sono ancora vuote). Una goccia
+ * Segnaposto di emergenza per ingredienti senza immagine disponibile. Una goccia
  * di crema disegnata con l'iniziale sopra, misurata in cqw sulla
  * tessera — che è un container — così cresce con la colonna.
  *
@@ -109,7 +108,7 @@ export function TesseraScelta({
         onScegli(quadroRef.current?.getBoundingClientRect());
       }}
       aria-pressed={selezionata ?? false}
-      aria-label={descrizione}
+      aria-label={descrizione ?? titolo}
       data-vola={inDrag ? "true" : "false"}
       data-drag={drag ? "true" : "false"}
       className={`tessera relative block w-full select-none text-center focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-viola ${
