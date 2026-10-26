@@ -1,5 +1,6 @@
 import type { Lingua } from "./lingue";
 export type TestiEsperienza = {
+  postilla: string;
   caricamento: string;
   progresso: string;
   attendi: string;
@@ -36,6 +37,8 @@ export type TestiEsperienza = {
 };
 export const ESPERIENZA: Record<Lingua, TestiEsperienza> = {
   it: {
+    postilla:
+      "Questo configuratore è uno strumento puramente illustrativo e ludico a disposizione dei clienti per personalizzare visivamente le proprie preferenze. Tutti i marchi di prodotti terzi visualizzati o menzionati (es. Oreo, ecc.) appartengono ai rispettivi proprietari. Il nostro laboratorio artigianale non è in alcun modo collegato, associato, sponsorizzato o approvato dai titolari di tali marchi, i quali vengono utilizzati esclusivamente a scopo descrittivo e per la guarnizione dei dolci su richiesta dell’utente.",
     caricamento: "Prepariamo il tuo laboratorio",
     progresso: "Immagini caricate: {n} di {totale}",
     attendi: "Un momento, prepariamo le immagini dei tuoi dolci.",
@@ -79,6 +82,8 @@ export const ESPERIENZA: Record<Lingua, TestiEsperienza> = {
     emailApp: "Apri nella tua app di posta",
   },
   en: {
+    postilla:
+      "This configurator is a purely illustrative and recreational tool available to customers to visually customise their preferences. All third-party product trademarks displayed or mentioned (e.g. Oreo, etc.) belong to their respective owners. Our artisan pastry workshop is in no way connected with, associated with, sponsored by or endorsed by the owners of these trademarks, which are used exclusively for descriptive purposes and to decorate pastries at the user’s request.",
     caricamento: "Getting your pastry lab ready",
     progresso: "Images loaded: {n} of {totale}",
     attendi: "One moment while we prepare your pastry images.",
@@ -121,6 +126,8 @@ export const ESPERIENZA: Record<Lingua, TestiEsperienza> = {
     emailApp: "Open in your email app",
   },
   fr: {
+    postilla:
+      "Ce configurateur est un outil purement illustratif et ludique mis à la disposition des clients pour personnaliser visuellement leurs préférences. Toutes les marques de produits tiers affichées ou mentionnées (par ex. Oreo, etc.) appartiennent à leurs propriétaires respectifs. Notre atelier artisanal n’est en aucun cas lié, associé, sponsorisé ou approuvé par les titulaires de ces marques, qui sont utilisées exclusivement à des fins descriptives et pour la garniture des pâtisseries à la demande de l’utilisateur.",
     caricamento: "Préparons votre atelier",
     progresso: "Images chargées : {n} sur {totale}",
     attendi: "Un instant, nous préparons les images de vos douceurs.",
@@ -163,6 +170,8 @@ export const ESPERIENZA: Record<Lingua, TestiEsperienza> = {
     emailApp: "Ouvrir dans votre messagerie",
   },
   de: {
+    postilla:
+      "Dieser Konfigurator ist ein rein anschauliches und spielerisches Werkzeug, mit dem Kunden ihre Vorlieben visuell individuell gestalten können. Alle angezeigten oder erwähnten Marken von Drittprodukten (z. B. Oreo usw.) gehören ihren jeweiligen Eigentümern. Unsere handwerkliche Backstube ist in keiner Weise mit den Inhabern dieser Marken verbunden oder assoziiert und wird von ihnen weder gesponsert noch unterstützt. Die Marken werden ausschließlich zu beschreibenden Zwecken und zur Garnierung der Backwaren auf Wunsch des Nutzers verwendet.",
     caricamento: "Wir bereiten Ihre Backstube vor",
     progresso: "Bilder geladen: {n} von {totale}",
     attendi: "Einen Moment, wir bereiten die Produktbilder vor.",
@@ -206,6 +215,8 @@ export const ESPERIENZA: Record<Lingua, TestiEsperienza> = {
     emailApp: "Im E-Mail-Programm öffnen",
   },
   fi: {
+    postilla:
+      "Tämä konfiguraattori on puhtaasti havainnollistava ja viihteellinen työkalu, jonka avulla asiakkaat voivat mukauttaa mieltymyksiään visuaalisesti. Kaikki esitetyt tai mainitut kolmansien osapuolten tuotemerkit (esim. Oreo jne.) kuuluvat omistajilleen. Käsityöleipomomme ei ole millään tavoin yhteydessä näiden tuotemerkkien omistajiin eikä toimi yhteistyössä heidän kanssaan, eivätkä he sponsoroi tai hyväksy toimintaamme. Tuotemerkkejä käytetään yksinomaan kuvaileviin tarkoituksiin ja leivonnaisten koristeluun käyttäjän pyynnöstä.",
     caricamento: "Valmistellaan leivontalaboratoriota",
     progresso: "Ladatut kuvat: {n}/{totale}",
     attendi: "Hetkinen, valmistelemme leivonnaisten kuvia.",

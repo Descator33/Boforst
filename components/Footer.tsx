@@ -3,7 +3,7 @@
  * del brand Boforst e dei dati societari da mettere a piè di pagina
  * (privacy policy compresa: su un dominio nuovo va pubblicata la sua).
  */
-export function Footer() {
+export function Footer({ postilla }: { postilla: string }) {
   return (
     <footer className="flex flex-wrap items-center justify-between gap-2 px-5 py-5 sm:px-8">
       <span className="font-mono text-xs uppercase tracking-widest opacity-70">
@@ -15,6 +15,9 @@ export function Footer() {
       >
         info@delsigel.it
       </a>
+      <p className="mt-4 w-full border-t border-linea pt-4 text-sm leading-relaxed text-inchiostro/70">
+        <small className="block max-w-5xl text-inherit">{postilla}</small>
+      </p>
     </footer>
   );
 }

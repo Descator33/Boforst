@@ -152,7 +152,7 @@ export default async function ConfiguratorePage({ params }: Props) {
           />
         </Suspense>
 
-        <Footer />
+        <Footer postilla={dizionario(lang).configuratore.esperienza.postilla} />
       </Caricamento>
     </div>
   );
