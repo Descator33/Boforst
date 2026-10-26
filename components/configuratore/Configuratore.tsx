@@ -249,11 +249,6 @@ export function Configuratore({
               apriPasso={apriPasso}
               onRicomincia={ricomincia}
             />
-            {inAttesa && (
-              <p role="status" className="configurator-stage-status">
-                {ui.immagineCaricamento}
-              </p>
-            )}
           </div>
           <Selettore titolo={titoloSelettore} titoloRef={titoloRef}>
             {prodotto && passo < 5 && (

@@ -1834,8 +1834,6 @@ button.candy-livello:is(:hover, :focus-visible) {
 .configurator-notice {margin-block:1rem;padding:1rem;border:1px solid var(--inchiostro);border-radius:1rem;background:var(--carta);font-size:.9rem;line-height:1.5;}
 .configurator-included { display:block;font-size:10px;text-transform:none;letter-spacing:.02em;margin-top:3px; }
 .configurator-stage { position:relative; }
-.configurator-stage-status {position:absolute;inset:40% 8% auto;text-align:center;background:var(--carta);border:1px solid var(--inchiostro);border-radius:1rem;padding:1rem;z-index:30;}
-.configurator-image-loading {position:absolute;inset:45% 0 auto;text-align:center;font-size:12px;padding:.5rem;}
 .configurator-product-info {padding:1rem;border:1px solid var(--linea);border-radius:1rem;font-size:.9rem;line-height:1.5;}
 .configurator-product-info summary {cursor:pointer;font-weight:700;min-height:32px;}
 .configurator-product-info p {margin-block:.75rem;}

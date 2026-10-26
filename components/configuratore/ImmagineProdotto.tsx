@@ -39,7 +39,6 @@ export function ImmagineProdotto({
   classe?: string;
 }) {
   const { testi } = useLingua();
-  const [caricata, setCaricata] = useState<string | null>(null);
   const valide = sorgenti.filter((s): s is string => Boolean(s));
 
   /* l'indice di ripiego è legato alla lista di sorgenti: se cambia il
@@ -60,11 +59,6 @@ export function ImmagineProdotto({
           {notaRipiego}
         </span>
       )}
-      {src && caricata !== src && (
-        <span className="configurator-image-loading" aria-hidden>
-          {testi.configuratore.esperienza.immagineCaricamento}
-        </span>
-      )}
       {src ? (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
@@ -73,16 +67,13 @@ export function ImmagineProdotto({
           loading={prioritaria ? "eager" : "lazy"}
           decoding="async"
           fetchPriority={prioritaria ? "high" : "auto"}
-          onLoad={() => setCaricata(src)}
           draggable={false}
           /* l'errore di rete può scattare PRIMA dell'idratazione, quando
              onError non è ancora attaccato: il ref callback recupera i
              404 già consumati (complete e larghezza zero) */
           ref={(el) => {
-            if (el && el.complete) {
-              if (el.naturalWidth === 0) setIndice(indice + 1);
-              else if (caricata !== src) setCaricata(src);
-            }
+            if (el && el.complete && el.naturalWidth === 0)
+              setIndice(indice + 1);
           }}
           onError={() => setIndice(indice + 1)}
           className={classe}
